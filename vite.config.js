@@ -5,4 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   base: '/ArtemisWebsite/', // Base path for GitHub Pages
   plugins: [react()],
+  build: {
+    outDir: 'dist', // Output directory for the build files
+  },
 })
