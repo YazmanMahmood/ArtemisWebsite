@@ -13,6 +13,34 @@ const HeroSection = styled.section`
   justify-content: center;
   color: white;
   overflow: hidden;
+  background-color: #000;
+`;
+
+const ParticleBackground = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 0;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.3) 0%,
+      rgba(0, 0, 0, 0.5) 50%,
+      rgba(0, 0, 0, 0.7) 100%
+    );
+    pointer-events: none;
+  }
 `;
 
 const BackgroundImages = styled.div`
@@ -247,17 +275,120 @@ const backgroundVariants = {
 };
 
 function HomePage() {
-  const [currentBg, setCurrentBg] = useState(0);
   const [ref, inView] = useInView({
     threshold: 0.1,
     triggerOnce: true,
   });
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentBg((prev) => (prev + 1) % droneImages.length);
-    }, 5000);
-    return () => clearInterval(timer);
+    const loadParticles = async () => {
+      try {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js';
+        script.async = true;
+        
+        script.onload = () => {
+          window.particlesJS('particles-js', {
+            particles: {
+              number: {
+                value: 120,  // Increased from 60
+                density: {
+                  enable: true,
+                  value_area: 800
+                }
+              },
+              color: {
+                value: ['#ff3b30', '#0a84ff', '#ffffff']  // Added white for variety
+              },
+              shape: {
+                type: ['circle', 'triangle'],  // Added triangle shape
+                stroke: {
+                  width: 1,
+                  color: '#ffffff'
+                }
+              },
+              opacity: {
+                value: 0.8,  // Increased from 0.6
+                random: true,
+                anim: {
+                  enable: true,
+                  speed: 1,
+                  opacity_min: 0.4,
+                  sync: false
+                }
+              },
+              size: {
+                value: 4,  // Increased from 3
+                random: true,
+                anim: {
+                  enable: true,
+                  speed: 2,
+                  size_min: 1,
+                  sync: false
+                }
+              },
+              line_linked: {
+                enable: true,
+                distance: 150,
+                color: '#ffffff',
+                opacity: 0.4,  // Increased from 0.2
+                width: 1.5    // Increased from 1
+              },
+              move: {
+                enable: true,
+                speed: 4,     // Increased from 3
+                direction: 'none',
+                random: true,  // Changed to true
+                straight: false,
+                out_mode: 'bounce',  // Changed from 'out' to 'bounce'
+                bounce: true,
+                attract: {
+                  enable: true,
+                  rotateX: 600,
+                  rotateY: 1200
+                }
+              }
+            },
+            interactivity: {
+              detect_on: 'canvas',
+              events: {
+                onhover: {
+                  enable: true,
+                  mode: ['grab', 'repulse']  // Added repulse effect
+                },
+                onclick: {
+                  enable: true,
+                  mode: 'push'
+                },
+                resize: true
+              },
+              modes: {
+                grab: {
+                  distance: 180,  // Increased from 140
+                  line_linked: {
+                    opacity: 0.8   // Increased from 0.5
+                  }
+                },
+                repulse: {
+                  distance: 150,
+                  duration: 0.4
+                }
+              }
+            },
+            retina_detect: true
+          });
+        };
+
+        document.body.appendChild(script);
+        return () => {
+          document.body.removeChild(script);
+        };
+      } catch (error) {
+        console.error('Error loading particles.js:', error);
+      }
+    };
+
+    loadParticles();
   }, []);
 
   const sectionVariants = {
@@ -272,19 +403,7 @@ function HomePage() {
   return (
     <>
       <HeroSection>
-        <BackgroundImages>
-          {droneImages.map((image, index) => (
-            <BackgroundImage
-              key={index}
-              variants={backgroundVariants}
-              initial="initial"
-              animate={currentBg === index ? "animate" : "initial"}
-            >
-              <img src={image} alt={`Drone background ${index + 1}`} />
-            </BackgroundImage>
-          ))}
-        </BackgroundImages>
-
+        <ParticleBackground id="particles-js" />
         <HeroContent
           ref={ref}
           initial={{ opacity: 0, y: 30 }}
@@ -358,4 +477,4 @@ function HomePage() {
   );
 }
 
-export default HomePage; 
+export default HomePage;

@@ -2,7 +2,8 @@ import styled from '@emotion/styled';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import logoImg from '/images/newlogo.png';
+import whiteLogoImg from '/images/whitelogo.png';
+import blackLogoImg from '/images/newlogo.png';
 
 const Nav = styled.nav`
   position: fixed;
@@ -11,9 +12,9 @@ const Nav = styled.nav`
   right: 0;
   padding: 0.5rem 2rem;
   background: ${(props) =>
-    props.scrolled || !props.isMainPage ? 'rgba(255, 255, 255, 0.9)' : 'transparent'};
+    props.$scrolled || !props.$isMainPage ? 'rgba(255, 255, 255, 0.9)' : 'transparent'};
   backdrop-filter: ${(props) =>
-    props.scrolled || !props.isMainPage ? 'blur(10px)' : 'none'};
+    props.$scrolled || !props.$isMainPage ? 'blur(10px)' : 'none'};
   z-index: 1000;
   display: flex;
   justify-content: space-between;
@@ -32,7 +33,7 @@ const Logo = styled(Link)`
 const LogoImage = styled.img`
   height: 60px;
   width: auto;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, filter 0.3s ease;
   margin-top: 0;
 
   &:hover {
@@ -47,7 +48,7 @@ const NavLinks = styled.div`
 
 const NavLink = styled(Link)`
   color: ${(props) =>
-    props.scrolled || !props.isMainPage ? 'black' : '#fff'};
+    props.$scrolled || !props.$isMainPage ? 'black' : '#fff'};
   text-decoration: none;
   font-weight: 500;
   position: relative;
@@ -61,7 +62,7 @@ const NavLink = styled(Link)`
     bottom: -4px;
     left: 0;
     background-color: ${(props) =>
-      props.scrolled || !props.isMainPage ? 'black' : '#fff'};
+      props.$scrolled || !props.$isMainPage ? 'black' : '#fff'};
     transition: width 0.3s ease, background-color 0.3s ease;
   }
 
@@ -85,32 +86,33 @@ function Navbar() {
   }, []);
 
   const isMainPage = location.pathname === '/';
+  const logoSrc = isMainPage && !scrolled ? whiteLogoImg : blackLogoImg;
 
   return (
-    <Nav scrolled={scrolled} isMainPage={isMainPage}>
+    <Nav $scrolled={scrolled} $isMainPage={isMainPage}>
       <Logo to="/">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <LogoImage src={logoImg} alt="Artemis Logo" />
+          <LogoImage src={logoSrc} alt="Artemis Logo" />
         </motion.div>
       </Logo>
       <NavLinks>
-        <NavLink to="/products" scrolled={scrolled} isMainPage={isMainPage}>
+        <NavLink to="/products" $scrolled={scrolled} $isMainPage={isMainPage}>
           Products
         </NavLink>
-        <NavLink to="/applications" scrolled={scrolled} isMainPage={isMainPage}>
+        <NavLink to="/applications" $scrolled={scrolled} $isMainPage={isMainPage}>
           Applications
         </NavLink>
-        <NavLink to="/about" scrolled={scrolled} isMainPage={isMainPage}>
+        <NavLink to="/about" $scrolled={scrolled} $isMainPage={isMainPage}>
           About
         </NavLink>
-        <NavLink to="/support" scrolled={scrolled} isMainPage={isMainPage}>
+        <NavLink to="/support" $scrolled={scrolled} $isMainPage={isMainPage}>
           Support
         </NavLink>
-        <NavLink to="/contact" scrolled={scrolled} isMainPage={isMainPage}>
+        <NavLink to="/contact" $scrolled={scrolled} $isMainPage={isMainPage}>
           Contact
         </NavLink>
       </NavLinks>

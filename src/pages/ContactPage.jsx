@@ -111,7 +111,7 @@ function ContactPage() {
             transition={{ duration: 0.5 }}
           >
             <h3>Technical Support</h3>
-            <span className="email">support@artemisdrones.com</span>
+            <span className="email">uavartemis@gmail.com</span>
             <span className="response-time">Response time: Within 24 hours</span>
           </ContactCard>
 
@@ -121,8 +121,8 @@ function ContactPage() {
             transition={{ duration: 0.5, delay: 0.1 }}
           >
             <h3>Sales Inquiries</h3>
-            <span className="email">sales@artemisdrones.com</span>
-            <span className="response-time">Response time: Within 12 hours</span>
+            <span className="email">uavartemis@gmail.com</span>
+            <span className="response-time">Response time: Within 24 hours</span>
           </ContactCard>
 
           <ContactCard
@@ -131,7 +131,7 @@ function ContactPage() {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <h3>Emergency Support</h3>
-            <span className="email">emergency@artemisdrones.com</span>
+            <span className="email">+92 310-4768835</span>
             <span className="response-time">24/7 emergency support line</span>
           </ContactCard>
         </ContactInfo>

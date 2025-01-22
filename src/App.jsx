@@ -16,20 +16,22 @@ function App() {
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
+      setShowContent(true);
     }, 700);
   }, []);
 
-  const handleAnimationComplete = () => {
-    setShowContent(true);
-  };
-
   return (
     <>
-      <LoadingScreen 
-        isLoading={isLoading} 
-        onAnimationComplete={handleAnimationComplete}
-      />
-      <div className="app-container" style={{ opacity: showContent ? 1 : 0 }}>
+      {isLoading && (
+        <LoadingScreen
+          isLoading={isLoading}
+          onAnimationComplete={() => setShowContent(true)}
+        />
+      )}
+      <div
+        className="app-container"
+        style={{ display: isLoading ? 'none' : 'block', opacity: showContent ? 1 : 0 }}
+      >
         <Navbar />
         <main className="content">
           <Routes>
@@ -46,4 +48,4 @@ function App() {
   );
 }
 
-export default App; 
+export default App;
