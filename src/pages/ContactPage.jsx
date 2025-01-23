@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
+import { useScrollToTop } from '../hooks/useScrollToTop';
 
 const ContactContainer = styled.div`
   padding: 80px 2rem;
@@ -81,6 +82,8 @@ const ContactCard = styled(motion.div)`
 `;
 
 function ContactPage() {
+  useScrollToTop();
+  
   return (
     <ContactContainer>
       <Header>
@@ -140,4 +143,4 @@ function ContactPage() {
   );
 }
 
-export default ContactPage; 
+export default ContactPage;

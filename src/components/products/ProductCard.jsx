@@ -60,12 +60,7 @@ const SpecsList = styled.div`
   font-size: 0.875rem;
 `;
 
-const Price = styled.div`
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--primary);
-  margin: 1rem 0;
-`;
+
 
 const LearnMoreButton = styled(motion.button)`
   width: 100%;
@@ -94,7 +89,6 @@ function ProductCard({ product }) {
           {product.specs.payload && <div>Payload: {product.specs.payload}</div>}
           {product.specs.camera && <div>Camera: {product.specs.camera}</div>}
         </SpecsList>
-        <Price>${product.price.toLocaleString()}</Price>
         <LearnMoreButton
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}

@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Slideshow from '../components/common/Slideshow';
 import { useState, useEffect } from 'react';
 
+// Styled Components
 const HeroSection = styled.section`
   height: 100vh;
   position: relative;
@@ -23,23 +24,13 @@ const ParticleBackground = styled.div`
   right: 0;
   bottom: 0;
   width: 100%;
-  height: 100vh;
-  z-index: 0;
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.3) 0%,
-      rgba(0, 0, 0, 0.5) 50%,
-      rgba(0, 0, 0, 0.7) 100%
-    );
-    pointer-events: none;
+  height: 100%;
+  z-index: 1;
+  
+  canvas {
+    position: absolute !important;
+    width: 100% !important;
+    height: 100% !important;
   }
 `;
 
@@ -103,6 +94,10 @@ const HeroContent = styled(motion.div)`
   position: relative;
   z-index: 2;
   margin-top: -10vh;
+  @media (max-width: 768px) {
+    padding: 0 2rem;
+    margin-top: 0;
+  }
 `;
 
 const HeroTitle = styled.h1`
@@ -126,6 +121,13 @@ const HeroTitle = styled.h1`
     -webkit-text-fill-color: transparent;
     opacity: 0.95;
   }
+  
+  @media (max-width: 768px) {
+    font-size: 2.5rem;
+    span {
+      font-size: 2rem;
+    }
+  }
 `;
 
 const HeroDescription = styled.p`
@@ -135,34 +137,9 @@ const HeroDescription = styled.p`
   color: rgba(255, 255, 255, 0.9);
   font-weight: 400;
   max-width: 600px;
-`;
-
-const DroneImageStrip = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-  justify-content: center;
-`;
-
-const DroneImageContainer = styled(motion.div)`
-  width: 120px;
-  height: 80px;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease;
-  cursor: pointer;
-
-  &:hover {
-    border-color: var(--primary);
-    transform: translateY(-5px);
-  }
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    margin-bottom: 2rem;
   }
 `;
 
@@ -191,11 +168,20 @@ const CTAButton = styled(motion.button)`
     border-color: rgba(255, 255, 255, 0.3);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
+
+  @media (max-width: 768px) {
+    padding: 0.75rem 2rem;
+    font-size: 0.875rem;
+  }
 `;
 
 const UseCasesSection = styled.section`
   padding: 6rem 2rem;
   background: var(--light);
+
+  @media (max-width: 768px) {
+    padding: 4rem 1rem;
+  }
 `;
 
 const UseCasesGrid = styled.div`
@@ -204,6 +190,10 @@ const UseCasesGrid = styled.div`
   gap: 2rem;
   max-width: 1200px;
   margin: 0 auto;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const UseCard = styled(motion.div)`
@@ -225,6 +215,10 @@ const SlideShowSection = styled.section`
   .slideshow-wrapper {
     max-width: 1200px;
     margin: 0 auto;
+
+    @media (max-width: 768px) {
+      padding: 0 1rem;
+    }
   }
 `;
 
@@ -241,6 +235,65 @@ const TagLine = styled.div`
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   opacity: 0.95;
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+    margin: 1.5rem 0;
+  }
+`;
+
+const Footer = styled.footer`
+  background: #121212;
+  color: white;
+  padding: 3rem 2rem;
+  
+  @media (max-width: 768px) {
+    padding: 2rem 1rem;
+  }
+`;
+
+const FooterContent = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+`;
+
+const ContactInfo = styled.div`
+  h4 {
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+  }
+  
+  p {
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    
+    a {
+      color: inherit;
+      text-decoration: none;
+      &:hover {
+        color: #0a84ff;
+      }
+    }
+  }
+`;
+
+const Copyright = styled.div`
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.5);
+  font-size: 0.9rem;  
 `;
 
 const droneImages = [
@@ -274,121 +327,221 @@ const backgroundVariants = {
   }
 };
 
+const applications = [
+  {
+    id: 1,
+    title: "Perimeter Security",
+    description: "24/7 automated surveillance for facility perimeters",
+    image: "/images/perimeter-security.png"
+  },
+  {
+    id: 2,
+    title: "Warehouse Surveillance",
+    description: "Real-time monitoring of warehouse operations",
+    image: "/images/warehouse-surveillance.jpeg"
+  },
+  {
+    id: 3,
+    title: "Intruder Detection",
+    description: "AI-powered threat detection system",
+    image: "/images/intruder-detection.jpeg"
+  },
+  {
+    id: 4,
+    title: "Firefighting Operations",
+    description: "Thermal imaging and fire response support",
+    image: "/images/firefighting.jpeg"
+  }
+];
+
+const ApplicationsSection = styled.section`
+  padding: 6rem 2rem;
+  background: var(--light);
+
+  h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: var(--dark);
+  }
+
+  @media (max-width: 768px) {
+    padding: 4rem 1rem;
+    
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+  }
+`;
+
+const ApplicationsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+`;
+
+const ApplicationCard = styled(motion.div)`
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover img {
+    transform: scale(1.05);
+  }
+
+  .content {
+    padding: 1.5rem;
+    
+    h3 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+      font-size: 1.3rem;
+    }
+
+    p {
+      color: #666;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+  }
+`;
+
 function HomePage() {
+  const [isParticlesLoaded, setIsParticlesLoaded] = useState(false);
   const [ref, inView] = useInView({
     threshold: 0.1,
     triggerOnce: true,
   });
 
   useEffect(() => {
-    const loadParticles = async () => {
-      try {
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js';
-        script.async = true;
-        
-        script.onload = () => {
-          window.particlesJS('particles-js', {
-            particles: {
-              number: {
-                value: 120,  // Increased from 60
-                density: {
-                  enable: true,
-                  value_area: 800
-                }
-              },
-              color: {
-                value: ['#ff3b30', '#0a84ff', '#ffffff']  // Added white for variety
-              },
-              shape: {
-                type: ['circle', 'triangle'],  // Added triangle shape
-                stroke: {
-                  width: 1,
-                  color: '#ffffff'
-                }
-              },
-              opacity: {
-                value: 0.8,  // Increased from 0.6
-                random: true,
-                anim: {
-                  enable: true,
-                  speed: 1,
-                  opacity_min: 0.4,
-                  sync: false
-                }
-              },
-              size: {
-                value: 4,  // Increased from 3
-                random: true,
-                anim: {
-                  enable: true,
-                  speed: 2,
-                  size_min: 1,
-                  sync: false
-                }
-              },
-              line_linked: {
-                enable: true,
-                distance: 150,
-                color: '#ffffff',
-                opacity: 0.4,  // Increased from 0.2
-                width: 1.5    // Increased from 1
-              },
-              move: {
-                enable: true,
-                speed: 4,     // Increased from 3
-                direction: 'none',
-                random: true,  // Changed to true
-                straight: false,
-                out_mode: 'bounce',  // Changed from 'out' to 'bounce'
-                bounce: true,
-                attract: {
-                  enable: true,
-                  rotateX: 600,
-                  rotateY: 1200
-                }
-              }
-            },
-            interactivity: {
-              detect_on: 'canvas',
-              events: {
-                onhover: {
-                  enable: true,
-                  mode: ['grab', 'repulse']  // Added repulse effect
-                },
-                onclick: {
-                  enable: true,
-                  mode: 'push'
-                },
-                resize: true
-              },
-              modes: {
-                grab: {
-                  distance: 180,  // Increased from 140
-                  line_linked: {
-                    opacity: 0.8   // Increased from 0.5
-                  }
-                },
-                repulse: {
-                  distance: 150,
-                  duration: 0.4
-                }
-              }
-            },
-            retina_detect: true
-          });
-        };
+    let particlesInstance = null;
 
-        document.body.appendChild(script);
-        return () => {
-          document.body.removeChild(script);
-        };
+    const initParticles = () => {
+      if (!window.particlesJS || !document.getElementById('particles-js')) return;
+
+      const config = {
+        particles: {
+          number: {
+            value: window.innerWidth < 768 ? 50 : 120,
+            density: {
+              enable: true,
+              value_area: 1000
+            }
+          },
+          color: {
+            value: "#ffffff"
+          },
+          shape: {
+            type: "circle"
+          },
+          opacity: {
+            value: 0.6,
+            random: false,
+            anim: {
+              enable: true,
+              speed: 1,
+              opacity_min: 0.3
+            }
+          },
+          size: {
+            value: window.innerWidth < 768 ? 3 : 4,
+            random: true,
+            anim: {
+              enable: true,
+              speed: 2,
+              size_min: 1
+            }
+          },
+          line_linked: {
+            enable: true,
+            distance: window.innerWidth < 768 ? 120 : 150,
+            color: "#ffffff",
+            opacity: 0.4,
+            width: 1
+          },
+          move: {
+            enable: true,
+            speed: window.innerWidth < 768 ? 2 : 4,
+            direction: "none",
+            random: false,
+            straight: false,
+            out_mode: "bounce",
+            bounce: true
+          }
+        },
+        interactivity: {
+          detect_on: "canvas",
+          events: {
+            onhover: {
+              enable: true,
+              mode: "grab"
+            },
+            onclick: {
+              enable: true,
+              mode: "push"
+            },
+            resize: true
+          }
+        },
+        retina_detect: true
+      };
+
+      try {
+        window.particlesJS('particles-js', config);
+        setIsParticlesLoaded(true);
+        particlesInstance = window.pJSDom[0];
       } catch (error) {
-        console.error('Error loading particles.js:', error);
+        console.error('Particles initialization failed:', error);
       }
     };
 
+    const loadParticles = async () => {
+      if (window.particlesJS) {
+        initParticles();
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js';
+      script.async = true;
+      
+      script.onload = () => {
+        initParticles();
+        window.addEventListener('resize', initParticles);
+      };
+
+      script.onerror = (error) => {
+        console.error('Failed to load particles.js:', error);
+      };
+
+      document.body.appendChild(script);
+    };
+
     loadParticles();
+
+    return () => {
+      window.removeEventListener('resize', initParticles);
+      if (particlesInstance) {
+        particlesInstance.pJS.fn.vendors.destroypJS();
+      }
+      setIsParticlesLoaded(false);
+    };
   }, []);
 
   const sectionVariants = {
@@ -414,11 +567,7 @@ function HomePage() {
             Innovating Safety,
             <span>Transforming Response</span>
           </HeroTitle>
-          <HeroDescription>
-            Experience the next generation of emergency solutions. Our advanced drone technology 
-            is designed to tackle the toughest challenges in firefighting and security, 
-            delivering unmatched efficiency, precision, and reliability when it matters most.
-          </HeroDescription>
+
           <TagLine>Stay Ahead. Stay Safe.</TagLine>
           <CTAButton
             whileHover={{ scale: 1.02 }}
@@ -437,11 +586,33 @@ function HomePage() {
         viewport={{ once: true }}
         variants={sectionVariants}
       >
-        <SlideShowSection>
-          <div className="slideshow-wrapper">
-            <Slideshow images={droneImages} captions={droneCaptions} />
-          </div>
-        </SlideShowSection>
+        <ApplicationsSection>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            Applications
+          </motion.h2>
+          <ApplicationsGrid>
+            {applications.map((app) => (
+              <ApplicationCard
+                key={app.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+              >
+                <img src={app.image} alt={app.title} />
+                <div className="content">
+                  <h3>{app.title}</h3>
+                  <p>{app.description}</p>
+                </div>
+              </ApplicationCard>
+            ))}
+          </ApplicationsGrid>
+        </ApplicationsSection>
       </Section>
 
       <Section
@@ -473,6 +644,24 @@ function HomePage() {
           </UseCasesGrid>
         </UseCasesSection>
       </Section>
+
+      <Footer>
+        <FooterContent>
+          <ContactInfo>
+            <h4>Contact Us</h4>
+            <p>
+              <a href="tel:+923104768835">+92 310 4768835</a>
+            </p>
+            <p>
+              <a href="mailto:uavartemis@gmail.com">uavartemis@gmail.com</a>
+            </p>
+            <p>Johar Town, Lahore</p>
+          </ContactInfo>
+        </FooterContent>
+        <Copyright>
+          © {new Date().getFullYear()} Artemis. All rights reserved.
+        </Copyright>
+      </Footer>
     </>
   );
 }

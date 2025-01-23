@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { useScrollToTop } from '../hooks/useScrollToTop';
 
 const SupportContainer = styled.div`
   padding: 80px 2rem;
@@ -83,6 +84,8 @@ const SubmitButton = styled(motion.button)`
 `;
 
 function SupportPage() {
+  useScrollToTop();
+  const [selectedFaq, setSelectedFaq] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -187,4 +190,4 @@ function SupportPage() {
   );
 }
 
-export default SupportPage; 
+export default SupportPage;

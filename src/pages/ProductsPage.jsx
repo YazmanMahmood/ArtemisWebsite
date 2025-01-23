@@ -1,19 +1,28 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 import ProductCard from '../components/products/ProductCard';
 import ProductsFilter from '../components/products/ProductsFilter';
+import { useScrollToTop } from '../hooks/useScrollToTop';
 
 const ProductsContainer = styled.div`
   padding: 80px 2rem;
   min-height: 100vh;
   background: var(--light);
+
+  @media (max-width: 768px) {
+    padding: 60px 1rem;
+  }
 `;
 
 const ProductsHeader = styled.div`
   text-align: center;
   max-width: 800px;
-  margin: 0 auto 4rem;
+  margin: 0 auto 4rem;  
+
+  @media (max-width: 768px) {
+    margin: 0 auto 2rem;
+  }
 `;
 
 const ProductsGrid = styled.div`
@@ -22,10 +31,13 @@ const ProductsGrid = styled.div`
   gap: 2rem;
   max-width: 1200px;
   margin: 0 auto;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
-// Extended product data
-const products = [
+const productsData = [
   {
     id: 1,
     name: 'Artemis Guardian 3000',
@@ -38,7 +50,6 @@ const products = [
       payload: '20kg',
       sensors: ['Thermal', 'RGB', 'LiDAR']
     },
-    price: 12000,
     features: [
       'Real-time thermal mapping',
       'Automated fire suppression',
@@ -59,7 +70,6 @@ const products = [
       camera: '8K Ultra HD',
       sensors: ['Night Vision', 'Motion', 'Acoustic']
     },
-    price: 15000,
     features: [
       'AI threat detection',
       'Autonomous patrolling',
@@ -80,7 +90,6 @@ const products = [
       payload: '15kg',
       sensors: ['Multispectral', 'Gas', 'Heat']
     },
-    price: 10500,
     features: [
       'Modular payload system',
       'Emergency response mode',
@@ -94,11 +103,18 @@ const products = [
 const categories = ['Firefighting', 'Security', 'Dual-Purpose'];
 
 function ProductsPage() {
+  useScrollToTop();
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredProducts = useMemo(() => {
-    return products.filter(product => {
+  useEffect(() => {
+    setProducts(productsData);
+  }, []);
+
+  useEffect(() => {
+    const filtered = products.filter(product => {
       const matchesCategory = activeCategory === 'all' || product.category === activeCategory;
       const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -106,21 +122,23 @@ function ProductsPage() {
       
       return matchesCategory && matchesSearch;
     });
-  }, [activeCategory, searchQuery]);
+    setFilteredProducts(filtered);
+  }, [products, activeCategory, searchQuery]);
 
   return (
     <ProductsContainer>
       <ProductsHeader>
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          Explore Our Cutting-Edge Drones
-        </motion.h1>
+      <motion.h1
+  initial={{ opacity: 0, y: 40 }} // Start lower
+  animate={{ opacity: 1, y: 20 }} // End lower
+  transition={{ duration: 0.5 }}
+>
+  Explore Our Cutting-Edge Drones
+</motion.h1>
+
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 20 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           Discover Artemis' lineup of advanced drones designed to tackle firefighting 

@@ -1,7 +1,10 @@
-import styled from '@emotion/styled';
-import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
+import React from "react";
+import styled from "@emotion/styled";
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
+import { useScrollToTop } from '../hooks/useScrollToTop';
 
+// Styled components
 const AboutContainer = styled.div`
   padding: 80px 2rem;
   min-height: 100vh;
@@ -129,14 +132,38 @@ const ValueCard = styled(motion.div)`
   }
 `;
 
-function AboutPage() {
+// Component
+const AboutPage = () => {
+  useScrollToTop();
   const [ref, inView] = useInView({
     threshold: 0.1,
     triggerOnce: true,
   });
 
+  const valuesData = [
+    {
+      icon: "🎯",
+      title: "Mission",
+      description:
+        "Empowering communities with reliable, efficient drone solutions for enhanced safety and security.",
+    },
+    {
+      icon: "👁️",
+      title: "Vision",
+      description:
+        "Creating a safer tomorrow through innovative aerial technology and autonomous systems.",
+    },
+    {
+      icon: "⭐",
+      title: "Values",
+      description:
+        "Innovation, reliability, and commitment to excellence in everything we do.",
+    },
+  ];
+
   return (
     <AboutContainer>
+      {/* Header Section */}
       <Header>
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
@@ -154,6 +181,7 @@ function AboutPage() {
         </motion.p>
       </Header>
 
+      {/* Content Section */}
       <ContentSection ref={ref}>
         <ImageContainer
           initial={{ opacity: 0, x: -50 }}
@@ -169,16 +197,18 @@ function AboutPage() {
         >
           <h2>Pioneering the Future of Safety</h2>
           <p>
-            Founded in 2024, Artemis Drone Solutions was born from a mission to revolutionize 
-            emergency response and security through cutting-edge drone technology. Based in 
-            Pakistan, our agile team of 10 passionate innovators combines expertise in aerospace 
-            engineering, artificial intelligence, and emergency operations to tackle real-world 
+            Founded in 2024, Artemis Drone Solutions was born from a mission to
+            revolutionize emergency response and security through cutting-edge
+            drone technology. Based in Pakistan, our agile team of 10 passionate
+            innovators combines expertise in aerospace engineering, artificial
+            intelligence, and emergency operations to tackle real-world
             challenges.
           </p>
           <p>
-            While we're just getting started, our commitment to creating autonomous, efficient, 
-            and reliable drone solutions is unwavering. Together, we're redefining how 
-            firefighting and security challenges are approached, one breakthrough at a time.
+            While we're just getting started, our commitment to creating
+            autonomous, efficient, and reliable drone solutions is unwavering.
+            Together, we're redefining how firefighting and security challenges
+            are approached, one breakthrough at a time.
           </p>
           <Stats>
             <div>
@@ -197,24 +227,9 @@ function AboutPage() {
         </TextContent>
       </ContentSection>
 
+      {/* Values Section */}
       <Values>
-        {[
-          {
-            icon: "🎯",
-            title: "Mission",
-            description: "Empowering communities with reliable, efficient drone solutions for enhanced safety and security."
-          },
-          {
-            icon: "👁️",
-            title: "Vision",
-            description: "Creating a safer tomorrow through innovative aerial technology and autonomous systems."
-          },
-          {
-            icon: "⭐",
-            title: "Values",
-            description: "Innovation, reliability, and commitment to excellence in everything we do."
-          }
-        ].map((value, index) => (
+        {valuesData.map((value, index) => (
           <ValueCard
             key={index}
             initial={{ opacity: 0, y: 30 }}
@@ -229,6 +244,6 @@ function AboutPage() {
       </Values>
     </AboutContainer>
   );
-}
+};
 
-export default AboutPage; 
+export default AboutPage;

@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import { useScrollToTop } from '../hooks/useScrollToTop';
 
 const ApplicationsContainer = styled.div`
   padding: 80px 2rem;
@@ -11,7 +12,7 @@ const ApplicationsContainer = styled.div`
 const Header = styled.div`
   text-align: center;
   max-width: 800px;
-  margin: 0 auto 6rem;
+  margin: 0 auto 4rem;
 
   h1 {
     font-size: 2.5rem;
@@ -139,9 +140,10 @@ const applications = [
 ];
 
 function ApplicationsPage() {
+  useScrollToTop();
   const [ref, inView] = useInView({
-    threshold: 0.1,
-    triggerOnce: true
+    triggerOnce: true,
+    threshold: 0.1
   });
 
   return (
@@ -152,15 +154,14 @@ function ApplicationsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          Revolutionizing Safety and Security
+          Applications
         </motion.h1>
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          See how Artemis drones transform firefighting and security operations 
-          through advanced technology.
+          Discover how our drones are revolutionizing various industries
         </motion.p>
       </Header>
 
@@ -198,4 +199,4 @@ function ApplicationsPage() {
   );
 }
 
-export default ApplicationsPage; 
+export default ApplicationsPage;
