@@ -195,24 +195,19 @@ const AboutPage = () => {
           animate={inView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <h2>Pioneering the Future of Safety</h2>
+          <h2>Pioneering the Future of Aviation</h2>
           <p>
-            Founded in 2024, Artemis Drone Solutions was born from a mission to
-            revolutionize emergency response and security through cutting-edge
-            drone technology. Based in Pakistan, our agile team of 10 passionate
-            innovators combines expertise in aerospace engineering, artificial
-            intelligence, and emergency operations to tackle real-world
-            challenges.
+          Artemis Drone Technologies, founded in 2024, is a forward-thinking startup based in Pakistan with a mission to transform emergency response and security using advanced drone technology. Our team of passionate innovators is dedicated to creating AI-powered drones that can assist in critical areas like firefighting in warehouses, buildings, and factories, as well as providing enhanced security surveillance. With expertise in design, development, artificial intelligence, and emergency operations, we are tackling real-world challenges to make a safer, smarter future possible.
           </p>
           <p>
             While we're just getting started, our commitment to creating
             autonomous, efficient, and reliable drone solutions is unwavering.
-            Together, we're redefining how firefighting and security challenges
+            Together, we're redefining how emergency responses and security challenges
             are approached, one breakthrough at a time.
           </p>
           <Stats>
             <div>
-              <h3>10+</h3>
+              <h3>5</h3>
               <p>Team Members</p>
             </div>
             <div>

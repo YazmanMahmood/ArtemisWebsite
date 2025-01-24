@@ -55,6 +55,9 @@ const Hamburger = styled.div`
     }
     return '#000';
   }};
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  opacity: ${props => props.$isOpen ? '0' : '1'};
+  visibility: ${props => props.$isOpen ? 'hidden' : 'visible'};
 
   @media (max-width: 768px) {
     display: block;
@@ -200,6 +203,7 @@ function Navbar() {
           onClick={toggleMenu} 
           $scrolled={scrolled} 
           $isMainPage={isMainPage}
+          $isOpen={isOpen}
         >
           <FaBars />
         </Hamburger>

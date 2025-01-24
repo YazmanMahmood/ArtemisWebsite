@@ -60,19 +60,6 @@ const SpecsList = styled.div`
   font-size: 0.875rem;
 `;
 
-
-
-const LearnMoreButton = styled(motion.button)`
-  width: 100%;
-  padding: 0.75rem;
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-`;
-
 function ProductCard({ product }) {
   return (
     <Card>
@@ -89,12 +76,7 @@ function ProductCard({ product }) {
           {product.specs.payload && <div>Payload: {product.specs.payload}</div>}
           {product.specs.camera && <div>Camera: {product.specs.camera}</div>}
         </SpecsList>
-        <LearnMoreButton
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          Learn More
-        </LearnMoreButton>
+        
       </ProductInfo>
     </Card>
   );

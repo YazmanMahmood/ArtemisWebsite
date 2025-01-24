@@ -89,6 +89,18 @@ const SubmitButton = styled(motion.button)`
   cursor: pointer;
 `;
 
+const SuccessPopup = styled(motion.div)`
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #4caf50;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  z-index: 1000;
+`;
+
 function SupportPage() {
   useScrollToTop();
   const [selectedFaq, setSelectedFaq] = useState(null);
@@ -100,44 +112,60 @@ function SupportPage() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     
     try {
-      // Get current submission count
       const counterRef = ref(db, 'submissionCounter');
       const counterSnapshot = await get(counterRef);
       const currentCount = (counterSnapshot.exists() ? counterSnapshot.val() : 0) + 1;
       
-      // Create submission data structure
+      // Format current date and time
+      const now = new Date();
+      const formattedTime = now.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      });
+
       const submissionData = {
         Name: formData.name,
         Email: formData.email,
         Category: formData.category,
         Question: formData.question,
-        timestamp: Date.now(),
+        timestamp: formattedTime,
         submissionNumber: currentCount
       };
 
-      // Create references
       const submissionRef = ref(db, `Submissions/submission${currentCount}`);
       
-      // Save data
       await Promise.all([
         set(counterRef, currentCount),
         set(submissionRef, submissionData)
       ]);
 
-      // Clear form and show success
       setFormData({
         name: '',
         email: '',
         category: '',
         question: ''
       });
+      
       setSubmitStatus('success');
+      setShowPopup(true);
+      
+      // Auto hide popup after 3 seconds
+      setTimeout(() => {
+        setShowPopup(false);
+      }, 3000);
+
     } catch (error) {
       console.error('Error submitting form:', error);
       setSubmitStatus('error');
@@ -241,6 +269,16 @@ function SupportPage() {
           )}
         </Form>
       </SupportContent>
+
+      {showPopup && (
+        <SuccessPopup
+          initial={{ x: 100, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: 100, opacity: 0 }}
+        >
+          Message submitted successfully!
+        </SuccessPopup>
+      )}
     </SupportContainer>
   );
 }

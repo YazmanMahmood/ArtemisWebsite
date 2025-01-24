@@ -574,8 +574,8 @@ function HomePage() {
           transition={{ duration: 1, delay: 0.5 }}
         >
           <HeroTitle>
-            Innovating Safety,
-            <span>Transforming Response</span>
+            Industrial Drone Solutions
+            <span>Transform Your Business with Cutting-Edge Drone Solutions </span>
           </HeroTitle>
 
           <TagLine>Stay Ahead. Stay Safe.</TagLine>
