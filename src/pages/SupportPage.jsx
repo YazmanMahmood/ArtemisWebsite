@@ -2,6 +2,12 @@ import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useScrollToTop } from '../hooks/useScrollToTop';
+import { initializeApp } from 'firebase/app';
+import { getDatabase, ref, push, get, set } from 'firebase/database';
+import { firebaseConfig } from '../firebase/config';
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
 const SupportContainer = styled.div`
   padding: 80px 2rem;
@@ -92,16 +98,52 @@ function SupportPage() {
     category: '',
     question: ''
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    setFormData({
-      name: '',
-      email: '',
-      category: '',
-      question: ''
-    });
+    setIsLoading(true);
+    
+    try {
+      // Get current submission count
+      const counterRef = ref(db, 'submissionCounter');
+      const counterSnapshot = await get(counterRef);
+      const currentCount = (counterSnapshot.exists() ? counterSnapshot.val() : 0) + 1;
+      
+      // Create submission data structure
+      const submissionData = {
+        Name: formData.name,
+        Email: formData.email,
+        Category: formData.category,
+        Question: formData.question,
+        timestamp: Date.now(),
+        submissionNumber: currentCount
+      };
+
+      // Create references
+      const submissionRef = ref(db, `Submissions/submission${currentCount}`);
+      
+      // Save data
+      await Promise.all([
+        set(counterRef, currentCount),
+        set(submissionRef, submissionData)
+      ]);
+
+      // Clear form and show success
+      setFormData({
+        name: '',
+        email: '',
+        category: '',
+        question: ''
+      });
+      setSubmitStatus('success');
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -177,17 +219,39 @@ function SupportPage() {
               required
             />
           </FormGroup>
-          <SubmitButton
+          <SubmitButton 
+            type="submit" 
+            disabled={isLoading}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            type="submit"
           >
-            Submit Question
+            {isLoading ? 'Submitting...' : 'Submit Question'}
           </SubmitButton>
+          
+          {submitStatus === 'success' && (
+            <StatusMessage success>
+              Thank you! We'll get back to you soon.
+            </StatusMessage>
+          )}
+          
+          {submitStatus === 'error' && (
+            <StatusMessage>
+              Sorry, there was an error. Please try again.
+            </StatusMessage>
+          )}
         </Form>
       </SupportContent>
     </SupportContainer>
   );
 }
+
+const StatusMessage = styled.div`
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 4px;
+  text-align: center;
+  background: ${props => props.success ? '#e8f5e9' : '#ffebee'};
+  color: ${props => props.success ? '#2e7d32' : '#c62828'};
+`;
 
 export default SupportPage;

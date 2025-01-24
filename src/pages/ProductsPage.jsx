@@ -40,7 +40,7 @@ const ProductsGrid = styled.div`
 const productsData = [
   {
     id: 1,
-    name: 'Artemis Guardian 3000',
+    name: 'Artemis FireFly',
     image: '/images/ArtemisGuardian3000.jpeg',
     category: 'Firefighting',
     description: 'Advanced firefighting drone with thermal imaging and precision water deployment.',
@@ -60,7 +60,7 @@ const productsData = [
   },
   {
     id: 2,
-    name: 'Artemis Sentinel X5',
+    name: 'Artemis Sentinel',
     image: '/images/ArtemisSentinelX5.jpeg',
     category: 'Security',
     description: 'AI-powered security drone with advanced threat detection.',
@@ -80,7 +80,7 @@ const productsData = [
   },
   {
     id: 3,
-    name: 'Artemis Rescue 200',
+    name: 'Artemis Rescue ',
     image: '/images/Artemisrescue200.jpeg',
     category: 'Dual-Purpose',
     description: 'Versatile drone for both firefighting and security operations.',
@@ -104,10 +104,10 @@ const categories = ['Firefighting', 'Security', 'Dual-Purpose'];
 
 function ProductsPage() {
   useScrollToTop();
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(() => {
     setProducts(productsData);

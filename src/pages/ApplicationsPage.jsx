@@ -113,7 +113,7 @@ const FeatureList = styled.ul`
 const applications = [
   {
     id: 1,
-    title: 'Firefighting Operations',
+    title: 'Emergency Operations',
     image: '/images/fdrone.webp',
     description: 'Advanced thermal imaging and precision water deployment for efficient fire control.',
     features: [
@@ -126,7 +126,7 @@ const applications = [
   },
   {
     id: 2,
-    title: 'Security Surveillance',
+    title: 'Security Surveillance & Detection',
     image: '/images/sproduct.webp',
     description: 'AI-powered surveillance ensuring 24/7 monitoring and threat detection.',
     features: [

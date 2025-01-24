@@ -58,17 +58,6 @@ const BackgroundImage = styled(motion.div)`
     width: 100%;
     height: 100%;
     object-fit: cover;
-    
-    &[src*="drone3.jpeg"] {
-      object-position: center center;
-      transform: scale(1.1);
-    }
-    
-    &[src*="drone1.webp"],
-    &[src*="drone2.webp"] {
-      object-position: center center;
-      transform: scale(1.02);
-    }
   }
 
   &::after {
@@ -332,7 +321,7 @@ const applications = [
     id: 1,
     title: "Perimeter Security",
     description: "24/7 automated surveillance for facility perimeters",
-    image: "/images/perimeter-security.png"
+    image: "/images/perimeter-security.jpg"
   },
   {
     id: 2,
@@ -351,6 +340,18 @@ const applications = [
     title: "Firefighting Operations",
     description: "Thermal imaging and fire response support",
     image: "/images/firefighting.jpeg"
+  },
+  {
+    id: 5,
+    title: "Agricultural Monitoring",
+    description: "Advanced crop monitoring and precision agriculture solutions",
+    image: "/images/agri.webp"
+  },
+  {
+    id: 6,
+    title: "Inventory Management",
+    description: "Automated inventory tracking and warehouse optimization",
+    image: "/images/inventory-drone.jpg"
   }
 ];
 
@@ -424,6 +425,7 @@ const ApplicationCard = styled(motion.div)`
 
 function HomePage() {
   const [isParticlesLoaded, setIsParticlesLoaded] = useState(false);
+  const [particlesContainer, setParticlesContainer] = useState(null);
   const [ref, inView] = useInView({
     threshold: 0.1,
     triggerOnce: true,
@@ -435,77 +437,80 @@ function HomePage() {
     const initParticles = () => {
       if (!window.particlesJS || !document.getElementById('particles-js')) return;
 
-      const config = {
-        particles: {
-          number: {
-            value: window.innerWidth < 768 ? 50 : 120,
-            density: {
-              enable: true,
-              value_area: 1000
-            }
-          },
-          color: {
-            value: "#ffffff"
-          },
-          shape: {
-            type: "circle"
-          },
-          opacity: {
-            value: 0.6,
-            random: false,
-            anim: {
-              enable: true,
-              speed: 1,
-              opacity_min: 0.3
-            }
-          },
-          size: {
-            value: window.innerWidth < 768 ? 3 : 4,
-            random: true,
-            anim: {
-              enable: true,
-              speed: 2,
-              size_min: 1
-            }
-          },
-          line_linked: {
-            enable: true,
-            distance: window.innerWidth < 768 ? 120 : 150,
-            color: "#ffffff",
-            opacity: 0.4,
-            width: 1
-          },
-          move: {
-            enable: true,
-            speed: window.innerWidth < 768 ? 2 : 4,
-            direction: "none",
-            random: false,
-            straight: false,
-            out_mode: "bounce",
-            bounce: true
-          }
-        },
-        interactivity: {
-          detect_on: "canvas",
-          events: {
-            onhover: {
-              enable: true,
-              mode: "grab"
-            },
-            onclick: {
-              enable: true,
-              mode: "push"
-            },
-            resize: true
-          }
-        },
-        retina_detect: true
-      };
+      // Cleanup existing instance
+      if (window.pJSDom && window.pJSDom.length > 0) {
+        window.pJSDom[0].pJS.fn.vendors.destroypJS();
+        window.pJSDom = [];
+      }
 
       try {
-        window.particlesJS('particles-js', config);
+        particlesInstance = window.particlesJS('particles-js', {
+          particles: {
+            number: {
+              value: window.innerWidth < 768 ? 50 : 120,
+              density: {
+                enable: true,
+                value_area: 800
+              }
+            },
+            color: {
+              value: "#ffffff"
+            },
+            shape: {
+              type: "circle"
+            },
+            opacity: {
+              value: 0.6,
+              random: false,
+              anim: {
+                enable: true,
+                speed: 1,
+                opacity_min: 0.3
+              }
+            },
+            size: {
+              value: window.innerWidth < 768 ? 3 : 4,
+              random: true,
+              anim: {
+                enable: true,
+                speed: 2,
+                size_min: 1
+              }
+            },
+            line_linked: {
+              enable: true,
+              distance: window.innerWidth < 768 ? 120 : 150,
+              color: "#ffffff",
+              opacity: 0.4,
+              width: 1
+            },
+            move: {
+              enable: true,
+              speed: window.innerWidth < 768 ? 2 : 4,
+              direction: "none",
+              random: false,
+              straight: false,
+              out_mode: "bounce",
+              bounce: true
+            }
+          },
+          interactivity: {
+            detect_on: "canvas",
+            events: {
+              onhover: {
+                enable: true,
+                mode: "grab"
+              },
+              onclick: {
+                enable: true,
+                mode: "push"
+              },
+              resize: true
+            }
+          },
+          retina_detect: true
+        });
         setIsParticlesLoaded(true);
-        particlesInstance = window.pJSDom[0];
       } catch (error) {
         console.error('Particles initialization failed:', error);
       }
@@ -517,28 +522,33 @@ function HomePage() {
         return;
       }
 
-      const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js';
-      script.async = true;
-      
-      script.onload = () => {
-        initParticles();
-        window.addEventListener('resize', initParticles);
-      };
+      try {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js';
+        script.async = true;
+        
+        script.onload = () => {
+          initParticles();
+          window.addEventListener('resize', initParticles);
+        };
 
-      script.onerror = (error) => {
+        document.body.appendChild(script);
+        setParticlesContainer(script);
+      } catch (error) {
         console.error('Failed to load particles.js:', error);
-      };
-
-      document.body.appendChild(script);
+      }
     };
 
     loadParticles();
 
+    // Cleanup function
     return () => {
       window.removeEventListener('resize', initParticles);
       if (particlesInstance) {
-        particlesInstance.pJS.fn.vendors.destroypJS();
+        particlesInstance.destroy();
+      }
+      if (particlesContainer) {
+        document.body.removeChild(particlesContainer);
       }
       setIsParticlesLoaded(false);
     };
@@ -569,14 +579,7 @@ function HomePage() {
           </HeroTitle>
 
           <TagLine>Stay Ahead. Stay Safe.</TagLine>
-          <CTAButton
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            as={Link}
-            to="/products"
-          >
-            Explore Solutions
-          </CTAButton>
+          
         </HeroContent>
       </HeroSection>
 
@@ -621,28 +624,7 @@ function HomePage() {
         viewport={{ once: true }}
         variants={sectionVariants}
       >
-        <UseCasesSection>
-          <UseCasesGrid>
-            <UseCard
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
-              <h3>Firefighting</h3>
-              <p>Artemis drones provide real-time aerial views, deploy fire suppressants, and access hard-to-reach areas during emergencies.</p>
-            </UseCard>
-            <UseCard
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <h3>Security</h3>
-              <p>Equipped with night vision and AI-powered threat detection, our drones ensure 24/7 perimeter surveillance and quick response.</p>
-            </UseCard>
-          </UseCasesGrid>
-        </UseCasesSection>
+        
       </Section>
 
       <Footer>
