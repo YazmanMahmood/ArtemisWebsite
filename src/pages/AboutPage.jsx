@@ -25,7 +25,7 @@ const Header = styled.div`
   }
 
   p {
-    color: #666;
+    color: var(--text-light);
     font-size: 1.1rem;
     line-height: 1.6;
   }
@@ -68,7 +68,7 @@ const TextContent = styled(motion.div)`
   }
 
   p {
-    color: #666;
+    color: var(--text-light);
     line-height: 1.8;
     margin-bottom: 1.5rem;
   }
@@ -88,7 +88,7 @@ const Stats = styled.div`
       margin-bottom: 0.5rem;
     }
     p {
-      color: #666;
+      color: var(--text-muted);
       font-size: 0.9rem;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -109,10 +109,10 @@ const Values = styled.div`
 `;
 
 const ValueCard = styled(motion.div)`
-  background: white;
+  background: var(--dark-accent);
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   text-align: center;
 
   h3 {
@@ -122,7 +122,7 @@ const ValueCard = styled(motion.div)`
   }
 
   p {
-    color: #666;
+    color: var(--text-light);
     line-height: 1.6;
   }
 
@@ -135,7 +135,7 @@ const ValueCard = styled(motion.div)`
 // Component
 const AboutPage = () => {
   useScrollToTop();
-  const [ref, inView] = useInView({
+  const [aboutRef, aboutInView] = useInView({
     threshold: 0.1,
     triggerOnce: true,
   });
@@ -182,17 +182,17 @@ const AboutPage = () => {
       </Header>
 
       {/* Content Section */}
-      <ContentSection ref={ref}>
+      <ContentSection ref={aboutRef}>
         <ImageContainer
           initial={{ opacity: 0, x: -50 }}
-          animate={inView ? { opacity: 1, x: 0 } : {}}
+          animate={aboutInView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.5 }}
         >
           <img src="/images/aboutusdrone.jpeg" alt="About Us Drone" />
         </ImageContainer>
         <TextContent
           initial={{ opacity: 0, x: 50 }}
-          animate={inView ? { opacity: 1, x: 0 } : {}}
+          animate={aboutInView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <h2>Pioneering the Future of Aviation</h2>
@@ -228,7 +228,7 @@ const AboutPage = () => {
           <ValueCard
             key={index}
             initial={{ opacity: 0, y: 30 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
+            animate={aboutInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, delay: index * 0.2 }}
           >
             <div className="icon">{value.icon}</div>
