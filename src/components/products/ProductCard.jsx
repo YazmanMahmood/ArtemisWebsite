@@ -2,14 +2,15 @@ import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 
 const Card = styled(motion.div)`
-  background: white;
+  background: var(--dark-accent);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease;
 
   &:hover {
     transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
   }
 `;
 
@@ -47,7 +48,7 @@ const ProductTitle = styled.h3`
 `;
 
 const ProductDescription = styled.p`
-  color: #666;
+  color: var(--text-light);
   margin-bottom: 1rem;
   font-size: 0.9rem;
 `;
@@ -58,6 +59,7 @@ const SpecsList = styled.div`
   gap: 0.5rem;
   margin: 1rem 0;
   font-size: 0.875rem;
+  color: var(--text-muted);
 `;
 
 function ProductCard({ product }) {
@@ -76,7 +78,6 @@ function ProductCard({ product }) {
           {product.specs.payload && <div>Payload: {product.specs.payload}</div>}
           {product.specs.camera && <div>Camera: {product.specs.camera}</div>}
         </SpecsList>
-        
       </ProductInfo>
     </Card>
   );
