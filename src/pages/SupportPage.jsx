@@ -29,7 +29,7 @@ const Header = styled.div`
   }
 
   p {
-    color: #666;
+    color: var(--text-light);
     font-size: 1.1rem;
     line-height: 1.6;
   }
@@ -38,10 +38,10 @@ const Header = styled.div`
 const SupportContent = styled.div`
   max-width: 800px;
   margin: 0 auto;
-  background: white;
+  background: var(--dark-accent);
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 `;
 
 const Form = styled.form`
@@ -57,19 +57,21 @@ const FormGroup = styled.div`
 
   label {
     font-weight: 500;
-    color: var(--dark);
+    color: var(--text-light);
   }
 
   input, textarea, select {
     padding: 0.75rem;
-    border: 1px solid #ddd;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 4px;
     font-size: 1rem;
+    background: var(--medium-dark);
+    color: var(--text-light);
 
     &:focus {
       outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 2px rgba(255, 59, 48, 0.1);
+      box-shadow: 0 0 0 2px rgba(255, 59, 48, 0.2);
     }
   }
 
@@ -288,8 +290,8 @@ const StatusMessage = styled.div`
   padding: 1rem;
   border-radius: 4px;
   text-align: center;
-  background: ${props => props.success ? '#e8f5e9' : '#ffebee'};
-  color: ${props => props.success ? '#2e7d32' : '#c62828'};
+  background: ${props => props.success ? 'rgba(46, 125, 50, 0.2)' : 'rgba(198, 40, 40, 0.2)'};
+  color: ${props => props.success ? '#4caf50' : '#f44336'};
 `;
 
 export default SupportPage;
