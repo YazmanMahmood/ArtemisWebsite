@@ -23,7 +23,7 @@ const Header = styled.div`
   }
 
   p {
-    color: #666;
+    color: var(--text-light);
     font-size: 1.1rem;
     line-height: 1.6;
   }
@@ -31,8 +31,8 @@ const Header = styled.div`
 
 const ApplicationsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 4rem;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
   max-width: 1200px;
   margin: 0 auto;
 
@@ -42,14 +42,14 @@ const ApplicationsGrid = styled.div`
 `;
 
 const ApplicationCard = styled(motion.div)`
-  background: white;
+  background: var(--dark-accent);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 `;
 
 const CardImage = styled.div`
-  height: 300px;
+  height: 250px;
   position: relative;
   overflow: hidden;
 
@@ -84,7 +84,7 @@ const CardContent = styled.div`
   }
 
   p {
-    color: #666;
+    color: var(--text-light);
     line-height: 1.6;
     margin-bottom: 1.5rem;
   }
@@ -99,7 +99,7 @@ const FeatureList = styled.ul`
     display: flex;
     align-items: center;
     margin-bottom: 1rem;
-    color: #444;
+    color: var(--text-muted);
 
     &::before {
       content: '✓';
@@ -113,9 +113,48 @@ const FeatureList = styled.ul`
 const applications = [
   {
     id: 1,
-    title: 'Emergency Operations',
-    image: '/images/fdrone.webp',
-    description: 'Advanced thermal imaging and precision water deployment for efficient fire control.',
+    title: 'Perimeter Security',
+    image: '/images/perimeter-security.jpg',
+    description: '24/7 automated surveillance for facility perimeters',
+    features: [
+      'Continuous monitoring of facility boundaries',
+      'Automatic detection of unauthorized entry',
+      'Real-time alerts to security personnel',
+      'Integration with existing security systems',
+      'Reduced security personnel costs'
+    ]
+  },
+  {
+    id: 2,
+    title: 'Warehouse Surveillance',
+    image: '/images/warehouse-surveillance.jpeg',
+    description: 'Real-time monitoring of warehouse operations',
+    features: [
+      'Indoor navigation capabilities',
+      'Monitoring of high-value inventory areas',
+      'Employee safety oversight',
+      'Identification of operational bottlenecks',
+      'Theft prevention and detection'
+    ]
+  },
+  {
+    id: 3,
+    title: 'Intruder Detection',
+    image: '/images/intruder-detection.jpeg',
+    description: 'AI-powered threat detection system',
+    features: [
+      'Advanced facial recognition',
+      'Behavior analysis algorithms',
+      'Instant alert system',
+      'Integration with law enforcement systems',
+      'Low false positive rate'
+    ]
+  },
+  {
+    id: 4,
+    title: 'Firefighting Operations',
+    image: '/images/firefighting.jpeg',
+    description: 'Thermal imaging and fire response support',
     features: [
       'Real-time fire detection and mapping',
       'Thermal hotspot identification',
@@ -125,16 +164,29 @@ const applications = [
     ]
   },
   {
-    id: 2,
-    title: 'Security Surveillance & Detection',
-    image: '/images/sproduct.webp',
-    description: 'AI-powered surveillance ensuring 24/7 monitoring and threat detection.',
+    id: 5,
+    title: 'Agricultural Monitoring',
+    image: '/images/agri.webp',
+    description: 'Advanced crop monitoring and precision agriculture solutions',
     features: [
-      'Autonomous perimeter patrols',
-      'AI threat detection',
-      'Night vision capabilities',
-      'Real-time alert system',
-      'Secure data transmission'
+      'Multispectral imaging for crop health',
+      'Irrigation optimization',
+      'Pest and disease detection',
+      'Yield prediction analytics',
+      'Soil quality assessment'
+    ]
+  },
+  {
+    id: 6,
+    title: 'Inventory Management',
+    image: '/images/inventory-drone.jpg',
+    description: 'Automated inventory tracking and warehouse optimization',
+    features: [
+      'Barcode and RFID scanning',
+      'Automated stock counting',
+      'Space utilization analysis',
+      'Inventory location mapping',
+      'Integration with inventory management systems'
     ]
   }
 ];
@@ -171,7 +223,7 @@ function ApplicationsPage() {
             key={app.id}
             initial={{ opacity: 0, y: 30 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: index * 0.2 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
           >
             <CardImage>
               <img src={app.image} alt={app.title} />
@@ -185,7 +237,7 @@ function ApplicationsPage() {
                     key={i}
                     initial={{ opacity: 0, x: -20 }}
                     animate={inView ? { opacity: 1, x: 0 } : {}}
-                    transition={{ duration: 0.5, delay: index * 0.2 + i * 0.1 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 + i * 0.05 }}
                   >
                     {feature}
                   </motion.li>
