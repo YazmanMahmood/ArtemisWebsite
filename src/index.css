@@ -3,8 +3,12 @@
 :root {
   --primary: #FF3B30;
   --secondary: #0A84FF;
-  --dark: #1C1C1E;
-  --light: #FFFFFF;
+  --dark: #FFFFFF;
+  --light: #0c0c0c;
+  --dark-accent: #1A1A1A;
+  --medium-dark: #222222;
+  --text-light: #E0E0E0;
+  --text-muted: #A0A0A0;
 }
 
 * {
