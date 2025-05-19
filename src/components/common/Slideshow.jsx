@@ -80,20 +80,36 @@ const LoadingPlaceholder = styled.div`
   }
 `;
 
-function Slideshow({ images, captions }) {
+// Default images and captions to prevent errors
+const defaultImages = [
+  '/images/default-slide.jpg'
+];
+
+const defaultCaptions = [
+  'Default caption'
+];
+
+function Slideshow({ images = defaultImages, captions = defaultCaptions }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (!images || images.length === 0) return;
+    
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % images.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, [images.length]);
+  }, [images]);
 
   const handleImageLoad = () => {
     setIsLoading(false);
   };
+
+  // If no images are provided, don't render anything
+  if (!images || images.length === 0) {
+    return <LoadingPlaceholder />;
+  }
 
   return (
     <SlideContainer>
@@ -108,10 +124,14 @@ function Slideshow({ images, captions }) {
         >
           <img 
             src={images[currentIndex]} 
-            alt={`Drone in action ${currentIndex + 1}`} 
+            alt={`Slide ${currentIndex + 1}`} 
             onLoad={handleImageLoad}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = '/images/placeholder.jpg';
+            }}
           />
-          {captions && (
+          {captions && captions[currentIndex] && (
             <SlideCaption
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
