@@ -8,6 +8,8 @@ import ApplicationsPage from './pages/ApplicationsPage';
 import AboutPage from './pages/AboutPage';
 import SupportPage from './pages/SupportPage';
 import ContactPage from './pages/ContactPage';
+import CustomizePage from './pages/CustomizePage';
+import AutomationsPage from './pages/AutomationsPage';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -41,6 +43,8 @@ function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/support" element={<SupportPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/customize" element={<CustomizePage />} />
+            <Route path="/automations" element={<AutomationsPage />} />
           </Routes>
         </main>
       </div>
