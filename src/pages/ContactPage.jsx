@@ -22,7 +22,7 @@ const Header = styled.div`
   }
 
   p {
-    color: #666;
+    color: var(--text-light);
     font-size: 1.1rem;
     line-height: 1.6;
   }
@@ -42,7 +42,7 @@ const ContactInfo = styled.div`
   }
 
   p {
-    color: #666;
+    color: var(--text-light);
     margin-bottom: 2rem;
     line-height: 1.6;
     text-align: center;
@@ -50,15 +50,16 @@ const ContactInfo = styled.div`
 `;
 
 const ContactCard = styled(motion.div)`
-  background: white;
+  background: var(--dark-accent);
   padding: 2rem;
   border-radius: 12px;
   margin-bottom: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease;
 
   &:hover {
     transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
   }
 
   h3 {
@@ -76,7 +77,7 @@ const ContactCard = styled(motion.div)`
   }
 
   .response-time {
-    color: #666;
+    color: var(--text-muted);
     font-size: 0.9rem;
   }
 `;
