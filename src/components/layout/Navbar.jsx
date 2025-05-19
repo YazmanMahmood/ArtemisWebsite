@@ -4,7 +4,6 @@ import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import whiteLogoImg from '/images/whitelogo.png';
-import blackLogoImg from '/images/newlogo.png';
 
 const Nav = styled.nav`
   position: fixed;
@@ -13,11 +12,10 @@ const Nav = styled.nav`
   right: 0;
   padding: 0.5rem 2rem;
   background: ${(props) =>
-    props.$scrolled || !props.$isMainPage 
-      ? 'rgba(255, 255, 255, 0.9)' 
-      : 'transparent'};
-  backdrop-filter: ${(props) =>
-    props.$scrolled || !props.$isMainPage ? 'blur(10px)' : 'none'};
+  props.scrolled === 'true' || props['data-ismainpage'] === 'false' 
+    ? '#202020' 
+    : 'transparent'};
+
   z-index: 1000;
   display: flex;
   justify-content: space-between;
@@ -50,14 +48,14 @@ const Hamburger = styled.div`
   font-size: 1.5rem;
   z-index: 1001;
   color: ${(props) => {
-    if (props.$isMainPage) {
-      return props.$scrolled ? '#000' : '#fff';
+    if (props['data-ismainpage'] === 'true') {
+      return props.scrolled === 'true' ? '#000' : '#fff';
     }
     return '#000';
   }};
   transition: opacity 0.3s ease, visibility 0.3s ease;
-  opacity: ${props => props.$isOpen ? '0' : '1'};
-  visibility: ${props => props.$isOpen ? 'hidden' : 'visible'};
+  opacity: ${props => props.isOpen === 'true' ? '0' : '1'};
+  visibility: ${props => props.isOpen === 'true' ? 'hidden' : 'visible'};
 
   @media (max-width: 768px) {
     display: block;
@@ -74,23 +72,23 @@ const NavLinks = styled.div`
     right: 0;
     height: 100vh;
     width: 250px;
-    background: white;
+    background: var(--dark-accent);
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transform: translateX(${props => props.$isOpen ? '0' : '100%'});
+    transform: translateX(${props => props.isOpen === 'true' ? '0' : '100%'});
     transition: transform 0.3s ease;
     z-index: 1000;
-    box-shadow: ${props => props.$isOpen ? '-5px 0 15px rgba(0,0,0,0.1)' : 'none'};
+    box-shadow: ${props => props.isOpen === 'true' ? '-5px 0 15px rgba(0,0,0,0.5)' : 'none'};
   }
 `;
 
 const NavLink = styled(Link)`
   color: ${(props) => {
-    if (props.$isMainPage) {
-      return props.$scrolled ? '#000' : '#fff';
+    if (props['data-ismainpage'] === 'true') {
+      return props.scrolled === 'true' ? 'var(--text-light)' : '#fff';
     }
-    return '#000';
+    return 'var(--text-light)';
   }};
   text-decoration: none;
   font-weight: 500;
@@ -105,10 +103,10 @@ const NavLink = styled(Link)`
     bottom: -4px;
     left: 0;
     background-color: ${(props) => {
-      if (props.$isMainPage) {
-        return props.$scrolled ? '#000' : '#fff';
+      if (props['data-ismainpage'] === 'true') {
+        return props.scrolled === 'true' ? 'var(--primary)' : '#fff';
       }
-      return '#000';
+      return 'var(--primary)';
     }};
     transition: width 0.3s ease;
   }
@@ -118,12 +116,12 @@ const NavLink = styled(Link)`
   }
 
   @media (max-width: 768px) {
-    color: #000;
+    color: var(--text-light);
     font-size: 1.2rem;
     padding: 1rem 0;
 
     &::after {
-      background-color: #000;
+      background-color: var(--primary);
     }
   }
 `;
@@ -135,7 +133,7 @@ const CloseIcon = styled(FaTimes)`
   right: 1.5rem;
   cursor: pointer;
   font-size: 1.5rem;
-  color: #000;
+  color: var(--text-light);
   z-index: 1001;
 
   @media (max-width: 768px) {
@@ -147,7 +145,7 @@ const Overlay = styled.div`
   display: none;
   
   @media (max-width: 768px) {
-    display: ${props => props.$isOpen ? 'block' : 'none'};
+    display: ${props => props.isOpen === 'true' ? 'block' : 'none'};
     position: fixed;
     top: 0;
     left: 0;
@@ -184,75 +182,91 @@ function Navbar() {
     setIsOpen(!isOpen);
   };
 
-  const logoSrc = isMainPage && !scrolled ? whiteLogoImg : blackLogoImg;
-
   return (
     <>
-      <Nav $scrolled={scrolled} $isMainPage={isMainPage}>
+      <Nav scrolled={scrolled.toString()} data-ismainpage={isMainPage.toString()}>
         <StyledLogo to="/">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <LogoImage src={logoSrc} alt="Logo" />
+            <LogoImage src={whiteLogoImg} alt="Logo" />
           </motion.div>
         </StyledLogo>
         
         <Hamburger 
           onClick={toggleMenu} 
-          $scrolled={scrolled} 
-          $isMainPage={isMainPage}
-          $isOpen={isOpen}
+          scrolled={scrolled.toString()} 
+          data-ismainpage={isMainPage.toString()}
+          isOpen={isOpen.toString()}
         >
           <FaBars />
         </Hamburger>
 
-        <NavLinks $isOpen={isOpen}>
+        <NavLinks isOpen={isOpen.toString()}>
           <CloseIcon onClick={toggleMenu} />
+          {!isMainPage && (
+            <NavLink 
+              to="/" 
+              scrolled={scrolled.toString()} 
+              data-ismainpage={isMainPage.toString()} 
+              onClick={toggleMenu}
+            >
+              Home
+            </NavLink>
+          )}
           <NavLink 
             to="/products" 
-            $scrolled={scrolled} 
-            $isMainPage={isMainPage} 
+            scrolled={scrolled.toString()} 
+            data-ismainpage={isMainPage.toString()} 
             onClick={toggleMenu}
           >
             Products
           </NavLink>
           <NavLink 
             to="/applications" 
-            $scrolled={scrolled} 
-            $isMainPage={isMainPage} 
+            scrolled={scrolled.toString()} 
+            data-ismainpage={isMainPage.toString()} 
             onClick={toggleMenu}
           >
             Applications
           </NavLink>
           <NavLink 
             to="/about" 
-            $scrolled={scrolled} 
-            $isMainPage={isMainPage} 
+            scrolled={scrolled.toString()} 
+            data-ismainpage={isMainPage.toString()} 
             onClick={toggleMenu}
           >
             About
           </NavLink>
           <NavLink 
             to="/support" 
-            $scrolled={scrolled} 
-            $isMainPage={isMainPage} 
+            scrolled={scrolled.toString()} 
+            data-ismainpage={isMainPage.toString()} 
             onClick={toggleMenu}
           >
             Support
           </NavLink>
           <NavLink 
             to="/contact" 
-            $scrolled={scrolled} 
-            $isMainPage={isMainPage} 
+            scrolled={scrolled.toString()} 
+            data-ismainpage={isMainPage.toString()} 
             onClick={toggleMenu}
           >
             Contact
           </NavLink>
+          <NavLink 
+            to="/automations" 
+            scrolled={scrolled.toString()} 
+            data-ismainpage={isMainPage.toString()} 
+            onClick={toggleMenu}
+          >
+            Automations
+          </NavLink>
         </NavLinks>
       </Nav>
-      <Overlay $isOpen={isOpen} onClick={toggleMenu} />
+      <Overlay isOpen={isOpen.toString()} onClick={toggleMenu} />
     </>
   );
 }
