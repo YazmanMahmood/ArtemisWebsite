@@ -1273,7 +1273,7 @@ function HomePage() {
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   margin: 0,
-                  fontSize: isMobile ? "3rem" : "3rem",
+                  fontSize: isMobile ? "1.5rem" : "2rem",
                   textAlign: "center",
                   width: "100%"
                 }}
