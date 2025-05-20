@@ -1319,7 +1319,6 @@ function HomePage() {
         </HeroContent>
         <ScoutImage
           <img src="/images/scout.png" alt="Scout" />
-          alt="Artemis Scout"
           initial={{ x: isMobile ? 200 : 400, y: isMobile ? 100 : -200, opacity: 0 }}
           animate={{ x: 0, y: 0, opacity: 1 }}
           transition={{ duration: 2, ease: "easeOut" }}
