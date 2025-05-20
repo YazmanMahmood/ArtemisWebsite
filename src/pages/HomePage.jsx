@@ -1303,7 +1303,7 @@ function HomePage() {
                       backgroundImage: "linear-gradient(135deg, rgba(255, 59, 48, 0.9), rgba(10, 132, 255, 0.9))",
                       WebkitBackgroundClip: "text",
                       WebkitTextFillColor: "transparent",
-                      fontSize: isMobile ? "3rem" : "inherit"
+                      fontSize: isMobile ? "2rem" : "inherit"
                     }}
                   >
                     {droneType}
