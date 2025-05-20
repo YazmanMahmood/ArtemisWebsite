@@ -825,7 +825,7 @@ const DroneTypeContainer = styled.div`
   display: inline-block;
   min-width: 350px;
   position: left;
-  height: 3rem;
+  height: 2rem;
   margin: 0 15px;
   transform: translateY(-1px); /* Move it slightly upwards */
   vertical-align: left;
