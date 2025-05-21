@@ -1251,80 +1251,82 @@ function HomePage() {
         </BackgroundImages>
         <VantaBackground id="vantaBackground" />
         <HeroContent
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        >
-          <WelcomeText>
-            Welcome To
-          </WelcomeText>
-          <FlippingTextContainer>
-            <AnimatePresence mode="wait">
-              <motion.h2
-                key={flippingText}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.5 }}
-                style={{ 
-                  position: "absolute",
-                  display: "inline-block",
-                  background: "linear-gradient(135deg, rgba(255, 59, 48, 0.9), rgba(10, 132, 255, 0.9))",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  margin: 0,
-                  fontSize: isMobile ? "1.5rem" : "2rem",
-                  textAlign: "center",
-                  width: "100%"
-                }}
-              >
-                {flippingText}
-              </motion.h2>
-            </AnimatePresence>
-          </FlippingTextContainer>
-          <HeroTitle>
-            <span className="title-container">
-              <TitleWord>Autonomous</TitleWord>
-              <DroneTypeContainer>
-                <AnimatePresence mode="wait">
-                  <motion.span
-                    key={droneType}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    style={{ 
-                      position: "absolute",
-                      width: "100%",
-                      textAlign: "center",
-                      left: 0,
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      backgroundImage: "linear-gradient(135deg, rgba(255, 59, 48, 0.9), rgba(10, 132, 255, 0.9))",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      fontSize: isMobile ? "2rem" : "inherit"
-                    }}
-                  >
-                    {droneType}
-                  </motion.span>
-                </AnimatePresence>
-              </DroneTypeContainer>
-              <TitleWord>Drones</TitleWord>
-            </span>
-          </HeroTitle>
-          <HeroDescription>
-            Protecting lives and property with advanced AI-powered aerial technology.
-          </HeroDescription>
-        </HeroContent>
-        <ScoutImage
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.8, delay: 0.2 }}
+>
+  <WelcomeText>Welcome To</WelcomeText>
+
+  <FlippingTextContainer>
+    <AnimatePresence mode="wait">
+      <motion.h2
+        key={flippingText}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.5 }}
+        style={{
+          position: "absolute",
+          display: "inline-block",
+          background: "linear-gradient(135deg, rgba(255, 59, 48, 0.9), rgba(10, 132, 255, 0.9))",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          margin: 0,
+          fontSize: isMobile ? "1.5rem" : "2rem",
+          textAlign: "center",
+          width: "100%",
+        }}
+      >
+        {flippingText}
+      </motion.h2>
+    </AnimatePresence>
+  </FlippingTextContainer>
+
+  <HeroTitle>
+    <span className="title-container" style={{ position: "relative" }}>
+      <TitleWord>Autonomous</TitleWord>
+      <DroneTypeContainer style={{ position: "relative" }}>
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={droneType}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            style={{
+              position: "absolute",
+              width: "100%",
+              textAlign: "center",
+              left: 0,
+              top: "50%",
+              transform: "translateY(-50%)",
+              backgroundImage: "linear-gradient(135deg, rgba(255, 59, 48, 0.9), rgba(10, 132, 255, 0.9))",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              fontSize: isMobile ? "2rem" : "inherit",
+            }}
+          >
+            {droneType}
+          </motion.span>
+        </AnimatePresence>
+      </DroneTypeContainer>
+      <TitleWord>Drones</TitleWord>
+    </span>
+  </HeroTitle>
+
+  <HeroDescription>
+    Protecting lives and property with advanced AI-powered aerial technology.
+  </HeroDescription>
+</HeroContent>
+
+<ScoutImage
   src="images/scout.png"
   alt="Scout"
   initial={{ x: isMobile ? 200 : 400, y: isMobile ? 100 : -200, opacity: 0 }}
   animate={{ x: 0, y: 0, opacity: 1 }}
   transition={{ duration: 2, ease: "easeOut" }}
 />
-      </HeroSection>
+
 
       <WhyChooseSection>
         <h2>Why Choose Artemis UAV</h2>
