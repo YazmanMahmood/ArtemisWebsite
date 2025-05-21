@@ -173,7 +173,7 @@ const productsData = [
   {
     id: 4,
     name: 'Artemis Scout',
-    image: '/images/scout.png',
+    image: 'https://photos.app.goo.gl/aPUERNqMpS9tbqaN9',
     category: 'Surveillance',
     description: 'Our flagship multipurpose drone, designed for versatility and performance.',
     specs: {
