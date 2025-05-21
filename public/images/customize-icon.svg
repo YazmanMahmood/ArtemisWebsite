@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200" fill="none">
+  <rect width="200" height="200" fill="none"/>
+  <path d="M100 30C91.716 30 85 36.716 85 45C85 53.284 91.716 60 100 60C108.284 60 115 53.284 115 45C115 36.716 108.284 30 100 30Z" fill="white"/>
+  <path d="M60 85C51.716 85 45 91.716 45 100C45 108.284 51.716 115 60 115C68.284 115 75 108.284 75 100C75 91.716 68.284 85 60 85Z" fill="white"/>
+  <path d="M140 85C131.716 85 125 91.716 125 100C125 108.284 131.716 115 140 115C148.284 115 155 108.284 155 100C155 91.716 148.284 85 140 85Z" fill="white"/>
+  <path d="M100 140C91.716 140 85 146.716 85 155C85 163.284 91.716 170 100 170C108.284 170 115 163.284 115 155C115 146.716 108.284 140 100 140Z" fill="white"/>
+  <path d="M100 60V85" stroke="white" stroke-width="4" stroke-linecap="round"/>
+  <path d="M75 100H45" stroke="white" stroke-width="4" stroke-linecap="round"/>
+  <path d="M125 100H155" stroke="white" stroke-width="4" stroke-linecap="round"/>
+  <path d="M100 115V140" stroke="white" stroke-width="4" stroke-linecap="round"/>
+  <path d="M85 45L45 85" stroke="white" stroke-width="4" stroke-linecap="round"/>
+  <path d="M115 45L155 85" stroke="white" stroke-width="4" stroke-linecap="round"/>
+  <path d="M115 155L155 115" stroke="white" stroke-width="4" stroke-linecap="round"/>
+  <path d="M85 155L45 115" stroke="white" stroke-width="4" stroke-linecap="round"/>
+</svg> 
