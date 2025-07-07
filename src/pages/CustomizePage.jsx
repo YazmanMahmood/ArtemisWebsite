@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 import { useScrollToTop } from '../hooks/useScrollToTop';
-import { getDatabase, ref, set, serverTimestamp } from 'firebase/database';
+import { getDatabase, ref, set, serverTimestamp, push } from 'firebase/database';
 
 const CustomizeContainer = styled.div`
   padding: 120px 2rem 80px;
@@ -139,6 +139,27 @@ const droneOptions = [
   'Artemis Scout'
 ];
 
+// Helper function to format human-readable date and time
+const formatDateTime = (date) => {
+  const options = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    timeZoneName: 'short'
+  };
+  return date.toLocaleDateString('en-US', options);
+};
+
+// Helper function to get current timestamp in Pakistan timezone
+const getCurrentPakistanTime = () => {
+  const now = new Date();
+  const pakistanTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Karachi"}));
+  return pakistanTime;
+};
+
 function CustomizePage() {
   useScrollToTop();
   const [formData, setFormData] = useState({
@@ -164,12 +185,32 @@ function CustomizePage() {
     e.preventDefault();
     
     try {
-      // Save to Firebase or your preferred backend
+      // Get current Pakistan time
+      const currentTime = getCurrentPakistanTime();
+      
+      // Save to Firebase with proper timestamp handling
       const db = getDatabase();
-      const customizeRequestRef = ref(db, `customizeRequests/${Date.now()}`);
-      await set(customizeRequestRef, {
+      const customizeRequestsRef = ref(db, 'customizeRequests');
+      
+      // Use push() to auto-generate a unique key based on timestamp
+      await push(customizeRequestsRef, {
         ...formData,
-        timestamp: serverTimestamp()
+        timestamp: serverTimestamp(), // Firebase server timestamp
+        createdAt: currentTime.toISOString(), // ISO format for storage
+        humanReadableDate: formatDateTime(currentTime), // Human readable format
+        submissionDate: currentTime.toLocaleDateString('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        }),
+        submissionTime: currentTime.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          timeZoneName: 'short'
+        }),
+        timezone: 'Asia/Karachi'
       });
       
       // Show success message
@@ -308,4 +349,4 @@ function CustomizePage() {
   );
 }
 
-export default CustomizePage; 
+export default CustomizePage;
