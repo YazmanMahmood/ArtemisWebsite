@@ -139,22 +139,6 @@ const droneOptions = [
   'Artemis Scout'
 ];
 
-// Helper function to format timestamp in your requested format
-const getFormattedTimestamp = () => {
-  const now = new Date();
-  const options = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true,
-    timeZone: 'Asia/Karachi'
-  };
-  return now.toLocaleDateString('en-US', options).replace(/,(\s+)(\d+:\d+:\d+)/, ' at $2');
-};
-
 // Helper function to get next custom order ID
 const getNextCustomOrderId = async (db) => {
   try {
@@ -165,7 +149,6 @@ const getNextCustomOrderId = async (db) => {
       const data = snapshot.val();
       const keys = Object.keys(data);
       
-      // Filter keys that match customorder pattern and extract numbers
       const orderNumbers = keys
         .filter(key => key.startsWith('customorder'))
         .map(key => {
@@ -174,16 +157,13 @@ const getNextCustomOrderId = async (db) => {
         })
         .filter(num => !isNaN(num));
       
-      // Get the highest number and increment by 1
       const maxNumber = orderNumbers.length > 0 ? Math.max(...orderNumbers) : 0;
       return `customorder${maxNumber + 1}`;
     } else {
-      // If no data exists, start with customorder1
       return 'customorder1';
     }
   } catch (error) {
     console.error('Error getting next custom order ID:', error);
-    // Fallback to a simple counter instead of timestamp
     return `customorder${Math.floor(Math.random() * 1000) + 1}`;
   }
 };
@@ -216,18 +196,26 @@ function CustomizePage() {
     
     try {
       const db = getDatabase();
-      
-      // Get the next custom order ID
       const customOrderId = await getNextCustomOrderId(db);
-      
-      // Create reference with the custom order ID
       const customizeRequestRef = ref(db, `customizeRequests/${customOrderId}`);
       
-      // Get formatted timestamp
-      const formattedTimestamp = getFormattedTimestamp();
+      // Create the human-readable timestamp
+      const now = new Date();
+      const humanTimestamp = now.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        timeZone: 'Asia/Karachi'
+      }) + ' at ' + now.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+        timeZone: 'Asia/Karachi'
+      });
       
-      // Save the form data with formatted timestamp
-      await set(customizeRequestRef, {
+      // Save ONLY the data we want - NO serverTimestamp() or Date.now()
+      const dataToSave = {
         orderId: customOrderId,
         customerDetails: {
           name: formData.name,
@@ -240,17 +228,16 @@ function CustomizePage() {
           industry: formData.industry,
           customRequirements: formData.customRequirements
         },
-        timestamp: formattedTimestamp, // This will be "February 15, 2025 at 12:54:00 PM"
-        status: 'pending',
-        submittedAt: new Date().toISOString()
-      });
+        timestamp: humanTimestamp, // This will be "July 7, 2025 at 06:55:30 PM"
+        status: 'pending'
+      };
       
-      console.log('Saved with timestamp:', formattedTimestamp); // Debug log
+      console.log('Saving data:', dataToSave); // Debug to see what we're saving
       
-      // Show success message
+      await set(customizeRequestRef, dataToSave);
+      
       setShowSuccess(true);
       
-      // Reset form
       setFormData({
         name: '',
         email: '',
@@ -261,7 +248,6 @@ function CustomizePage() {
         customRequirements: '',
       });
       
-      // Hide success message after 5 seconds
       setTimeout(() => {
         setShowSuccess(false);
       }, 5000);
