@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 import { useScrollToTop } from '../hooks/useScrollToTop';
-import { getDatabase, ref, set, serverTimestamp } from 'firebase/database';
+import { getDatabase, ref, set, get, child } from 'firebase/database';
 
 const CustomizeContainer = styled.div`
   padding: 120px 2rem 80px;
@@ -139,8 +139,8 @@ const droneOptions = [
   'Artemis Scout'
 ];
 
-// Helper function to format human-readable date and time
-const getHumanReadableTimestamp = () => {
+// Helper function to format timestamp in your requested format
+const getFormattedTimestamp = () => {
   const now = new Date();
   const options = {
     year: 'numeric',
@@ -149,10 +149,43 @@ const getHumanReadableTimestamp = () => {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
-    timeZone: 'Asia/Karachi',
-    timeZoneName: 'short'
+    hour12: true,
+    timeZone: 'Asia/Karachi'
   };
-  return now.toLocaleDateString('en-US', options);
+  return now.toLocaleDateString('en-US', options).replace(',', ' at');
+};
+
+// Helper function to get next custom order ID
+const getNextCustomOrderId = async (db) => {
+  try {
+    const customOrdersRef = ref(db, 'customizeRequests');
+    const snapshot = await get(customOrdersRef);
+    
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      const keys = Object.keys(data);
+      
+      // Filter keys that match customorder pattern and extract numbers
+      const orderNumbers = keys
+        .filter(key => key.startsWith('customorder'))
+        .map(key => {
+          const match = key.match(/customorder(\d+)/);
+          return match ? parseInt(match[1]) : 0;
+        })
+        .filter(num => !isNaN(num));
+      
+      // Get the highest number and increment by 1
+      const maxNumber = orderNumbers.length > 0 ? Math.max(...orderNumbers) : 0;
+      return `customorder${maxNumber + 1}`;
+    } else {
+      // If no data exists, start with customorder1
+      return 'customorder1';
+    }
+  } catch (error) {
+    console.error('Error getting next custom order ID:', error);
+    // Fallback to timestamp-based ID if there's an error
+    return `customorder${Date.now()}`;
+  }
 };
 
 function CustomizePage() {
@@ -167,6 +200,7 @@ function CustomizePage() {
     customRequirements: '',
   });
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -178,20 +212,34 @@ function CustomizePage() {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     
     try {
-      // Save to Firebase with original path structure but human-readable timestamp
       const db = getDatabase();
-      const customizeRequestRef = ref(db, `customizeRequests/${Date.now()}`);
+      
+      // Get the next custom order ID
+      const customOrderId = await getNextCustomOrderId(db);
+      
+      // Create reference with the custom order ID
+      const customizeRequestRef = ref(db, `customizeRequests/${customOrderId}`);
+      
+      // Save the form data with formatted timestamp
       await set(customizeRequestRef, {
-        ...formData,
-        timestamp: getHumanReadableTimestamp(), // Human-readable timestamp instead of serverTimestamp()
-        submittedAt: new Date().toISOString(), // ISO format for technical use
-        localTime: new Date().toLocaleString('en-US', {
-          timeZone: 'Asia/Karachi',
-          dateStyle: 'full',
-          timeStyle: 'medium'
-        })
+        orderId: customOrderId,
+        customerDetails: {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          company: formData.company
+        },
+        orderDetails: {
+          droneModel: formData.droneModel,
+          industry: formData.industry,
+          customRequirements: formData.customRequirements
+        },
+        timestamp: getFormattedTimestamp(), // Format: "February 15, 2025 at 12:54:00 PM"
+        status: 'pending',
+        submittedAt: new Date().toISOString() // ISO format for technical use
       });
       
       // Show success message
@@ -214,6 +262,9 @@ function CustomizePage() {
       }, 5000);
     } catch (error) {
       console.error("Error submitting customization request:", error);
+      alert("There was an error submitting your request. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
   
@@ -315,7 +366,9 @@ function CustomizePage() {
           />
         </FormGroup>
         
-        <SubmitButton type="submit">Submit Request</SubmitButton>
+        <SubmitButton type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Submitting...' : 'Submit Request'}
+        </SubmitButton>
         
         {showSuccess && (
           <SuccessMessage
