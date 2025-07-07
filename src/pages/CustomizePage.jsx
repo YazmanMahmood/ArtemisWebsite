@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 import { useScrollToTop } from '../hooks/useScrollToTop';
-import { getDatabase, ref, set, get, child } from 'firebase/database';
+import { getDatabase, ref, set, get } from 'firebase/database';
 
 const CustomizeContainer = styled.div`
   padding: 120px 2rem 80px;
@@ -152,7 +152,7 @@ const getFormattedTimestamp = () => {
     hour12: true,
     timeZone: 'Asia/Karachi'
   };
-  return now.toLocaleDateString('en-US', options).replace(',', ' at');
+  return now.toLocaleDateString('en-US', options).replace(/,(\s+)(\d+:\d+:\d+)/, ' at $2');
 };
 
 // Helper function to get next custom order ID
@@ -183,8 +183,8 @@ const getNextCustomOrderId = async (db) => {
     }
   } catch (error) {
     console.error('Error getting next custom order ID:', error);
-    // Fallback to timestamp-based ID if there's an error
-    return `customorder${Date.now()}`;
+    // Fallback to a simple counter instead of timestamp
+    return `customorder${Math.floor(Math.random() * 1000) + 1}`;
   }
 };
 
@@ -223,6 +223,9 @@ function CustomizePage() {
       // Create reference with the custom order ID
       const customizeRequestRef = ref(db, `customizeRequests/${customOrderId}`);
       
+      // Get formatted timestamp
+      const formattedTimestamp = getFormattedTimestamp();
+      
       // Save the form data with formatted timestamp
       await set(customizeRequestRef, {
         orderId: customOrderId,
@@ -237,10 +240,12 @@ function CustomizePage() {
           industry: formData.industry,
           customRequirements: formData.customRequirements
         },
-        timestamp: getFormattedTimestamp(), // Format: "February 15, 2025 at 12:54:00 PM"
+        timestamp: formattedTimestamp, // This will be "February 15, 2025 at 12:54:00 PM"
         status: 'pending',
-        submittedAt: new Date().toISOString() // ISO format for technical use
+        submittedAt: new Date().toISOString()
       });
+      
+      console.log('Saved with timestamp:', formattedTimestamp); // Debug log
       
       // Show success message
       setShowSuccess(true);
