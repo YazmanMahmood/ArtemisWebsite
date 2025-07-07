@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 import { useScrollToTop } from '../hooks/useScrollToTop';
-import { getDatabase, ref, set, serverTimestamp, push } from 'firebase/database';
+import { getDatabase, ref, set, serverTimestamp } from 'firebase/database';
 
 const CustomizeContainer = styled.div`
   padding: 120px 2rem 80px;
@@ -140,7 +140,8 @@ const droneOptions = [
 ];
 
 // Helper function to format human-readable date and time
-const formatDateTime = (date) => {
+const getHumanReadableTimestamp = () => {
+  const now = new Date();
   const options = {
     year: 'numeric',
     month: 'long',
@@ -148,16 +149,10 @@ const formatDateTime = (date) => {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
+    timeZone: 'Asia/Karachi',
     timeZoneName: 'short'
   };
-  return date.toLocaleDateString('en-US', options);
-};
-
-// Helper function to get current timestamp in Pakistan timezone
-const getCurrentPakistanTime = () => {
-  const now = new Date();
-  const pakistanTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Karachi"}));
-  return pakistanTime;
+  return now.toLocaleDateString('en-US', options);
 };
 
 function CustomizePage() {
@@ -185,32 +180,18 @@ function CustomizePage() {
     e.preventDefault();
     
     try {
-      // Get current Pakistan time
-      const currentTime = getCurrentPakistanTime();
-      
-      // Save to Firebase with proper timestamp handling
+      // Save to Firebase with original path structure but human-readable timestamp
       const db = getDatabase();
-      const customizeRequestsRef = ref(db, 'customizeRequests');
-      
-      // Use push() to auto-generate a unique key based on timestamp
-      await push(customizeRequestsRef, {
+      const customizeRequestRef = ref(db, `customizeRequests/${Date.now()}`);
+      await set(customizeRequestRef, {
         ...formData,
-        timestamp: serverTimestamp(), // Firebase server timestamp
-        createdAt: currentTime.toISOString(), // ISO format for storage
-        humanReadableDate: formatDateTime(currentTime), // Human readable format
-        submissionDate: currentTime.toLocaleDateString('en-US', {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        }),
-        submissionTime: currentTime.toLocaleTimeString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          timeZoneName: 'short'
-        }),
-        timezone: 'Asia/Karachi'
+        timestamp: getHumanReadableTimestamp(), // Human-readable timestamp instead of serverTimestamp()
+        submittedAt: new Date().toISOString(), // ISO format for technical use
+        localTime: new Date().toLocaleString('en-US', {
+          timeZone: 'Asia/Karachi',
+          dateStyle: 'full',
+          timeStyle: 'medium'
+        })
       });
       
       // Show success message
