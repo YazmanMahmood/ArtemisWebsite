@@ -1867,7 +1867,7 @@ function HomePage() {
           </ContactInfo>
           <ContactInfo>
             <h4>Need a Custom Solution?</h4>
-            <p>Our engineering team can develop specialized drone systems tailored to your unique requirements in Pakistan.</p>
+            <p>Our engineering team can develop specialized drone systems tailored to your unique requirements.</p>
             <Link to="/contact">
               <CTAButton
                 style={{ marginTop: '1rem', padding: '0.75rem 1.5rem' }}
