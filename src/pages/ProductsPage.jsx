@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import ProductCard from '../components/products/ProductCard';
 import CustomizeCard from '../components/products/CustomizeCard';
 import ProductsFilter from '../components/products/ProductsFilter';
+import AutomationsPage from '../components/AutomationsPage';
 import { useScrollToTop } from '../hooks/useScrollToTop';
 import { app } from '../firebase/config';
 import { getDatabase, ref, set, get, child, serverTimestamp } from 'firebase/database';
@@ -33,6 +34,41 @@ const ProductsHeader = styled.div`
 
   @media (max-width: 768px) {
     margin: 0 auto 2rem;
+  }
+`;
+
+const SectionTabs = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: 3rem;
+  gap: 1rem;
+  
+  @media (max-width: 768px) {
+    gap: 0.5rem;
+  }
+`;
+
+const TabButton = styled.button`
+  padding: 1rem 2rem;
+  border: 2px solid ${props => props.active ? '#0A84FF' : 'rgba(255, 255, 255, 0.2)'};
+  background: ${props => props.active ? '#0A84FF' : 'transparent'};
+  color: ${props => props.active ? 'white' : 'var(--dark)'};
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 150px;
+  
+  &:hover {
+    background: ${props => props.active ? '#0070e0' : 'rgba(10, 132, 255, 0.1)'};
+    transform: translateY(-2px);
+  }
+  
+  @media (max-width: 768px) {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+    min-width: 120px;
   }
 `;
 
@@ -197,6 +233,7 @@ const industryOptions = ['Agriculture', 'Warehouse Monitoring', 'Security', 'For
 
 function ProductsPage() {
   useScrollToTop();
+  const [activeSection, setActiveSection] = useState('drones'); // New state for section
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [products, setProducts] = useState([]);
@@ -291,26 +328,8 @@ function ProductsPage() {
     }
   };
 
-  return (
-    <ProductsContainer>
-      <ProductsHeader>
-        <motion.h1
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 20 }}
-          transition={{ duration: 0.5 }}
-        >
-          Explore Our Cutting-Edge Drones
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 20 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          Discover Artemis' flagship drone designed for surveillance, monitoring, and versatile applications.
-        </motion.p>
-      </ProductsHeader>
-
+  const renderDronesSection = () => (
+    <>
       <ProductsFilter
         categories={categories}
         activeCategory={activeCategory}
@@ -467,6 +486,45 @@ function ProductsPage() {
           )}
         </CustomizationContainer>
       )}
+    </>
+  );
+
+  return (
+    <ProductsContainer>
+      <ProductsHeader>
+        <motion.h1
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 20 }}
+          transition={{ duration: 0.5 }}
+        >
+          Explore Our Cutting-Edge Solutions
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 20 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          Discover Artemis' advanced drones and automation systems designed for surveillance, monitoring, and precision agriculture.
+        </motion.p>
+      </ProductsHeader>
+
+      <SectionTabs>
+        <TabButton 
+          active={activeSection === 'drones'} 
+          onClick={() => setActiveSection('drones')}
+        >
+          Drones
+        </TabButton>
+        <TabButton 
+          active={activeSection === 'automations'} 
+          onClick={() => setActiveSection('automations')}
+        >
+          Automations
+        </TabButton>
+      </SectionTabs>
+
+      {activeSection === 'drones' ? renderDronesSection() : <AutomationsPage />}
     </ProductsContainer>
   );
 }
