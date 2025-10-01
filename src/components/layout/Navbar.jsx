@@ -12,10 +12,9 @@ const Nav = styled.nav`
   right: 0;
   padding: 0.5rem 2rem;
   background: ${(props) =>
-  props.scrolled === 'true' || props['data-ismainpage'] === 'false' 
-    ? '#202020' 
-    : 'transparent'};
-
+    props.scrolled === 'true' || props['data-ismainpage'] === 'false'
+      ? '#202020'
+      : 'transparent'};
   z-index: 1000;
   display: flex;
   justify-content: space-between;
@@ -36,7 +35,7 @@ const LogoImage = styled.img`
   height: 40px;
   width: auto;
   transition: transform 0.3s ease;
-  
+
   &:hover {
     transform: scale(1.05);
   }
@@ -54,8 +53,8 @@ const Hamburger = styled.div`
     return '#000';
   }};
   transition: opacity 0.3s ease, visibility 0.3s ease;
-  opacity: ${props => props.isOpen === 'true' ? '0' : '1'};
-  visibility: ${props => props.isOpen === 'true' ? 'hidden' : 'visible'};
+  opacity: ${(props) => (props.isOpen === 'true' ? '0' : '1')};
+  visibility: ${(props) => (props.isOpen === 'true' ? 'hidden' : 'visible')};
 
   @media (max-width: 768px) {
     display: block;
@@ -76,10 +75,11 @@ const NavLinks = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transform: translateX(${props => props.isOpen === 'true' ? '0' : '100%'});
+    transform: translateX(${(props) => (props.isOpen === 'true' ? '0' : '100%')});
     transition: transform 0.3s ease;
     z-index: 1000;
-    box-shadow: ${props => props.isOpen === 'true' ? '-5px 0 15px rgba(0,0,0,0.5)' : 'none'};
+    box-shadow: ${(props) =>
+      props.isOpen === 'true' ? '-5px 0 15px rgba(0,0,0,0.5)' : 'none'};
   }
 `;
 
@@ -143,9 +143,9 @@ const CloseIcon = styled(FaTimes)`
 
 const Overlay = styled.div`
   display: none;
-  
+
   @media (max-width: 768px) {
-    display: ${props => props.isOpen === 'true' ? 'block' : 'none'};
+    display: ${(props) => (props.isOpen === 'true' ? 'block' : 'none')};
     position: fixed;
     top: 0;
     left: 0;
@@ -163,14 +163,9 @@ function Navbar() {
   const isMainPage = location.pathname === '/';
 
   useEffect(() => {
-    const handleScroll = () => {
-      const isScrolled = window.scrollY > 20;
-      setScrolled(isScrolled);
-    };
-
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Check initial scroll position
-    
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -178,26 +173,20 @@ function Navbar() {
     setIsOpen(false);
   }, [location.pathname]);
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
+  const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
     <>
       <Nav scrolled={scrolled.toString()} data-ismainpage={isMainPage.toString()}>
         <StyledLogo to="/">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
             <LogoImage src={whiteLogoImg} alt="Logo" />
           </motion.div>
         </StyledLogo>
-        
-        <Hamburger 
-          onClick={toggleMenu} 
-          scrolled={scrolled.toString()} 
+
+        <Hamburger
+          onClick={toggleMenu}
+          scrolled={scrolled.toString()}
           data-ismainpage={isMainPage.toString()}
           isOpen={isOpen.toString()}
         >
@@ -206,66 +195,40 @@ function Navbar() {
 
         <NavLinks isOpen={isOpen.toString()}>
           <CloseIcon onClick={toggleMenu} />
+
           {!isMainPage && (
-            <NavLink 
-              to="/" 
-              scrolled={scrolled.toString()} 
-              data-ismainpage={isMainPage.toString()} 
+            <NavLink
+              to="/"
+              scrolled={scrolled.toString()}
+              data-ismainpage={isMainPage.toString()}
               onClick={toggleMenu}
             >
               Home
             </NavLink>
           )}
-          <NavLink 
-            to="/products" 
-            scrolled={scrolled.toString()} 
-            data-ismainpage={isMainPage.toString()} 
-            onClick={toggleMenu}
-          >
+
+          <NavLink to="/products" scrolled={scrolled.toString()} data-ismainpage={isMainPage.toString()} onClick={toggleMenu}>
             Products
           </NavLink>
-          <NavLink 
-            to="/applications" 
-            scrolled={scrolled.toString()} 
-            data-ismainpage={isMainPage.toString()} 
-            onClick={toggleMenu}
-          >
+
+          <NavLink to="/applications" scrolled={scrolled.toString()} data-ismainpage={isMainPage.toString()} onClick={toggleMenu}>
             Applications
           </NavLink>
-          <NavLink 
-            to="/about" 
-            scrolled={scrolled.toString()} 
-            data-ismainpage={isMainPage.toString()} 
-            onClick={toggleMenu}
-          >
+
+          <NavLink to="/about" scrolled={scrolled.toString()} data-ismainpage={isMainPage.toString()} onClick={toggleMenu}>
             About
           </NavLink>
-          <NavLink 
-            to="/support" 
-            scrolled={scrolled.toString()} 
-            data-ismainpage={isMainPage.toString()} 
-            onClick={toggleMenu}
-          >
+
+          <NavLink to="/support" scrolled={scrolled.toString()} data-ismainpage={isMainPage.toString()} onClick={toggleMenu}>
             Support
           </NavLink>
-          <NavLink 
-            to="/contact" 
-            scrolled={scrolled.toString()} 
-            data-ismainpage={isMainPage.toString()} 
-            onClick={toggleMenu}
-          >
+
+          <NavLink to="/contact" scrolled={scrolled.toString()} data-ismainpage={isMainPage.toString()} onClick={toggleMenu}>
             Contact
-          </NavLink>
-          <NavLink 
-            to="/automations" 
-            scrolled={scrolled.toString()} 
-            data-ismainpage={isMainPage.toString()} 
-            onClick={toggleMenu}
-          >
-            Automations
           </NavLink>
         </NavLinks>
       </Nav>
+
       <Overlay isOpen={isOpen.toString()} onClick={toggleMenu} />
     </>
   );
