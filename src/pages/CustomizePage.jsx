@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 import { useScrollToTop } from '../hooks/useScrollToTop';
-import { getDatabase, ref, set, get } from 'firebase/database';
+import { getDatabase, ref, set, serverTimestamp } from 'firebase/database';
 
 const CustomizeContainer = styled.div`
   padding: 120px 2rem 80px;
@@ -139,35 +139,6 @@ const droneOptions = [
   'Artemis Scout'
 ];
 
-// Helper function to get next custom order ID
-const getNextCustomOrderId = async (db) => {
-  try {
-    const customOrdersRef = ref(db, 'customizeRequests');
-    const snapshot = await get(customOrdersRef);
-    
-    if (snapshot.exists()) {
-      const data = snapshot.val();
-      const keys = Object.keys(data);
-      
-      const orderNumbers = keys
-        .filter(key => key.startsWith('customorder'))
-        .map(key => {
-          const match = key.match(/customorder(\d+)/);
-          return match ? parseInt(match[1]) : 0;
-        })
-        .filter(num => !isNaN(num));
-      
-      const maxNumber = orderNumbers.length > 0 ? Math.max(...orderNumbers) : 0;
-      return `customorder${maxNumber + 1}`;
-    } else {
-      return 'customorder1';
-    }
-  } catch (error) {
-    console.error('Error getting next custom order ID:', error);
-    return `customorder${Math.floor(Math.random() * 1000) + 1}`;
-  }
-};
-
 function CustomizePage() {
   useScrollToTop();
   const [formData, setFormData] = useState({
@@ -180,7 +151,6 @@ function CustomizePage() {
     customRequirements: '',
   });
   const [showSuccess, setShowSuccess] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -192,52 +162,20 @@ function CustomizePage() {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
     
     try {
+      // Save to Firebase or your preferred backend
       const db = getDatabase();
-      const customOrderId = await getNextCustomOrderId(db);
-      const customizeRequestRef = ref(db, `customizeRequests/${customOrderId}`);
-      
-      // Create the human-readable timestamp
-      const now = new Date();
-      const humanTimestamp = now.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        timeZone: 'Asia/Karachi'
-      }) + ' at ' + now.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true,
-        timeZone: 'Asia/Karachi'
+      const customizeRequestRef = ref(db, `customizeRequests/${Date.now()}`);
+      await set(customizeRequestRef, {
+        ...formData,
+        timestamp: serverTimestamp()
       });
       
-      // Save ONLY the data we want - NO serverTimestamp() or Date.now()
-      const dataToSave = {
-        orderId: customOrderId,
-        customerDetails: {
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          company: formData.company
-        },
-        orderDetails: {
-          droneModel: formData.droneModel,
-          industry: formData.industry,
-          customRequirements: formData.customRequirements
-        },
-        timestamp: humanTimestamp, // This will be "July 7, 2025 at 06:55:30 PM"
-        status: 'pending'
-      };
-      
-      console.log('Saving data:', dataToSave); // Debug to see what we're saving
-      
-      await set(customizeRequestRef, dataToSave);
-      
+      // Show success message
       setShowSuccess(true);
       
+      // Reset form
       setFormData({
         name: '',
         email: '',
@@ -248,14 +186,12 @@ function CustomizePage() {
         customRequirements: '',
       });
       
+      // Hide success message after 5 seconds
       setTimeout(() => {
         setShowSuccess(false);
       }, 5000);
     } catch (error) {
       console.error("Error submitting customization request:", error);
-      alert("There was an error submitting your request. Please try again.");
-    } finally {
-      setIsSubmitting(false);
     }
   };
   
@@ -357,9 +293,7 @@ function CustomizePage() {
           />
         </FormGroup>
         
-        <SubmitButton type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Submitting...' : 'Submit Request'}
-        </SubmitButton>
+        <SubmitButton type="submit">Submit Request</SubmitButton>
         
         {showSuccess && (
           <SuccessMessage
@@ -374,4 +308,4 @@ function CustomizePage() {
   );
 }
 
-export default CustomizePage;
+export default CustomizePage; 
