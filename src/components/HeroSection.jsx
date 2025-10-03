@@ -240,7 +240,7 @@ const NavigationArrow = styled(motion.button)`
 `;
 
 const LeftArrow = styled(NavigationArrow)`
-  left: 2rem;
+  left: 0.1rem;
   
   @media (max-width: 768px) {
     left: 1rem;
@@ -252,7 +252,7 @@ const LeftArrow = styled(NavigationArrow)`
 `;
 
 const RightArrow = styled(NavigationArrow)`
-  right: 2rem;
+  right: 0.1rem;
   
   @media (max-width: 768px) {
     right: 1rem;
