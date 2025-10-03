@@ -419,8 +419,9 @@ const HeroDescription = styled.p`
   }
 `;
 
-const phoneGreenhouseBg = '/images/phgreen.png';
-const phoneAquacultureBg = '/images/phaqua.png';
+const phoneGreenhouseBg = '/images/phgreen.avif';
+const phoneAquacultureBg = '/images/phaqua.avif';
+
 
 function HeroSectionComponent() {
   // --- Carousel State ---
