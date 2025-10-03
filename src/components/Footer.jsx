@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 import { FaLinkedin } from 'react-icons/fa';
-import twitterImg from '/images/twitter.png';
+import twitterImg from '/images/twitter.jpg';
 
 const Footer = styled.footer`
   background-color: var(--color-black);
