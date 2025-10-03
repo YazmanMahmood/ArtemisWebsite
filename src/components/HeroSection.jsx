@@ -22,7 +22,7 @@ const carouselSlides = [
   },
   { 
     id: 2, 
-    image: '/images/greenhouse.png', 
+    image: '/images/greenhouse.avif', 
     label: 'Smart Agriculture',
     title: 'Smart Agriculture',
     flippingTexts: [
@@ -36,7 +36,7 @@ const carouselSlides = [
   },
   { 
     id: 3, 
-    image: '/images/aquaculture.png', 
+    image: '/images/aquaculture.avif', 
     label: 'Aquaculture Monitoring',
     title: 'Aquaculture Monitoring',
     flippingTexts: [
