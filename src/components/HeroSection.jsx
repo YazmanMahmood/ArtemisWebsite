@@ -154,7 +154,7 @@ const CarouselSlide = styled(motion.div)`
 
 const NavigationArrow = styled(motion.button)`
   position: absolute;
-  top: 50%;
+  top: 60%;
   transform: translateY(-50%);
   z-index: 100;
   background: transparent;
@@ -168,7 +168,7 @@ const NavigationArrow = styled(motion.button)`
   cursor: pointer;
   transition: all 0.3s ease;
   pointer-events: auto;
-  opacity: 1;   /* always visible */
+  opacity: 1;
 
   &:hover {
     svg {
@@ -195,32 +195,7 @@ const NavigationArrow = styled(motion.button)`
   @media (max-width: 768px) {
     width: 80px;
     height: 80px;
-    
-    svg {
-      width: 32px;
-      height: 32px;
-    }
-  }
-
-
-  
-  &:active {
-    svg {
-      transform: scale(0.9);
-    }
-  }
-  
-  svg {
-    width: 40px;
-    height: 40px;
-    pointer-events: none;
-    transition: all 0.3s ease;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
-  }
-  
-  @media (max-width: 768px) {
-    width: 80px;
-    height: 80px;
+    top: 55%;
     
     svg {
       width: 32px;
@@ -231,6 +206,7 @@ const NavigationArrow = styled(motion.button)`
   @media (max-width: 480px) {
     width: 70px;
     height: 70px;
+    top: 55%;
     
     svg {
       width: 28px;
