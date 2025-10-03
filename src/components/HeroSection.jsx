@@ -1,15 +1,10 @@
-// src/components/HeroSectionComponent.jsx
 import styled from '@emotion/styled';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
-// Icons are imported but not used in this snippet's JSX, kept in case needed elsewhere
-import { FaPlane, FaLock, FaSearch } from 'react-icons/fa';
+import { FaPlane, FaLock, FaSearch, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
-// Add Inter font to the font stack for premium look (ensure it's linked in your HTML)
 const premiumFont = "'Inter', Arial, Helvetica, sans-serif";
 
-// --- Carousel Data ---
-// Ensure images are in the public/images folder
 const carouselSlides = [
   { 
     id: 1, 
@@ -55,20 +50,16 @@ const carouselSlides = [
   },
 ];
 
-// --- Styled Components ---
-// --- Added Overlay ---
 const HeroOverlay = styled.div`
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  /* Black gradient fading to the right on desktop */
   background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0) 100%);
   z-index: 2;
   
   @media (max-width: 768px) {
-    /* Light overlay on mobile */
     background: rgba(0,0,0,0.3);
   }
 `;
@@ -104,10 +95,9 @@ const HeroSection = styled.section`
   }
 `;
 
-// --- Carousel Styles ---
 const CarouselContainer = styled.div`
   position: absolute;
-  top: 0; /* Start from very top on mobile to show full image */
+  top: 0;
   left: 0;
   width: 100%;
   height: 100%;
@@ -136,17 +126,15 @@ const CarouselSlide = styled(motion.div)`
   background-color: var(--color-dark-grey);
   
   @media (max-width: 768px) {
-    /* Ensure full width coverage on mobile */
     width: 100vw;
     min-width: 100vw;
     left: 0;
     right: 0;
     margin: 0;
     padding: 0;
-    background-size: cover; /* changed from contain to cover */
+    background-size: cover;
     background-position: center center;
     min-height: 100vh;
-    /* Force background to cover entire width */
     background-attachment: local;
   }
   
@@ -157,14 +145,124 @@ const CarouselSlide = styled(motion.div)`
     right: 0;
     margin: 0;
     padding: 0;
-    background-size: cover; /* changed from contain to cover */
+    background-size: cover;
     background-position: center center;
     min-height: 100vh;
     background-attachment: local;
   }
 `;
 
-// --- Updated Progress Bar Container ---
+const NavigationArrow = styled(motion.button)`
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  background: transparent;
+  border: none;
+  color: white;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  pointer-events: auto;
+  opacity: 1;   /* always visible */
+
+  &:hover {
+    svg {
+      color: rgba(255, 107, 53, 1);
+      filter: drop-shadow(0 0 10px rgba(255, 107, 53, 0.8));
+      transform: scale(1.2);
+    }
+  }
+  
+  &:active {
+    svg {
+      transform: scale(0.9);
+    }
+  }
+  
+  svg {
+    width: 40px;
+    height: 40px;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
+  }
+  
+  @media (max-width: 768px) {
+    width: 80px;
+    height: 80px;
+    
+    svg {
+      width: 32px;
+      height: 32px;
+    }
+  }
+
+
+  
+  &:active {
+    svg {
+      transform: scale(0.9);
+    }
+  }
+  
+  svg {
+    width: 40px;
+    height: 40px;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
+  }
+  
+  @media (max-width: 768px) {
+    width: 80px;
+    height: 80px;
+    
+    svg {
+      width: 32px;
+      height: 32px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    width: 70px;
+    height: 70px;
+    
+    svg {
+      width: 28px;
+      height: 28px;
+    }
+  }
+`;
+
+const LeftArrow = styled(NavigationArrow)`
+  left: 2rem;
+  
+  @media (max-width: 768px) {
+    left: 1rem;
+  }
+  
+  @media (max-width: 480px) {
+    left: 0.5rem;
+  }
+`;
+
+const RightArrow = styled(NavigationArrow)`
+  right: 2rem;
+  
+  @media (max-width: 768px) {
+    right: 1rem;
+  }
+  
+  @media (max-width: 480px) {
+    right: 0.5rem;
+  }
+`;
+
 const ProgressBarContainer = styled.div`
   position: absolute;
   bottom: 60px;
@@ -177,7 +275,7 @@ const ProgressBarContainer = styled.div`
   
   @media (max-width: 768px) {
     padding: 0 1.5rem;
-    bottom: 200px; /* Move up to accommodate text below */
+    bottom: 200px;
     width: 100vw;
     left: 0;
     right: 0;
@@ -186,7 +284,7 @@ const ProgressBarContainer = styled.div`
   
   @media (max-width: 480px) {
     padding: 0 1rem;
-    bottom: 180px; /* Adjust for mobile text space */
+    bottom: 180px;
     width: 100vw;
     left: 0;
     right: 0;
@@ -194,7 +292,6 @@ const ProgressBarContainer = styled.div`
   }
 `;
 
-// --- Label for Progress Bars ---
 const ProgressLabel = styled.div`
   color: var(--color-white);
   font-size: 0.85rem;
@@ -220,13 +317,18 @@ const ProgressBarWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   min-width: 120px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
   
   @media (max-width: 480px) {
     min-width: 80px;
   }
 `;
 
-// --- Updated Progress Bar Style (More prominent and bright) ---
 const ProgressBar = styled.div`
   width: 120px;
   height: 6px;
@@ -289,9 +391,8 @@ const HeroContent = styled(motion.div)`
   margin-top: 30px;
   
   @media (max-width: 768px) {
-    /* Position text right below navbar on mobile */
     position: absolute;
-    top: 70px; /* Right below navbar */
+    top: 70px;
     left: 0;
     right: 0;
     width: 100vw;
@@ -308,7 +409,7 @@ const HeroContent = styled(motion.div)`
   }
   
   @media (max-width: 480px) {
-    top: 70px; /* Right below navbar */
+    top: 70px;
     padding: 1.5rem 1rem 0 1rem;
     text-align: left;
     align-items: flex-start;
@@ -318,7 +419,6 @@ const HeroContent = styled(motion.div)`
   }
 `;
 
-// --- Gradient Title ---
 const HeroTitle = styled.h1`
   font-size: 3rem;
   margin-bottom: 0.5rem;
@@ -341,7 +441,6 @@ const HeroTitle = styled.h1`
     margin-bottom: 0.6rem;
     text-align: left;
     line-height: 1.2;
-    /* Add stronger shadow for mobile visibility */
     filter: drop-shadow(0 2px 6px rgba(0,0,0,0.8));
   }
   
@@ -401,7 +500,6 @@ const HeroDescription = styled.p`
     margin: 0 0 1rem 0;
     text-align: left;
     max-width: 100%;
-    /* Better text visibility on mobile */
     text-shadow: 0 1px 5px rgba(0,0,0,0.9);
     font-weight: 500;
     width: 100%;
@@ -422,21 +520,15 @@ const HeroDescription = styled.p`
 const phoneGreenhouseBg = '/images/phgreen.avif';
 const phoneAquacultureBg = '/images/phaqua.avif';
 
-
 function HeroSectionComponent() {
-  // --- Carousel State ---
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const progressIntervalRef = useRef(null);
-
-  // Flipping text state
   const [flippingTextIndex, setFlippingTextIndex] = useState(0);
+  const [isPhone, setIsPhone] = useState(false);
 
-  // Get current slide data
   const currentSlide = carouselSlides[currentSlideIndex];
   const currentFlippingText = currentSlide.flippingTexts[flippingTextIndex];
-
-  const [isPhone, setIsPhone] = useState(false);
 
   useEffect(() => {
     const checkPhone = () => {
@@ -456,20 +548,34 @@ function HeroSectionComponent() {
     backgroundImage = currentSlide.image;
   }
 
-  // --- Carousel Effect (Updated to 5 seconds) ---
+  const goToSlide = (index) => {
+    setCurrentSlideIndex(index);
+    setProgress(0);
+  };
+
+  const goToPrevSlide = () => {
+    const newIndex = currentSlideIndex === 0 
+      ? carouselSlides.length - 1 
+      : currentSlideIndex - 1;
+    goToSlide(newIndex);
+  };
+
+  const goToNextSlide = () => {
+    const newIndex = (currentSlideIndex + 1) % carouselSlides.length;
+    goToSlide(newIndex);
+  };
+
   useEffect(() => {
     const startProgress = () => {
       progressIntervalRef.current = setInterval(() => {
         setProgress(prev => {
           if (prev >= 100) {
-             // Move to next slide
-             setCurrentSlideIndex(prevIndex => (prevIndex + 1) % carouselSlides.length);
-             return 0; // Reset progress for next slide
+            setCurrentSlideIndex(prevIndex => (prevIndex + 1) % carouselSlides.length);
+            return 0;
           }
-          // Increment for 5 seconds (5000ms / 100ms interval = 50 increments)
           return prev + (100 / 50);
         });
-      }, 100); // Update progress every 100ms
+      }, 100);
     };
 
     startProgress();
@@ -479,68 +585,79 @@ function HeroSectionComponent() {
         clearInterval(progressIntervalRef.current);
       }
     };
-  }, []); // Run only once on mount
+  }, []);
 
-  // Flipping text effect (Updated to 3 seconds)
   useEffect(() => {
-    // Reset flipping text index when slide changes
     setFlippingTextIndex(0);
     
-    // Change text every 3 seconds within the current slide
     const intervalId = setInterval(() => {
       setFlippingTextIndex(prevIndex => 
         (prevIndex + 1) % currentSlide.flippingTexts.length
       );
-    }, 3000); // Changed to 3 seconds
+    }, 3000);
     
     return () => clearInterval(intervalId);
   }, [currentSlideIndex, currentSlide.flippingTexts.length]);
 
   return (
     <HeroSection>
-       {/* --- Overlay --- */}
-       <HeroOverlay />
-       
-       {/* --- Carousel --- */}
-       <CarouselContainer>
-         <AnimatePresence initial={false}>
-           <CarouselSlide
-             key={currentSlide.id}
-             image={backgroundImage} // <-- Pass only the path, not url(...)
-             initial={{ opacity: 0 }}
-             animate={{ opacity: 1 }}
-             exit={{ opacity: 0 }}
-             transition={{ duration: 0.8 }}
-           />
-         </AnimatePresence>
-         
-         {/* --- Updated Progress Bars --- */}
-         <ProgressBarContainer>
-           {carouselSlides.map((slide, idx) => (
-             <ProgressBarWrapper key={slide.id}>
-               <ProgressLabel>{slide.label}</ProgressLabel>
-               <ProgressBar>
-                 <ProgressBarFill
-                   progress={
-                     idx === currentSlideIndex 
-                       ? progress 
-                       : 0 // Always empty except current slide
-                   }
-                 />
-               </ProgressBar>
-             </ProgressBarWrapper>
-           ))}
-         </ProgressBarContainer>
-       </CarouselContainer>
-       {/* --- End Carousel --- */}
+      <HeroOverlay />
+      
+      <CarouselContainer>
+        <AnimatePresence initial={false}>
+          <CarouselSlide
+            key={currentSlide.id}
+            image={backgroundImage}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8 }}
+          />
+        </AnimatePresence>
+        
+        <ProgressBarContainer>
+          {carouselSlides.map((slide, idx) => (
+            <ProgressBarWrapper 
+              key={slide.id}
+              onClick={() => goToSlide(idx)}
+            >
+              <ProgressLabel>{slide.label}</ProgressLabel>
+              <ProgressBar>
+                <ProgressBarFill
+                  progress={
+                    idx === currentSlideIndex 
+                      ? progress 
+                      : 0
+                  }
+                />
+              </ProgressBar>
+            </ProgressBarWrapper>
+          ))}
+        </ProgressBarContainer>
+      </CarouselContainer>
+      
+      <LeftArrow
+        onClick={goToPrevSlide}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        <FaChevronLeft />
+      </LeftArrow>
+      
+      <RightArrow
+        onClick={goToNextSlide}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        <FaChevronRight />
+      </RightArrow>
 
       <HeroContent
-        key={currentSlideIndex} // Re-animate when slide changes
+        key={currentSlideIndex}
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
       >
-        {/* --- Dynamic Title based on current slide --- */}
         <HeroTitle>{currentSlide.title}</HeroTitle>
         <FlippingTextContainer>
           <AnimatePresence mode="wait">
@@ -571,7 +688,6 @@ function HeroSectionComponent() {
             </motion.h2>
           </AnimatePresence>
         </FlippingTextContainer>
-        {/* --- Dynamic Description based on current slide --- */}
         <HeroDescription>
           {currentSlide.description}
         </HeroDescription>
