@@ -101,7 +101,7 @@ export const outdoorResponseDrones = [
         description: 'Extended-range ISR platform combining VTOL flexibility with fixed-wing efficiency.',
         specs: {
             flightTime: '3 Hours',
-            range: '30km',
+            range: '300km',
             maxAltitude: '3000m',
             cruiseSpeed: '70-90 km/h',
             propulsion: 'Electric'
