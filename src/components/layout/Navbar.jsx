@@ -3,7 +3,8 @@ import { Link, useLocation } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 import { FaBars, FaTimes } from 'react-icons/fa';
-import whiteLogoImg from '/images/whitelogo.png';
+
+const whiteLogoImg = '/images/whitelogo.png';
 
 const Nav = styled.nav`
   position: fixed;
