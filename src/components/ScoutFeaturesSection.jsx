@@ -221,7 +221,7 @@ const features = [
   },
   {
     image: '/images/payload.webp',
-    title: '1.5kg Payload Capacity',
+    title: 'Upto 3kg* Payload Capacity',
   },
 ];
 
