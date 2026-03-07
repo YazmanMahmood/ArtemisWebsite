@@ -7,15 +7,15 @@ const premiumFont = "'Montserrat', sans-serif";
 const carouselSlides = [
   {
     id: 1,
-    image: '/images/DFR.png',
+    image: '/images/DFR.webp',
   },
   {
     id: 2,
-    image: '/images/military.png',
+    image: '/images/military.webp',
   },
   {
     id: 3,
-    image: '/images/longrange.png',
+    image: '/images/longrange.webp',
   },
 ];
 

@@ -240,7 +240,7 @@ function DroneControlSectionComponent() {
         >
           <CircleGlow />
           <PlatformImage
-            src="/images/ui.png"
+            src="/images/ui.webp"
             alt="Drone Control Platform Interface"
           />
         </ImageSide>

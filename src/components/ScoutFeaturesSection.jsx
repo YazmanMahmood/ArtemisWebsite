@@ -204,11 +204,11 @@ const cardVariants = {
 // Using dummy drone images as requested to replace icons
 const features = [
   {
-    image: '/images/batteryswap.png',
+    image: '/images/batteryswap.webp',
     title: 'Battery Swapping',
   },
   {
-    image: '/images/landing.png',
+    image: '/images/landing.webp',
     title: 'Precision Auto-Landing',
   },
   {
@@ -216,11 +216,11 @@ const features = [
     title: '50 Min Flight Time',
   },
   {
-    image: '/images/cameraview.png',
+    image: '/images/cameraview.webp',
     title: '4K & Thermal Vision',
   },
   {
-    image: '/images/payload.png',
+    image: '/images/payload.webp',
     title: '1.5kg Payload Capacity',
   },
 ];

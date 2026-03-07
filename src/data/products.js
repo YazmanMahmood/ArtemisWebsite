@@ -49,7 +49,7 @@ export const outdoorResponseDrones = [
     {
         id: 4,
         name: 'Artemis Scout',
-        image: '/images/military.png',
+        image: '/images/military.webp',
         category: 'Outdoor Response',
         type: 'Drone-in-a-Box',
         description: 'Autonomous persistent surveillance and rapid-response deployment system.',
@@ -186,7 +186,7 @@ export const publicSafetyDrones = [
     {
         id: 9,
         name: 'DFR (Drone as First Responder)',
-        image: '/images/DFR.png',
+        image: '/images/DFR.webp',
         category: 'Public Safety',
         type: 'Emergency Response',
         description: 'Rapid deployment system for first response, providing live situational awareness.',
