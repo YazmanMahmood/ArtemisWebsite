@@ -177,7 +177,7 @@ const applications = [
   {
     id: 1,
     title: 'Long Range Surveillance',
-    image: '/images/longrange.png',
+    image: '/images/longrange.webp',
     description: 'Extended flight endurance and satellite-link capabilities for monitoring vast geographical areas and remote borders.',
     tags: ['Satellite Link', '24h Flight', 'HD Optics']
   },
@@ -219,7 +219,7 @@ const applications = [
   {
     id: 7,
     title: 'Stealth Operations',
-    image: '/images/military.png',
+    image: '/images/military.webp',
     description: 'Ultra-quiet propulsion and low-observability designs for sensitive reconnaissance missions without detection.',
     tags: ['Low-Noise', 'Radar-Absorb', 'IR stealth']
   },
