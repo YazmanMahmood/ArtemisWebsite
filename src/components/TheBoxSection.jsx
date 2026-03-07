@@ -94,10 +94,10 @@ const FeaturesArc = styled.div`
 
 // Circular list item
 const FeatureItem = styled(motion.div)`
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   font-weight: 300; /* Minimalistic / Light */
   color: #475569; 
-  cursor: pointer;
+  white-space: nowrap;  cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
