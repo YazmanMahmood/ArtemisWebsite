@@ -11,6 +11,10 @@ const DetailsContainer = styled.div`
   background: #fdfdfd; /* Very subtle off-white for minimalism */
   color: #111;
   font-family: 'Montserrat', sans-serif;
+
+  @media (max-width: 768px) {
+    padding: 100px 1rem 60px;
+  }
 `;
 
 const ContentWrapper = styled.div`
@@ -67,6 +71,11 @@ const InfoSection = styled.div`
     margin-bottom: 1.5rem;
     color: #111;
     font-weight: 700;
+
+    @media (max-width: 768px) {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+    }
   }
 
   .type {
@@ -86,6 +95,11 @@ const InfoSection = styled.div`
     line-height: 1.7;
     color: #444;
     margin-bottom: 2.5rem;
+
+    @media (max-width: 768px) {
+      font-size: 1.05rem;
+      margin-bottom: 1.8rem;
+    }
   }
 `;
 
@@ -132,6 +146,11 @@ const FeaturesSection = styled.div`
   color: #111;
   margin-top: 4rem;
 
+  @media (max-width: 768px) {
+    padding: 2.5rem 1.5rem;
+    margin-top: 2rem;
+  }
+
   h2 {
     font-size: 2.2rem;
     margin-bottom: 2.5rem;
@@ -158,6 +177,10 @@ const FeaturesSection = styled.div`
     gap: 1rem;
     font-size: 1.1rem;
     color: #000000; /* ✅ Changed from var(--text-light) to black */
+
+    @media (max-width: 768px) {
+      font-size: 1rem;
+    }
 
     &:before {
       content: '✓';

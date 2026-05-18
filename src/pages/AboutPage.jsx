@@ -1,77 +1,135 @@
-import React, { useRef, useEffect, useState } from "react";
+import React from "react";
 import styled from "@emotion/styled";
-import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { useScrollToTop } from "../hooks/useScrollToTop";
 import { Link } from "react-router-dom";
+import { FaBullseye, FaEye, FaMedal } from "react-icons/fa";
+import GlobeAnimation from "../components/GlobeAnimation";
 
-// Styled components
+// ─── Styled Components ───────────────────────────────────────────────────────
+
 const AboutContainer = styled.div`
-  padding: 80px 2rem;
   min-height: 100vh;
-  background: var(--light);
+  background-color: #000;
+  color: #fff;
+  font-family: 'Share Tech Mono', monospace;
+  padding: 140px 2rem 80px;
+  position: relative;
+  overflow-x: hidden;
+`;
+
+const DataGrid = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 2px 2px, rgba(255, 77, 77, 0.05) 1px, transparent 0);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 1;
 `;
 
 const Header = styled.div`
   text-align: center;
   max-width: 800px;
   margin: 0 auto 6rem;
+  position: relative;
+  z-index: 2;
 
   h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 10px;
+    font-weight: 700;
+    
+    span {
+      color: #ff4d4d;
+    }
   }
 
   p {
-    color: var(--text-light);
-    font-size: 1.1rem;
-    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 1rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
   }
 `;
 
 const ContentSection = styled.section`
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 0 auto 8rem;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4rem;
+  gap: 5rem;
   align-items: center;
-  margin-bottom: 6rem;
+  position: relative;
+  z-index: 2;
 
-  @media (max-width: 768px) {
+  @media (max-width: 900px) {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 3rem;
   }
+`;
+
+const CornerBracket = styled.div`
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #ff4d4d;
+  z-index: 5;
+  
+  ${props => props.top && 'top: -5px;'}
+  ${props => props.bottom && 'bottom: -5px;'}
+  ${props => props.left && 'left: -5px; border-right: 0; border-bottom: 0;'}
+  ${props => props.right && 'right: -5px; border-left: 0; border-bottom: 0;'}
+  ${props => props.bottom && props.left && 'border-top: 0; border-right: 0;'}
+  ${props => props.bottom && props.right && 'border-top: 0; border-left: 0;'}
 `;
 
 const ImageContainer = styled(motion.div)`
   position: relative;
-  height: 400px;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  height: 450px;
+  border: 1px solid rgba(255, 77, 77, 0.2);
+  padding: 10px;
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    filter: grayscale(0.2) contrast(1.1);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 77, 77, 0.1) 0%, transparent 50%);
+    pointer-events: none;
   }
 `;
 
 const TextContent = styled(motion.div)`
   h2 {
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
-    color: var(--dark);
+    font-size: 2.2rem;
+    margin-bottom: 2rem;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    
+    span {
+      color: #ff4d4d;
+    }
   }
 
   p {
-    color: var(--text-light);
+    color: rgba(255, 255, 255, 0.6);
     line-height: 1.8;
     margin-bottom: 1.5rem;
+    font-size: 1rem;
   }
 `;
 
@@ -79,544 +137,337 @@ const Stats = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
-  margin-top: 3rem;
-  text-align: center;
-
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  margin-top: 4rem;
+  border-top: 1px solid rgba(255, 77, 77, 0.2);
+  padding-top: 2rem;
 
   div {
     h3 {
-      font-size: 2rem;
-      color: var(--primary);
+      font-size: 2.5rem;
+      color: #ff4d4d;
       margin-bottom: 0.5rem;
+      font-weight: 700;
     }
     p {
-      color: var(--text-muted);
-      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.7rem;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 2px;
     }
   }
 `;
 
-const Values = styled.div`
+const ValuesGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 0 auto 10rem;
+  position: relative;
+  z-index: 2;
 
-  @media (max-width: 768px) {
+  @media (max-width: 900px) {
     grid-template-columns: 1fr;
   }
 `;
 
 const ValueCard = styled(motion.div)`
-  background: var(--dark-accent);
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  background: rgba(15, 15, 15, 0.6);
+  padding: 3rem 2rem;
+  border: 1px solid rgba(255, 77, 77, 0.1);
+  position: relative;
   text-align: center;
+  backdrop-filter: blur(10px);
+  transition: all 0.4s ease;
+
+  &:hover {
+    border-color: #ff4d4d;
+    background: rgba(20, 20, 20, 0.8);
+    transform: translateY(-5px);
+  }
 
   h3 {
-    font-size: 1.5rem;
-    margin: 1rem 0;
-    color: var(--dark);
+    font-size: 1.4rem;
+    margin: 1.5rem 0 1rem;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 3px;
   }
 
   p {
-    color: var(--text-light);
-    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.7;
+    font-size: 0.9rem;
   }
 
   .icon {
     font-size: 2.5rem;
-    color: var(--primary);
+    color: #ff4d4d;
+    filter: drop-shadow(0 0 10px rgba(255, 77, 77, 0.3));
   }
 `;
 
 const TimelineSection = styled.section`
-  max-width: 1200px;
-  margin: 4rem auto 8rem;
+  max-width: 1000px;
+  margin: 0 auto 10rem;
   position: relative;
-  padding: 0 0 6rem;
-  overflow: visible;
-`;
-
-const TimelineLine = styled(motion.div)`
-  position: absolute;
-  left: 50%;
-  top: 60px;
-  transform: translateX(-50%);
-  width: 2px;
-  background: var(--primary);
-  transform-origin: top;
-
-  @media (max-width: 768px) {
-    left: 12px;
-  }
-`;
-
-const ScrollDot = styled(motion.div)`
-  position: absolute;
-  left: 49.5%;
-  top: 60px;
-  transform: translate(-50%, -50%);
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--primary);
-  border: 3px solid var(--light);
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
-  z-index: 10;
-
-  @media (max-width: 768px) {
-    left: 12px;
-  }
+  z-index: 2;
 `;
 
 const TimelineItem = styled(motion.div)`
-  position: relative;
-  margin-bottom: 3rem;
-  width: 100%;
   display: flex;
-  justify-content: ${(props) => (props.even ? "flex-end" : "flex-start")};
+  margin-bottom: 4rem;
+  position: relative;
+  
+  ${props => props.even ? 'flex-direction: row-reverse;' : ''}
 
-  @media (max-width: 768px) {
-    justify-content: flex-end;
-    padding-left: 60px;
+  .year {
+    width: 120px;
+    font-size: 1.5rem;
+    color: #ff4d4d;
+    font-weight: 700;
+    text-align: ${props => props.even ? 'left' : 'right'};
+    padding: 0 2rem;
+    flex-shrink: 0;
   }
 
   .content {
-    width: 45%;
-    background: var(--dark-accent);
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    position: relative;
-    overflow: hidden;
-
-    @media (max-width: 768px) {
-      width: calc(100% - 20px);
-    }
-  }
-
-  .content::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -120%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      120deg,
-      transparent,
-      rgba(255, 255, 255, 0.2),
-      transparent
-    );
-    animation: shine 1.4s ease forwards;
-    animation-delay: 0.6s;
-  }
-
-  @keyframes shine {
-    to {
-      left: 120%;
-    }
-  }
-
-  .year {
-    font-weight: bold;
-    color: var(--primary);
-    margin-bottom: 0.5rem;
-  }
-
-  .title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-  }
-
-  .description {
-    color: var(--text-light);
-    line-height: 1.6;
-  }
-
-  .dot {
-    position: absolute;
-    left: 50%;
-    top: 20px;
-    transform: translate(-50%, -50%);
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: var(--primary);
-    border: 3px solid var(--light);
-    z-index: 5;
-
-    @media (max-width: 768px) {
-      left: 20px;
-    }
-  }
-
-  ${(props) =>
-    props.even &&
-    `
-    text-align: right;
+    background: rgba(15, 15, 15, 0.8);
+    padding: 2rem;
+    border-left: 3px solid #ff4d4d;
+    flex: 1;
     
-    .content {
-      margin-right: 5%;
-    }
-    
-    @media (max-width: 768px) {
-      text-align: left;
-      .content {
-        margin-right: 0;
-      }
-    }
-  `}
+    ${props => props.even && 'border-left: 0; border-right: 3px solid #ff4d4d;'}
 
-  ${(props) =>
-    !props.even &&
-    `
-    .content {
-      margin-left: 5%;
-    }
-    
-    @media (max-width: 768px) {
-      .content {
-        margin-left: 0;
-      }
-    }
-  `}
-`;
-
-const CTASection = styled.section`
-  max-width: 800px;
-  margin: 6rem auto;
-  text-align: center;
-  padding: 3rem;
-  background: var(--dark-accent);
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-
-  h2 {
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
-    color: var(--dark);
-  }
-
-  p {
-    color: var(--text-light);
-    margin-bottom: 2rem;
-    line-height: 1.6;
-  }
-
-  .cta-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-
-    a {
-      display: inline-block;
-      padding: 0.8rem 2rem;
-      border-radius: 30px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: all 0.3s ease;
+    h4 {
+      font-size: 1.2rem;
+      margin-bottom: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #fff;
     }
 
-    .partner {
-      background: transparent;
-      color: var(--primary);
-      border: 2px solid var(--primary);
-
-      &:hover {
-        background: var(--primary);
-        color: white;
-        transform: translateY(-3px);
-      }
+    p {
+      color: rgba(255, 255, 255, 0.5);
+      line-height: 1.6;
+      font-size: 0.9rem;
     }
   }
 
   @media (max-width: 768px) {
-    .cta-buttons {
-      flex-direction: column;
-      align-items: center;
-
-      a {
-        width: 80%;
-      }
+    flex-direction: column;
+    .year {
+      text-align: left;
+      margin-bottom: 1rem;
+      padding: 0;
     }
   }
 `;
 
-// Component
+const CTASection = styled.section`
+  max-width: 900px;
+  margin: 0 auto 10rem;
+  text-align: center;
+  padding: 5rem 3rem;
+  background: linear-gradient(rgba(255, 77, 77, 0.05), transparent);
+  border: 1px solid rgba(255, 77, 77, 0.1);
+  position: relative;
+  z-index: 2;
+
+  h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 6px;
+  }
+
+  p {
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 3rem;
+    line-height: 1.8;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .partner-btn {
+    display: inline-block;
+    padding: 1.2rem 3.5rem;
+    background: transparent;
+    color: #ff4d4d;
+    border: 1px solid #ff4d4d;
+    text-decoration: none;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: #ff4d4d;
+      color: #000;
+      box-shadow: 0 0 30px rgba(255, 77, 77, 0.4);
+    }
+  }
+`;
+
+// ─── Component ───────────────────────────────────────────────────────────────
+
 const AboutPage = () => {
   useScrollToTop();
-  const timelineSectionRef = useRef(null);
-  const [timelineHeight, setTimelineHeight] = useState(0);
-  const [dotPositions, setDotPositions] = useState([]);
 
-  const [aboutRef, aboutInView] = useInView({
-    threshold: 0.1,
-    triggerOnce: true,
-  });
-
-  const [timelineRef, timelineInView] = useInView({
-    threshold: 0.1,
-    triggerOnce: true,
-  });
-
-  // Calculate timeline height
-  useEffect(() => {
-    if (timelineSectionRef.current) {
-      const height = timelineSectionRef.current.scrollHeight - 60;
-      setTimelineHeight(height);
-    }
-  }, [timelineInView]);
-
-  // Calculate dot positions based on timeline items
-  useEffect(() => {
-    if (timelineSectionRef.current && timelineHeight > 0) {
-      const items = timelineSectionRef.current.querySelectorAll('.timeline-item-dot');
-      const positions = Array.from(items).map(item => {
-        const rect = item.getBoundingClientRect();
-        const containerRect = timelineSectionRef.current.getBoundingClientRect();
-        return rect.top - containerRect.top - 60;
-      });
-      setDotPositions(positions);
-    }
-  }, [timelineHeight, timelineInView]);
-
-  // Scroll progress for timeline
-  const { scrollYProgress } = useScroll({
-    target: timelineSectionRef,
-    offset: ["start center", "end center"],
-  });
-
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
-  });
-
-  const lineHeight = useTransform(
-    smoothProgress,
-    [0, 1],
-    [0, timelineHeight]
-  );
-
-  // Create smooth snapping effect for the dot
-  const dotY = useTransform(
-    smoothProgress,
-    dotPositions.length > 0
-      ? dotPositions.map((_, i) => i / (dotPositions.length - 1))
-      : [0, 1],
-    dotPositions.length > 0
-      ? dotPositions
-      : [0, timelineHeight]
-  );
+  const [aboutRef, aboutInView] = useInView({ threshold: 0.1, triggerOnce: true });
+  const [timelineRef, timelineInView] = useInView({ threshold: 0.1, triggerOnce: true });
 
   const valuesData = [
     {
-      icon: "🎯",
+      icon: <FaBullseye />,
       title: "Mission",
-      description:
-        "To make ArtemisUAV drones a standard operational asset for governments and private enterprises by delivering autonomous systems that reduce risk and operate with minimal human involvement.",
+      description: "To build autonomous drone systems that redefine how organizations respond to high-risk scenarios — minimizing human exposure while maximizing operational reliability."
     },
     {
-      icon: "👁️",
+      icon: <FaEye />,
       title: "Vision",
-      description:
-        "To introduce a new era of autonomous drones that move beyond manual operation and become reliable, always-on aerial infrastructure for nations and enterprises.",
+      description: "A future where intelligent aerial systems provide seamless, around-the-clock protection for critical infrastructure across every industry."
     },
     {
-      icon: "⭐",
+      icon: <FaMedal />,
       title: "Values",
-      description:
-        "Innovation, reliability, and commitment to excellence in everything we do.",
-    },
+      description: "Reliability, continuous innovation, and precision engineering — applied consistently across every product we build and every client we serve."
+    }
   ];
 
   const timelineEvents = [
     {
       year: "2024",
-      title: "Company Founded",
-      description:
-        "Artemis Drone Technologies was established in Pakistan with a mission to revolutionize emergency response and security using advanced drone technology.",
+      title: "Command Established",
+      description: "Artemis Drone Technologies founded in Pakistan with a core directive to revolutionize tactical response through autonomous hardware."
     },
     {
-      year: "January 2025",
-      title: "First Prototype",
-      description:
-        "Successfully developed our first prototype and made our first public appearance showcasing our AI-powered drone solutions.",
+      year: "Q1 2025",
+      title: "Alpha Deployment",
+      description: "Successful integration of our primary AI combat-response algorithms and first public field demonstration."
     },
     {
-      year: "July 2025",
-      title: "National Incubation Center",
-      description:
-        "Accepted into the prestigious National Incubation Center Lahore, gaining access to world-class resources and mentorship.",
+      year: "Q3 2025",
+      title: "NIC Operations",
+      description: "Selected for the National Incubation Center (Lahore) for strategic scaling and advanced sensor R&D."
     },
     {
-      year: "End of 2025",
-      title: "Investment & Partnerships",
-      description:
-        "Actively seeking investment opportunities and partnerships to scale our operations and expand our impact.",
+      year: "Q4 2025",
+      title: "Global Outreach",
+      description: "Scaling production of the Interceptor and Scout platforms for international defense and private security sectors."
     },
-  ];
-
-  const statsData = [
-    { value: "5", label: "Team Members" },
-    { value: "🇵🇰", label: "Operations in Pakistan" },
-    { value: "24/7", label: "Support" },
+    {
+      year: "Q1 2026",
+      title: "Tactical Integration",
+      description: "Successful field demonstration and strategic collaboration with local military forces for autonomous operations."
+    }
   ];
 
   return (
     <AboutContainer>
-      {/* Header Section */}
+      <DataGrid />
+
       <Header>
         <motion.h1
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.8 }}
         >
-          Our Mission and Vision
+          Mission <span>Intelligence</span>
         </motion.h1>
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
         >
-          At Artemis, we believe in making the world safer through innovation.
+          Operational Directives & Strategic Vision // Established 2024
         </motion.p>
       </Header>
 
-      {/* Content Section */}
       <ContentSection ref={aboutRef}>
-        <ImageContainer
+        <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={aboutInView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.8 }}
+          style={{ position: 'relative', height: '600px', display: 'flex', alignItems: 'center' }}
         >
-          <img src="/images/lab.png" alt="Artemis Lab" />
-        </ImageContainer>
+          <GlobeAnimation />
+        </motion.div>
+
         <TextContent
           initial={{ opacity: 0, x: 50 }}
           animate={aboutInView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <h2>Pioneering the Future of Drones</h2>
+          <h2>Pioneering <span>Autonomous</span> Defenses</h2>
           <p>
-            Founded in 2024, Artemis Drone Technologies is a Pakistan-based
-            startup transforming emergency response and security through
-            AI-powered drones. We develop autonomous solutions for firefighting
-            in warehouses, buildings, and factories, along with advanced
-            surveillance systems.
+            Artemis Drone Technologies is an elite Pakistan-based startup engineering the future of high-stakes response. We specialize in fully autonomous platforms capable of neutralizing threats in warehouses, industrial complexes, and urban environments.
           </p>
           <p>
-            Driven by innovation and real-world impact, our team is building
-            efficient, reliable, and intelligent drone technologies to create a
-            safer and smarter future.
+            Our systems bypass the limitations of manual operation, utilizing neural-linked algorithms to provide 24/7 reliability where human intervention is too slow or too high-risk.
           </p>
-          <Stats>
-            {statsData.map((stat, index) => (
-              <div key={index}>
-                <h3>{stat.value}</h3>
-                <p>{stat.label}</p>
-              </div>
-            ))}
-          </Stats>
+
         </TextContent>
       </ContentSection>
 
-      {/* Values Section */}
-      <Values>
+
+
+      <ValuesGrid>
         {valuesData.map((value, index) => (
           <ValueCard
             key={index}
             initial={{ opacity: 0, y: 30 }}
             animate={aboutInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: index * 0.2 }}
+            transition={{ duration: 0.6, delay: index * 0.1 }}
           >
+            <CornerBracket top left />
+            <CornerBracket bottom right />
             <div className="icon">{value.icon}</div>
             <h3>{value.title}</h3>
             <p>{value.description}</p>
           </ValueCard>
         ))}
-      </Values>
+      </ValuesGrid>
 
-      {/* Timeline Section */}
-      <TimelineSection
-        ref={(el) => {
-          timelineSectionRef.current = el;
-          timelineRef(el);
-        }}
-      >
+      <TimelineSection ref={timelineRef}>
         <motion.h2
-          style={{
-            textAlign: "center",
-            marginBottom: "3rem",
-            marginTop: "0",
-          }}
-          initial={{ opacity: 0, y: 40, scale: 0.95 }}
-          animate={timelineInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-          transition={{ type: "spring", stiffness: 90, damping: 15 }}
+          style={{ textAlign: "center", marginBottom: "5rem", textTransform: 'uppercase', letterSpacing: '6px' }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={timelineInView ? { opacity: 1, y: 0 } : {}}
         >
-          Our Journey
+          Operational History
         </motion.h2>
-
-        {/* Animated timeline line */}
-        <TimelineLine style={{ height: lineHeight }} />
-
-        {/* Scrolling dot */}
-        <ScrollDot style={{ y: dotY }} />
 
         {timelineEvents.map((event, index) => (
           <TimelineItem
             key={index}
-            even={index % 2 === 0}
-            initial={{
-              opacity: 0,
-              x: index % 2 === 0 ? -120 : 120,
-              skewY: 10,
-              rotate: index % 2 === 0 ? -10 : 10,
-            }}
-            animate={
-              timelineInView ? { opacity: 1, x: 0, skewY: 0, rotate: 0 } : {}
-            }
-            transition={{
-              type: "spring",
-              stiffness: 80,
-              damping: 15,
-              delay: index * 0.25,
-            }}
+            even={index % 2 !== 0}
+            initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
+            animate={timelineInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.6, delay: index * 0.2 }}
           >
+            <div className="year">{event.year}</div>
             <div className="content">
-              <div className="year">{event.year}</div>
-              <div className="title">{event.title}</div>
-              <div className="description">{event.description}</div>
+              <h4>{event.title}</h4>
+              <p>{event.description}</p>
             </div>
-            <div className="dot timeline-item-dot"></div>
           </TimelineItem>
         ))}
       </TimelineSection>
 
-      {/* CTA Section */}
       <CTASection>
-        <h2>Join Us in Shaping the Future</h2>
+        <CornerBracket top left />
+        <CornerBracket top right />
+        <CornerBracket bottom left />
+        <CornerBracket bottom right />
+        <h2>Work With Us</h2>
         <p>
-          We're looking for investors who believe in our vision and partners who
-          want to collaborate in creating safer communities through innovative
-          drone technology.
+          Whether you're a business, research institution, or investor — we're open to collaboration. Get in touch to learn how Artemis can work for you.
         </p>
-        <div className="cta-buttons">
-          <Link to="/contact" className="partner">
-            Become a Partner
-          </Link>
-        </div>
+        <Link to="/contact" className="partner-btn">
+          Get In Touch
+        </Link>
       </CTASection>
     </AboutContainer>
   );

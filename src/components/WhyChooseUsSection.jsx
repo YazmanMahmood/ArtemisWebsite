@@ -1,241 +1,197 @@
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
-import { FaCogs, FaUserCheck, FaShieldAlt, FaLightbulb, FaHandshake } from 'react-icons/fa';
+import { FaLayerGroup, FaWifi, FaUsers, FaSlidersH, FaTools } from 'react-icons/fa';
+import RoboticReveal from './common/RoboticReveal';
 
-const WhyChooseSection = styled.section`
+const SectionWrapper = styled.section`
   padding: 8rem 2rem;
-  background-image: url('/images/bg.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  color: #ffffff;
-  font-family: var(--font-primary);
-  overflow: hidden;
+  background: #000;
+  color: #fff;
+  font-family: 'Share Tech Mono', monospace;
   position: relative;
-
-  /* Dark overlay for better text readability */
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
-    z-index: 0;
-  }
-
-  & > * {
-    position: relative;
-    z-index: 1;
-  }
-
-  @media (max-width: 768px) {
-    padding: 4rem 1.2rem;
-  }
+  overflow: hidden;
 `;
 
-const SectionTitle = styled(motion.h2)`
-  text-align: center;
-  font-size: 5rem;
-  margin-bottom: 1rem;
-  font-weight: 800;
-  letter-spacing: -3px;
-  color: #ffffff;
-  line-height: 1;
-  
-  span {
-    color: #ff4d4d;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 3.5rem;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 2.8rem;
-  }
+const GridOverlay = styled.div`
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255, 77, 77, 0.05) 1px, transparent 0);
+  background-size: 30px 30px;
+  pointer-events: none;
+  z-index: 1;
 `;
 
-const SectionSubtitle = styled(motion.p)`
-  text-align: center;
-  font-size: 1.5rem;
-  color: rgba(255, 255, 255, 0.8);
-  margin: 0 auto 4rem auto;
-  max-width: 700px;
-  line-height: 1.6;
-  font-weight: 300;
-
-  @media (max-width: 768px) {
-    font-size: 1.2rem;
-    margin-bottom: 3rem;
-  }
-`;
-
-const WhyChooseGrid = styled(motion.div)`
-  display: grid;
-  gap: 2.5rem;
+const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-
-  @media (min-width: 1024px) {
-    grid-template-columns: repeat(6, 1fr);
-    
-    & > :nth-of-type(1), & > :nth-of-type(2), & > :nth-of-type(3) {
-      grid-column: span 2;
-    }
-    
-    & > :nth-of-type(4) {
-      grid-column: 2 / span 2;
-    }
-    
-    & > :nth-of-type(5) {
-      grid-column: 4 / span 2;
-    }
-  }
-
-  @media (max-width: 1024px) and (min-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
+  position: relative;
+  z-index: 2;
 `;
 
-const ChooseCard = styled(motion.div)`
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  padding: 2.5rem 2rem;
+const SectionHeader = styled.div`
   text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  margin-bottom: 5rem;
+`;
+
+const ReasonsList = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 0;
+  border: 1px solid rgba(255, 77, 77, 0.12);
+`;
 
-  &:hover {
-    transform: translateY(-12px);
-    background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(255, 77, 77, 0.4);
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+const ReasonRow = styled(motion.div)`
+  display: grid;
+  grid-template-columns: 56px 200px 1fr;
+  gap: 0;
+  border-bottom: 1px solid rgba(255, 77, 77, 0.08);
+  align-items: stretch;
+  transition: background 0.3s ease;
 
-    .icon-wrapper {
-      transform: scale(1.1) rotate(5deg);
-      background: rgba(255, 77, 77, 1);
-      color: #fff;
-      box-shadow: 0 0 40px rgba(255, 77, 77, 0.5);
-    }
+  &:last-child {
+    border-bottom: none;
   }
 
-  h3 {
-    font-size: 1.5rem;
-    margin: 2rem 0 0;
-    font-weight: 700;
-    color: #fff;
-    letter-spacing: -0.5px;
+  &:hover {
+    background: rgba(255, 77, 77, 0.04);
   }
 
   @media (max-width: 768px) {
-    padding: 2.5rem 1.5rem;
-    
-    h3 {
-      font-size: 1.3rem;
-    }
+    grid-template-columns: 44px 1fr;
   }
 `;
 
-const IconWrapper = styled.div`
-  width: 90px;
-  height: 90px;
-  border-radius: 22px;
+const IndexCell = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 2.8rem;
-  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-  color: #ff4d4d;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  padding: 2rem 0;
+  border-right: 1px solid rgba(255, 77, 77, 0.1);
+  font-size: 0.65rem;
+  color: rgba(255, 77, 77, 0.4);
+  letter-spacing: 1px;
+`;
+
+const IconCell = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem 1.5rem;
+  border-right: 1px solid rgba(255, 77, 77, 0.1);
+
+  svg {
+    color: #ff4d4d;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  span {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
 
   @media (max-width: 768px) {
-    width: 75px;
-    height: 75px;
-    font-size: 2.2rem;
+    border-right: none;
   }
 `;
 
-// Variants
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.12
-    }
-  }
-};
+const DescCell = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 2rem 2rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  letter-spacing: 0.5px;
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 40, scale: 0.95 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { duration: 0.6, ease: "easeOut" }
+  @media (max-width: 768px) {
+    display: none;
   }
-};
+`;
 
-const items = [
-  { icon: <FaCogs />, title: "Custom-Built Solutions" },
-  { icon: <FaUserCheck />, title: "User-Centric Approach" },
-  { icon: <FaShieldAlt />, title: "Reliability & Durability" },
-  { icon: <FaLightbulb />, title: "Innovation First" },
-  { icon: <FaHandshake />, title: "Trusted Partnership" },
+const reasons = [
+  {
+    icon: <FaLayerGroup />,
+    title: 'Full-Spectrum Capability',
+    desc: 'Surveillance, security, and automation — one manufacturer, one ecosystem.',
+  },
+  {
+    icon: <FaWifi />,
+    title: 'GPS-Denied Ready',
+    desc: 'Operates in jammed and fully contested environments without satellite dependency.',
+  },
+  {
+    icon: <FaUsers />,
+    title: 'Minimal Crew',
+    desc: 'Designed to reduce operator dependency at every stage of the mission.',
+  },
+  {
+    icon: <FaSlidersH />,
+    title: 'Configurable',
+    desc: 'Every platform adapts to mission requirements — not the other way around.',
+  },
+  {
+    icon: <FaTools />,
+    title: 'Custom Development',
+    desc: 'We build to client requirements, not off-the-shelf assumptions.',
+  },
 ];
 
-function WhyChooseUsSectionComponent() {
+export default function WhyChooseUsSectionComponent() {
   return (
-    <WhyChooseSection>
-      <SectionTitle
-        initial={{ opacity: 0, y: -30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7 }}
-        viewport={{ once: true }}
-      >
-        Why Choose <span>Us</span>
-      </SectionTitle>
+    <SectionWrapper>
+      <GridOverlay />
+      <Container>
+        <SectionHeader>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            style={{
+              fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+              color: '#fff',
+              letterSpacing: '8px',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              margin: 0,
+            }}
+          >
+            <RoboticReveal text="WHY CHOOSE ARTEMIS" />
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4 }}
+            style={{ color: 'rgba(255,255,255,0.4)', marginTop: '1rem', fontSize: '0.8rem', letterSpacing: '4px', textTransform: 'uppercase' }}
+          >
+            Full-spectrum capability from a single platform ecosystem.
+          </motion.p>
+        </SectionHeader>
 
-      <SectionSubtitle
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ delay: 0.2, duration: 0.7 }}
-        viewport={{ once: true }}
-      >
-        Delivering excellence through innovation, reliability, and partnership
-      </SectionSubtitle>
-
-      <WhyChooseGrid
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
-      >
-        {items.map((item, index) => (
-          <ChooseCard key={index} variants={cardVariants}>
-            <IconWrapper className="icon-wrapper">
-              {item.icon}
-            </IconWrapper>
-            <h3>{item.title}</h3>
-          </ChooseCard>
-        ))}
-      </WhyChooseGrid>
-    </WhyChooseSection>
+        <ReasonsList>
+          {reasons.map((item, index) => (
+            <ReasonRow
+              key={index}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.1 }}
+              viewport={{ once: true }}
+            >
+              <IndexCell>0{index + 1}</IndexCell>
+              <IconCell>
+                {item.icon}
+                <span>{item.title}</span>
+              </IconCell>
+              <DescCell>{item.desc}</DescCell>
+            </ReasonRow>
+          ))}
+        </ReasonsList>
+      </Container>
+    </SectionWrapper>
   );
 }
-
-export default WhyChooseUsSectionComponent;

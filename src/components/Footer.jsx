@@ -7,8 +7,8 @@ const Footer = styled.footer`
   background-color: var(--color-black);
   color: var(--color-white);
   padding: 3rem 2rem;
-  font-family: var(--font-primary);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: 'Share Tech Mono', monospace;
+  border-top: 1px solid rgba(255, 77, 77, 0.15);
   @media (max-width: 768px) {
     padding: 2.2rem 1.2rem;
   }
@@ -28,18 +28,22 @@ const FooterContent = styled.div`
 
 const ContactInfo = styled.div`
   h4 {
-    color: #fff;
+    color: #ff4d4d;
     margin-bottom: 1.2rem;
-    font-size: 1.3rem;
-    font-weight: 600;
-    font-family: var(--font-primary);
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-family: 'Share Tech Mono', monospace;
   }
   p {
-    color: #fff;
-    margin-bottom: 0.5rem;
-    font-size: 1rem;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 0.6rem;
+    font-size: 0.8rem;
     font-weight: normal;
-    font-family: var(--font-primary);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-family: 'Share Tech Mono', monospace;
     a {
       color: #fff;
       text-decoration: none;
@@ -84,11 +88,13 @@ const Copyright = styled.div`
   text-align: center;
   margin-top: 2.2rem;
   padding-top: 2.2rem;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  color: #fff;
-  font-size: 0.95rem;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.4);
+  font-size: 0.75rem;
   font-weight: normal;
-  font-family: var(--font-primary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-family: 'Share Tech Mono', monospace;
 `;
 
 function FooterComponent() {
@@ -97,7 +103,8 @@ function FooterComponent() {
       <FooterContent>
         <ContactInfo>
           <h4>Contact Us</h4>
-          <p>Email: <a href="mailto:uavartemis@gmail.com">uavartemis@gmail.com</a></p>
+          <p>Sales: <a href="mailto:yazman@artemisuav.com">yazman@artemisuav.com</a></p>
+          <p>Support: <a href="mailto:umair@artemisuav.com">umair@artemisuav.com</a></p>
           <p>Phone: <a href="tel:+923104768835">+92 310-4768835</a></p>
           <p>Address: 15 MM Alam road, Vogue Towers, Gulberg, Lahore, Pakistan</p>
         </ContactInfo>
@@ -113,8 +120,10 @@ function FooterComponent() {
               border: '1px solid #fff',
               borderRadius: '6px',
               cursor: 'pointer',
-              fontFamily: 'var(--font-primary)',
-              fontSize: '1rem',
+              fontFamily: "'Share Tech Mono', monospace",
+              fontSize: '0.85rem',
+              letterSpacing: '2px',
+              textTransform: 'uppercase',
               transition: 'all 0.3s ease',
             }}
               onMouseOver={e => e.target.style.background = 'rgba(255,255,255,0.15)'}

@@ -1,8 +1,8 @@
 // src/pages/HomePage.jsx
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
-import { useState, useEffect, useRef } from 'react';
+import { useEffect } from 'react';
+import VimeoEmbed from '../components/common/VimeoEmbed';
 
 // --- Global Styles ---
 const GlobalStyles = styled.div`
@@ -59,7 +59,7 @@ const VideoSection = styled.section`
 
 const StickyVideoContainer = styled.div`
   width: 90%;
-  max-width: 1000px;
+  max-width: 1200px;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -67,7 +67,6 @@ const StickyVideoContainer = styled.div`
   position: relative;
   background: #000;
   aspect-ratio: 16 / 9;
-  height: auto;
 
   @media (max-width: 768px) {
     width: 95%;
@@ -75,206 +74,128 @@ const StickyVideoContainer = styled.div`
   }
 `;
 
-const VideoHeading = styled.h2`
+const VideoHeading = styled.div`
   text-align: center;
-  color: var(--color-white);
-  font-size: 2.5rem;
-  margin-bottom: 1.8rem;
-  font-family: var(--font-primary);
-  font-weight: 400;
+  margin-bottom: 2.5rem;
 
-  @media (max-width: 768px) {
-    font-size: 2.1rem;
-    margin-bottom: 1.5rem;
+  h2 {
+    color: var(--color-white);
+    font-size: clamp(1.6rem, 4vw, 3rem);
+    font-family: 'Share Tech Mono', monospace;
+    font-weight: 700;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    margin: 0;
   }
 
-  @media (max-width: 480px) {
-    font-size: 1.8rem;
-    margin-bottom: 1.2rem;
-  }
-`;
-
-const VideoIframeContainer = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
-    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
-    z-index: 1;
+  p {
+    color: rgba(255,255,255,0.4);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin: 0.6rem 0 0 0;
   }
 
-  iframe {
-    border: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: block;
+  .bar {
+    width: 60px;
+    height: 2px;
+    background: var(--color-accent);
+    margin: 1rem auto 0;
+    box-shadow: 0 0 8px var(--color-accent);
   }
-`;
-
-const FeatureHighlight = styled.div`
-  text-align: center;
-  margin: 2.2rem 0 0 0;
-  font-family: sans-serif;
-  font-size: 1.5rem;
-  color: #fff;
-
-
 `;
 
 // --- Main Container ---
 const MainContainer = styled.div`
   position: relative;
   overflow-x: hidden;
-  scroll-behavior: smooth;
-
-  &.loading {
-    overflow: hidden;
-  }
-`;
-
-// --- Loading Overlay ---
-const LoadingOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--color-white);
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
-
-  &.fade-out {
-    opacity: 0;
-    visibility: hidden;
-  }
-
-  .spinner {
-    width: 50px;
-    height: 50px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid var(--color-accent);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
 `;
 
 // Import components
 import HeroSectionComponent from '../components/HeroSection';
+import InterceptorSection from '../components/InterceptorSection';
 import ScoutFeaturesSectionComponent from '../components/ScoutFeaturesSection';
 import TheBoxSectionComponent from '../components/TheBoxSection';
 import DroneControlSectionComponent from '../components/DroneControlSection';
 import TransformingIndustriesSectionComponent from '../components/TransformingIndustriesSection';
 import WhyChooseUsSectionComponent from '../components/WhyChooseUsSection';
 import FooterComponent from '../components/Footer';
+import PartnersSection from '../components/PartnersSection';
+
 
 function HomePage() {
-  const videoRef = useRef(null);
-
-  // Loading states
-  const [isComponentsLoaded, setIsComponentsLoaded] = useState(false);
-  const [isTransformingIndustriesReady, setIsTransformingIndustriesReady] = useState(false);
-  const [showLoadingOverlay, setShowLoadingOverlay] = useState(true);
-
-  // Intersection observers
-  const [videoSectionRef, videoSectionInView] = useInView({
-    threshold: 0.3,
-    triggerOnce: false
-  });
-
-  // Initialize page and handle component loading
   useEffect(() => {
-    // Scroll to top immediately
     window.scrollTo(0, 0);
-
-    // Stagger component loading for better UX
-    const timers = [
-      setTimeout(() => setIsComponentsLoaded(true), 1000),
-      setTimeout(() => setIsTransformingIndustriesReady(true), 1500),
-      setTimeout(() => setShowLoadingOverlay(false), 2000)
-    ];
-
-    return () => timers.forEach(clearTimeout);
+    document.documentElement.style.scrollBehavior = 'smooth';
+    return () => { document.documentElement.style.scrollBehavior = ''; };
   }, []);
-
-  // Set up smooth scrolling behavior
-  useEffect(() => {
-    if (isComponentsLoaded) {
-      document.documentElement.style.scrollBehavior = 'smooth';
-      return () => {
-        document.documentElement.style.scrollBehavior = '';
-      };
-    }
-  }, [isComponentsLoaded]);
 
   return (
     <>
       <GlobalStyles>
-        {/* Loading Overlay */}
-        {showLoadingOverlay && (
-          <LoadingOverlay className={!showLoadingOverlay ? 'fade-out' : ''}>
-            <div className="spinner"></div>
-          </LoadingOverlay>
-        )}
-
-        <MainContainer className={showLoadingOverlay ? 'loading' : ''}>
+        <MainContainer>
           {/* Hero Section */}
           <HeroSectionComponent />
 
           {/* Artemis Scout in Action Video */}
-          <VideoSection ref={videoSectionRef}>
-            <VideoHeading>Artemis Scout in Action</VideoHeading>
+          <VideoSection>
+            <VideoHeading>
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+              >
+                Artemis Scout in Action
+              </motion.h2>
+              <motion.p
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+              >
+                Autonomous. Relentless. Precise.
+              </motion.p>
+              <motion.div
+                className="bar"
+                initial={{ width: 0 }}
+                whileInView={{ width: 60 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+              />
+            </VideoHeading>
             <StickyVideoContainer>
-              <VideoIframeContainer>
-                <iframe
-                  ref={videoRef}
-                  src="https://player.vimeo.com/video/1085459224?h=3065b2ca2e&autoplay=1&loop=1&background=1"
-                  allow="autoplay; fullscreen; picture-in-picture"
-                  frameBorder="0"
-                  loading="lazy"
-                  title="Artemis Scout Drone"
-                />
-              </VideoIframeContainer>
+              <VimeoEmbed
+                src="https://player.vimeo.com/video/1085459224?h=3065b2ca2e&background=1&autoplay=1&loop=1&muted=1&autopause=0&dnt=1"
+                title="Artemis Scout Drone"
+                lazy
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+              />
             </StickyVideoContainer>
-
           </VideoSection>
 
           {/* Scout Features */}
-          {isComponentsLoaded && <ScoutFeaturesSectionComponent />}
+          <ScoutFeaturesSectionComponent />
 
-          {/* The Box Section (formerly Solutions) */}
-          {isComponentsLoaded && <TheBoxSectionComponent />}
+          {/* Interceptor Section */}
+          <InterceptorSection />
+
+          {/* The Box Section */}
+          <TheBoxSectionComponent />
 
           {/* Drone Control Platform */}
-          {isComponentsLoaded && <DroneControlSectionComponent />}
+          <DroneControlSectionComponent />
 
           {/* Transforming Industries */}
-          {isTransformingIndustriesReady && <TransformingIndustriesSectionComponent />}
+          <TransformingIndustriesSectionComponent />
 
           {/* Why Choose Us */}
-          {isTransformingIndustriesReady && <WhyChooseUsSectionComponent />}
+          <WhyChooseUsSectionComponent />
 
-          {/* Footer */}
+          {/* Strategic Partners */}
+          <PartnersSection />
 
+          <FooterComponent />
         </MainContainer>
       </GlobalStyles>
     </>

@@ -1,272 +1,187 @@
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 import { FaGamepad, FaVideo, FaLayerGroup, FaShieldAlt, FaCogs } from 'react-icons/fa';
+import RoboticReveal from './common/RoboticReveal';
 
-// SECTION
-const DroneControlSection = styled.section`
+const SectionWrapper = styled.section`
   padding: 8rem 2rem;
-  background-image: url('/images/bg.jpg');
+  background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('/images/bg.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed;
-  color: #ffffff;
-  font-family: var(--font-primary);
+  color: #fff;
+  font-family: 'Share Tech Mono', monospace;
+  position: relative;
   overflow: hidden;
-  position: relative;
-
-  & > * {
-    position: relative;
-    z-index: 1;
-  }
 `;
 
-// HEADER
-const SectionHeader = styled.div`
-  max-width: 1300px;
-  margin: 0 auto 4rem auto;
-  text-align: center;
-  position: relative;
-  z-index: 2;
-`;
-
-const Title = styled(motion.h2)`
-  font-size: 5rem;
-  font-weight: 800;
-  margin-bottom: 0.5rem;
-  line-height: 1;
-  color: #ffffff;
-  letter-spacing: -3px;
-  
-  span {
-    color: #ff4d4d; /* Changed to red for better contrast on dark bg */
-  }
-
-  @media (max-width: 900px) {
-    font-size: 4rem;
-  }
-`;
-
-const Subtitle = styled(motion.p)`
-  font-size: 1.5rem;
-  color: rgba(255, 255, 255, 0.8);
-  margin: 0 auto;
-  max-width: 800px;
-  line-height: 1.6;
-  font-weight: 300;
-`;
-
-const Container = styled.div`
-  max-width: 1300px;
+const DashboardContainer = styled.div`
+  width: 100%;
+  max-width: 1600px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1.2fr 0.8fr; /* Image on left, content on right */
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: 4rem;
   align-items: center;
   position: relative;
-  z-index: 1;
-  gap: 4rem;
+  z-index: 2;
 
-  @media (max-width: 900px) {
+  @media (max-width: 1024px) {
     grid-template-columns: 1fr;
     gap: 3rem;
   }
 `;
 
-// LEFT SIDE: IMAGE
-const ImageSide = styled(motion.div)`
+const SectionHeader = styled.div`
+  text-align: center;
+  margin-bottom: 5rem;
   position: relative;
-  height: 600px;
+  z-index: 3;
+`;
+
+const UIWindow = styled(motion.div)`
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  aspect-ratio: 16 / 10;
+`;
+
+const PlatformImage = styled.img`
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  filter: saturate(0.8) contrast(1.1) brightness(0.9);
+`;
+
+const FeatureList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+`;
+
+const FeatureItem = styled(motion.div)`
   display: flex;
   align-items: center;
-  justify-content: flex-end; 
-  perspective: 1000px;
+  gap: 1.5rem;
+  padding: 1.2rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  transition: all 0.3s ease;
 
-  @media (max-width: 900px) {
-    height: 400px;
-    width: 100%;
-    justify-content: center;
-    order: 2; /* Move image below text on mobile */
+  &:hover {
+    border-color: rgba(255, 77, 77, 0.5);
+    background: rgba(255, 77, 77, 0.05);
+    transform: translateX(10px);
   }
 `;
 
-const PlatformImage = styled(motion.img)`
-  width: 100%;
-  max-width: 850px;
-  object-fit: contain;
-  filter: drop-shadow(0 30px 60px rgba(0,0,0,0.15));
-  z-index: 2;
-  border-radius: 20px;
+const IconBox = styled.div`
+  color: #ff4d4d;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
-const CircleGlow = styled.div`
+const DataGrid = styled.div`
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 700px;
-  height: 700px;
-  background: radial-gradient(circle, rgba(79, 70, 229, 0.08) 0%, transparent 70%);
-  border-radius: 50%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 2px 2px, rgba(255, 77, 77, 0.1) 1px, transparent 0);
+  background-size: 40px 40px;
   pointer-events: none;
   z-index: 1;
 `;
 
-// RIGHT SIDE: FEATURE LIST
-const ContentSide = styled(motion.div)`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start; 
-  padding-left: 2rem;
-  
-  @media (max-width: 900px) {
-    align-items: flex-start;
-    padding: 0 1.5rem;
-    order: 1;
-  }
-`;
+const features = [
+  { text: "Autonomous Fleet Management", icon: <FaLayerGroup /> },
+  { text: "Live Video Streams", icon: <FaVideo /> },
+  { text: "Manual Override", icon: <FaGamepad /> },
+  { text: "End-to-End Encryption", icon: <FaShieldAlt /> },
+  { text: "Modular Architecture", icon: <FaCogs /> }
+];
 
-const FeaturesList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
-  width: 100%;
-`;
-
-const FeatureItem = styled(motion.div)`
-  font-size: 1.6rem;
-  font-weight: 300;
-  color: #ffffff; 
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  transition: all 0.3s ease;
-
-  &:hover {
-    color: #ff4d4d;
-    transform: translateX(10px);
-  }
-
-  @media (max-width: 900px) {
-    font-size: 1.25rem;
-    justify-content: flex-start;
-    padding: 0.8rem 1rem;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    width: 100%;
-  }
-`;
-
-const IconWrapper = styled.span`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ff4d4d;
-  font-size: 1.6rem;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(5px);
-  width: 48px;
-  height: 48px;
-  min-width: 48px; /* Ensure it stays square */
-  min-height: 48px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-`;
-
-// ANIMATION VARIANTS
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.15 }
-  }
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, x: 30 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.6, ease: "easeOut" }
-  }
-};
-
-const imageVariants = {
-  hidden: { opacity: 0, x: -50 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.8, ease: "easeOut" }
-  }
-};
-
-function DroneControlSectionComponent() {
-  const features = [
-    { text: "Drone auto/ manual control", icon: <FaGamepad /> },
-    { text: "Live drone footage with AI detection", icon: <FaVideo /> },
-    { text: "Multiple drone controls", icon: <FaLayerGroup /> },
-    { text: "Full privacy", icon: <FaShieldAlt /> },
-    { text: "Customizable interface", icon: <FaCogs /> }
-  ];
-
+export default function DroneControlSectionComponent() {
   return (
-    <DroneControlSection>
+    <SectionWrapper>
       <SectionHeader>
-        <Title
-          initial={{ opacity: 0, y: -30 }}
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
+          style={{
+            fontSize: 'clamp(2rem, 5vw, 4rem)',
+            marginBottom: '1rem',
+            letterSpacing: '8px',
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            color: '#fff',
+          }}
         >
-          Drone Control <span>Platform</span>
-        </Title>
-        <Subtitle
+        <RoboticReveal text="COMMAND INTERFACE" />
+        </motion.h2>
+        <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.2, duration: 0.7 }}
+          transition={{ delay: 0.3 }}
+          style={{ color: '#ff4d4d', fontSize: '0.9rem', letterSpacing: '3px', textTransform: 'uppercase', marginTop: '0.6rem', fontWeight: 700 }}
         >
-          Master the skies with our advanced command center. Intuitive, powerful, and built for professionals.
-        </Subtitle>
+          Unified Fleet Control. Real-Time Intelligence.
+        </motion.p>
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.5 }}
+          style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.9rem', letterSpacing: '0.5px', maxWidth: '500px', margin: '1rem auto 0', lineHeight: 1.7 }}
+        >
+          Manage multiple platforms from a single interface. Full situational awareness, encrypted feeds, and manual override when needed.
+        </motion.p>
       </SectionHeader>
 
-      <Container>
-        <ImageSide
-          variants={imageVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
+      <DashboardContainer>
+        <UIWindow
+          initial={{ opacity: 0, x: -50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
         >
-          <CircleGlow />
-          <PlatformImage
-            src="/images/ui.webp"
-            alt="Drone Control Platform Interface"
-          />
-        </ImageSide>
+          <PlatformImage src="/images/ui.webp" alt="Artemis Control Platform" />
 
-        <ContentSide
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          <FeaturesList>
-            {features.map((item, index) => (
+          {/* HUD overlay tint */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(135deg, rgba(255,77,77,0.04) 0%, transparent 60%)',
+            pointerEvents: 'none',
+            zIndex: 3,
+          }} />
+        </UIWindow>
+
+        <div>
+          <FeatureList>
+            {features.map((feature, index) => (
               <FeatureItem
                 key={index}
-                variants={itemVariants}
-                whileHover={{ scale: 1.02 }}
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true }}
               >
-                <IconWrapper>{item.icon}</IconWrapper>
-                {item.text}
+                <IconBox>{feature.icon}</IconBox>
+                <span style={{ fontSize: '0.9rem', letterSpacing: '1px' }}>{feature.text}</span>
               </FeatureItem>
             ))}
-          </FeaturesList>
-        </ContentSide>
-      </Container>
-    </DroneControlSection>
+          </FeatureList>
+        </div>
+      </DashboardContainer>
+    </SectionWrapper>
   );
 }
 
-export default DroneControlSectionComponent;

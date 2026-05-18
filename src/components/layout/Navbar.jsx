@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { FaBars, FaTimes } from 'react-icons/fa';
 
 const whiteLogoImg = '/images/whitelogo.png';
@@ -14,20 +14,20 @@ const Nav = styled.nav`
   padding: 0.75rem 1.5rem;
   background: ${(props) =>
     props.scrolled === 'true' || props['data-ismainpage'] === 'false'
-      ? 'rgba(32, 32, 32, 0.95)'
+      ? 'rgba(15, 15, 15, 0.95)'
       : 'rgba(0, 0, 0, 0.3)'};
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
   z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 60px;
   border-radius: 12px;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid ${(props) =>
     props.scrolled === 'true' || props['data-ismainpage'] === 'false'
-      ? 'rgba(255, 255, 255, 0.1)'
-      : 'rgba(255, 255, 255, 0.2)'};
+      ? 'rgba(255, 77, 77, 0.15)'
+      : 'rgba(255, 255, 255, 0.15)'};
 `;
 
 const StyledLogo = styled(Link)`
@@ -51,15 +51,20 @@ const LogoImage = styled.img`
 const Hamburger = styled.div`
   display: none;
   cursor: pointer;
-  font-size: 1.3rem;
-  z-index: 1001;
+  font-size: 1.4rem;
+  z-index: 2000;
   color: #fff;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-  opacity: ${(props) => (props.isOpen === 'true' ? '0' : '1')};
-  visibility: ${(props) => (props.isOpen === 'true' ? 'hidden' : 'visible')};
+  transition: all 0.3s ease;
 
   @media (max-width: 768px) {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
   }
 `;
 
@@ -69,42 +74,26 @@ const NavLinks = styled.div`
   align-items: center;
 
   @media (max-width: 768px) {
-    position: fixed;
-    top: 0;
-    right: 0;
-    height: 100vh;
-    width: 280px;
-    padding: 5rem 1.5rem 2rem;
-    background: rgba(20, 20, 20, 0.98);
-    backdrop-filter: blur(20px);
-    border-radius: 0;
-    border-left: 1px solid rgba(255, 255, 255, 0.08);
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: center;
-    gap: 1.75rem;
-    overflow-y: auto;
-    transform: translateX(${(props) => (props.isOpen === 'true' ? '0' : '100%')});
-    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 1000;
-    box-shadow: ${(props) =>
-    props.isOpen === 'true' ? '-10px 0 40px rgba(0,0,0,0.5)' : 'none'};
+    display: none;
   }
 `;
 
 const NavLink = styled(Link)`
-  color: ${(props) => {
-    if (props['data-ismainpage'] === 'true') {
-      return props.scrolled === 'true' ? 'var(--text-light)' : '#fff';
-    }
-    return 'var(--text-light)';
-  }};
+  color: #fff;
   text-decoration: none;
+  font-family: 'Share Tech Mono', monospace;
   font-weight: 400;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   position: relative;
-  transition: color 0.3s ease;
-  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0.8;
+
+  &:hover {
+    opacity: 1;
+    color: #ff4d4d;
+  }
 
   &::after {
     content: '';
@@ -112,79 +101,102 @@ const NavLink = styled(Link)`
     width: 0;
     height: 1px;
     bottom: -4px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: ${(props) => {
-    if (props['data-ismainpage'] === 'true') {
-      return props.scrolled === 'true' ? 'var(--primary)' : '#fff';
-    }
-    return 'var(--primary)';
-  }};
+    left: 0;
+    background-color: #ff4d4d;
     transition: width 0.3s ease;
   }
 
   &:hover::after {
     width: 100%;
   }
+`;
 
-  @media (max-width: 768px) {
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 1.2rem;
-    font-weight: 500;
-    letter-spacing: 0.8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1.25rem 0;
-    width: 100%;
-    transition: all 0.2s ease;
+// --- NEW MOBILE HUD COMPONENTS ---
 
-    &:hover {
-      color: #fff;
-      transform: scale(1.05);
-    }
+const FullScreenMenu = styled(motion.div)`
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 1500;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  overflow: hidden;
 
-    &::after {
-      display: none;
-    }
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(255, 77, 77, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 77, 77, 0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+    pointer-events: none;
   }
 `;
 
-const CloseIcon = styled(FaTimes)`
-  display: none;
+const ScanLine = styled(motion.div)`
   position: absolute;
-  top: 1.75rem;
-  right: 1.5rem;
-  cursor: pointer;
-  font-size: 1.4rem;
-  color: rgba(255, 255, 255, 0.6);
-  z-index: 1001;
-  transition: transform 0.2s ease, color 0.2s ease;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 77, 77, 0.5), transparent);
+  box-shadow: 0 0 15px rgba(255, 77, 77, 0.3);
+  z-index: 2;
+  pointer-events: none;
+`;
+
+const MobileLinkWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  align-items: center;
+  width: 100%;
+`;
+
+const MobileNavLink = styled(motion(Link))`
+  color: #fff;
+  text-decoration: none;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1.8rem;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  &::before {
+    content: '[';
+    color: #ff4d4d;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  &::after {
+    content: ']';
+    color: #ff4d4d;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
 
   &:hover {
-    transform: rotate(90deg);
-    color: #fff;
-  }
-
-  @media (max-width: 768px) {
-    display: block;
+    color: #ff4d4d;
+    &::before, &::after {
+      opacity: 1;
+    }
   }
 `;
 
-const Overlay = styled.div`
-  display: none;
-
-  @media (max-width: 768px) {
-    display: ${(props) => (props.isOpen === 'true' ? 'block' : 'none')};
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(2px);
-    z-index: 999;
-  }
+const HUDDecoration = styled.div`
+  position: absolute;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  color: rgba(255, 77, 77, 0.4);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  pointer-events: none;
 `;
 
 function Navbar() {
@@ -201,8 +213,28 @@ function Navbar() {
   }, []);
 
   useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
     setIsOpen(false);
   }, [location.pathname]);
+
+  const navItems = [
+    { name: 'Home', path: '/' },
+    { name: 'Products', path: '/products' },
+    { name: 'Applications', path: '/applications' },
+    { name: 'About', path: '/about' },
+    { name: 'Support', path: '/support' },
+    { name: 'Contact', path: '/contact' },
+  ];
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -215,52 +247,63 @@ function Navbar() {
           </motion.div>
         </StyledLogo>
 
-        <Hamburger
-          onClick={toggleMenu}
-          scrolled={scrolled.toString()}
-          data-ismainpage={isMainPage.toString()}
-          isOpen={isOpen.toString()}
-        >
-          <FaBars />
-        </Hamburger>
-
-        <NavLinks isOpen={isOpen.toString()}>
-          <CloseIcon onClick={toggleMenu} />
-
-          {!isMainPage && (
-            <NavLink
-              to="/"
-              scrolled={scrolled.toString()}
-              data-ismainpage={isMainPage.toString()}
-              onClick={toggleMenu}
-            >
-              Home
-            </NavLink>
-          )}
-
-          <NavLink to="/products" scrolled={scrolled.toString()} data-ismainpage={isMainPage.toString()} onClick={toggleMenu}>
-            Products
-          </NavLink>
-
-          <NavLink to="/applications" scrolled={scrolled.toString()} data-ismainpage={isMainPage.toString()} onClick={toggleMenu}>
-            Applications
-          </NavLink>
-
-          <NavLink to="/about" scrolled={scrolled.toString()} data-ismainpage={isMainPage.toString()} onClick={toggleMenu}>
-            About
-          </NavLink>
-
-          <NavLink to="/support" scrolled={scrolled.toString()} data-ismainpage={isMainPage.toString()} onClick={toggleMenu}>
-            Support
-          </NavLink>
-
-          <NavLink to="/contact" scrolled={scrolled.toString()} data-ismainpage={isMainPage.toString()} onClick={toggleMenu}>
-            Contact
-          </NavLink>
+        <NavLinks>
+          {navItems.map((item) => (
+            (!isMainPage || item.path !== '/') && (
+              <NavLink key={item.path} to={item.path}>
+                {item.name}
+              </NavLink>
+            )
+          ))}
         </NavLinks>
+
+        <Hamburger onClick={toggleMenu}>
+          {isOpen ? <FaTimes /> : <FaBars />}
+        </Hamburger>
       </Nav>
 
-      <Overlay isOpen={isOpen.toString()} onClick={toggleMenu} />
+      <AnimatePresence>
+        {isOpen && (
+          <FullScreenMenu
+            initial={{ opacity: 0, x: '100%' }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: '100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+          >
+            <Hamburger 
+              onClick={toggleMenu} 
+              style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 2001 }}
+            >
+              <FaTimes />
+            </Hamburger>
+
+            <ScanLine 
+              animate={{ top: ['0%', '100%'] }} 
+              transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+            />
+            
+            <HUDDecoration style={{ top: '100px', left: '40px' }}>STATUS: MENU_ACTIVE</HUDDecoration>
+            <HUDDecoration style={{ top: '100px', right: '40px' }}>COORD: 33.8688° S</HUDDecoration>
+            <HUDDecoration style={{ bottom: '40px', left: '40px' }}>LINK: SECURE</HUDDecoration>
+            <HUDDecoration style={{ bottom: '40px', right: '40px' }}>VER: 4.2.0</HUDDecoration>
+
+            <MobileLinkWrapper>
+              {navItems.map((item, i) => (
+                <MobileNavLink
+                  key={item.path}
+                  to={item.path}
+                  onClick={toggleMenu}
+                  initial={{ opacity: 0, y: 20, x: -20 }}
+                  animate={{ opacity: 1, y: 0, x: 0 }}
+                  transition={{ delay: 0.1 + i * 0.1, duration: 0.4 }}
+                >
+                  {item.name}
+                </MobileNavLink>
+              ))}
+            </MobileLinkWrapper>
+          </FullScreenMenu>
+        )}
+      </AnimatePresence>
     </>
   );
 }

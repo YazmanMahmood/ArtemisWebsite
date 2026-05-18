@@ -1,17 +1,19 @@
 import { Routes, Route } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/Footer';
 import LoadingScreen from './components/common/LoadingScreen';
-import HomePage from './pages/HomePage';
-import ProductsPage from './pages/ProductsPage';
-import ProductDetailsPage from './pages/ProductDetailsPage';
-import ApplicationsPage from './pages/ApplicationsPage';
-import AboutPage from './pages/AboutPage';
-import SupportPage from './pages/SupportPage';
-import ContactPage from './pages/ContactPage';
-import CustomizePage from './pages/CustomizePage';
-import AutomationsPage from './components/AutomationsPage';
+
+// Lazy-loaded routes
+const HomePage = lazy(() => import('./pages/HomePage'));
+const ProductsPage = lazy(() => import('./pages/ProductsPage'));
+const ProductDetailsPage = lazy(() => import('./pages/ProductDetailsPage'));
+const ApplicationsPage = lazy(() => import('./pages/ApplicationsPage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const SupportPage = lazy(() => import('./pages/SupportPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
+const CustomizePage = lazy(() => import('./pages/CustomizePage'));
+const AutomationsPage = lazy(() => import('./components/AutomationsPage'));
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -48,17 +50,19 @@ function App() {
       >
         <Navbar />
         <main className="content">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/products" element={<ProductsPage />} />
-            <Route path="/product/:id" element={<ProductDetailsPage />} />
-            <Route path="/applications" element={<ApplicationsPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/support" element={<SupportPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/customize" element={<CustomizePage />} />
-            <Route path="/automations" element={<AutomationsPage />} />
-          </Routes>
+          <Suspense fallback={<div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Loading...</div>}>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/products" element={<ProductsPage />} />
+              <Route path="/product/:id" element={<ProductDetailsPage />} />
+              <Route path="/applications" element={<ApplicationsPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/support" element={<SupportPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/customize" element={<CustomizePage />} />
+              <Route path="/automations" element={<AutomationsPage />} />
+            </Routes>
+          </Suspense>
         </main>
         <Footer />
       </div>

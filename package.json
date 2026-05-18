@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@emotion/styled": "^11.13.5",
+    "@fingerprintjs/fingerprintjs": "^5.2.0",
     "@react-three/drei": "^9.122.0",
     "@react-three/fiber": "^8.18.0",
     "@types/three": "^0.176.0",
@@ -17,6 +18,7 @@
     "firebase": "^11.2.0",
     "framer-motion": "^11.13.1",
     "react": "^18.3.1",
+    "react-calendly": "^4.4.0",
     "react-dom": "^18.3.1",
     "react-error-boundary": "^6.0.0",
     "react-icons": "^5.4.0",

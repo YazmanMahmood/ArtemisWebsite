@@ -1,37 +1,56 @@
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { HiSparkles } from 'react-icons/hi';
 
 const Card = styled(motion.div)`
-  background: var(--dark-accent);
-  border-radius: 12px;
+  background: #111;
+  border-radius: 4px;
   overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  transition: transform 0.3s ease;
+  border: 1px solid rgba(255, 77, 77, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   display: flex;
   flex-direction: column;
   height: 100%;
+  position: relative;
 
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+    transform: translateY(-8px);
+    border-color: #ff4d4d;
+    box-shadow: 0 20px 40px rgba(255, 77, 77, 0.2);
   }
+`;
+
+const CornerBracket = styled.div`
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  border: 2px solid #ff4d4d;
+  z-index: 10;
+  pointer-events: none;
+  opacity: 0.6;
+
+  ${props => props.top && 'top: 10px;'}
+  ${props => props.bottom && 'bottom: 10px;'}
+  ${props => props.left && 'left: 10px; border-right: 0; border-bottom: 0;'}
+  ${props => props.right && 'right: 10px; border-left: 0; border-bottom: 0;'}
+  ${props => props.bottom && props.left && 'border-top: 0; border-right: 0;'}
+  ${props => props.bottom && props.right && 'border-top: 0; border-left: 0;'}
 `;
 
 const CustomizeImage = styled.div`
   position: relative;
   height: 250px;
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  background: linear-gradient(135deg, #000, #1a1a1a);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: #ff4d4d;
   font-size: 5rem;
+  border-bottom: 1px solid rgba(255, 77, 77, 0.1);
   
-  img {
-    max-height: 60%;
-    max-width: 60%;
-    object-fit: contain;
+  svg {
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
   }
 `;
 
@@ -43,49 +62,44 @@ const CustomizeInfo = styled.div`
 `;
 
 const CustomizeTitle = styled.h3`
-  font-size: 1.5rem;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1.4rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
   margin: 0 0 1rem 0;
-  color: var(--dark);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 `;
 
 const CustomizeDescription = styled.p`
-  color: var(--text-light);
+  color: rgba(255, 255, 255, 0.5);
   margin-bottom: 1.5rem;
-  font-size: 0.9rem;
-`;
-
-const CustomizeButton = styled(Link)`
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  color: white;
-  border-radius: 4px;
-  text-decoration: none;
-  font-weight: 500;
-  text-align: center;
-  transition: all 0.3s ease;
-  margin-top: auto;
-  
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  }
+  font-size: 0.85rem;
+  line-height: 1.6;
 `;
 
 function CustomizeCard() {
   return (
     <Card>
+      <CornerBracket top left />
+      <CornerBracket top right />
+      <CornerBracket bottom left />
+      <CornerBracket bottom right />
       <CustomizeImage>
-        {/* Icon removed */}
+        <HiSparkles />
       </CustomizeImage>
       <CustomizeInfo>
-        <CustomizeTitle>Custom Solution</CustomizeTitle>
+        <CustomizeTitle>
+          CUSTOM REQUEST <HiSparkles style={{ fontSize: '1.2rem', color: '#ff4d4d' }} />
+        </CustomizeTitle>
         <CustomizeDescription>
-          Need something specific? Our team can design a custom drone solution tailored to your unique requirements.
+          Mission-specific configurations. Our engineers will architect a solution built for your unique operational parameters.
         </CustomizeDescription>
       </CustomizeInfo>
     </Card>
   );
 }
 
-export default CustomizeCard; 
+export default CustomizeCard;

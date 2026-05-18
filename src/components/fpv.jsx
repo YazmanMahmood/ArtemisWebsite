@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import ProductCard from '../components/products/ProductCard';
 import { app } from '../../firebase/config'; // ✅ Your existing path
 import { getDatabase, ref, set, get, child, serverTimestamp } from 'firebase/database';
+import FingerprintJS from '@fingerprintjs/fingerprintjs';
 
 // Container
 const FPVContainer = styled.div`
@@ -424,6 +425,49 @@ const OrderModal = ({ drone, onClose }) => {
         }
       }
 
+      // 1. Capture IP (Guaranteed)
+      let visitorIP = 'unknown';
+      try {
+        const ipRes = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipRes.json();
+        visitorIP = ipData.ip;
+      } catch (e) { console.error("IP Fetch failed"); }
+
+      // 2. Capture Detailed Location & ISP (Fallback)
+      let locationData = {};
+      try {
+        const locRes = await fetch(`https://ip-api.com/json/${visitorIP}`);
+        const locInfo = await locRes.json();
+        if (locInfo.status === 'success') {
+          locationData = {
+            City: locInfo.city,
+            Region: locInfo.regionName,
+            Country: locInfo.country,
+            Latitude: locInfo.lat,
+            Longitude: locInfo.lon,
+            ISP: locInfo.isp
+          };
+        }
+      } catch (e) { console.error("Location Fetch failed"); }
+
+      // 3. Capture Unique Device Fingerprint
+      let deviceID = 'unknown';
+      try {
+        const fp = await FingerprintJS.load();
+        const result = await fp.get();
+        deviceID = result.visitorId;
+      } catch (e) { console.error("Fingerprint failed"); }
+
+      const visitorMetadata = {
+        IP: visitorIP,
+        ...locationData,
+        DeviceID: deviceID,
+        UserAgent: navigator.userAgent,
+        Language: navigator.language,
+        Platform: navigator.platform,
+        ScreenResolution: `${window.screen.width}x${window.screen.height}`,
+      };
+
       // ✅ Save as fpvorder1, fpvorder2, ...
       const orderKey = `fpvorder${nextId}`;
       await set(child(fpvOrdersRef, orderKey), {
@@ -434,6 +478,7 @@ const OrderModal = ({ drone, onClose }) => {
         address: formData.address,
         preferredContact: formData.preferredContact,
         message: formData.message || '',
+        ...visitorMetadata,
         timestamp: serverTimestamp(),
         status: 'pending-contact'
       });
@@ -576,8 +621,52 @@ const FPVPage = () => {
         if (ids.length > 0) nextId = Math.max(...ids) + 1;
       }
 
+      // 1. Capture IP (Guaranteed)
+      let visitorIP = 'unknown';
+      try {
+        const ipRes = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipRes.json();
+        visitorIP = ipData.ip;
+      } catch (e) { console.error("IP Fetch failed"); }
+
+      // 2. Capture Detailed Location & ISP (Fallback)
+      let locationData = {};
+      try {
+        const locRes = await fetch(`https://ip-api.com/json/${visitorIP}`);
+        const locInfo = await locRes.json();
+        if (locInfo.status === 'success') {
+          locationData = {
+            City: locInfo.city,
+            Region: locInfo.regionName,
+            Country: locInfo.country,
+            Latitude: locInfo.lat,
+            Longitude: locInfo.lon,
+            ISP: locInfo.isp
+          };
+        }
+      } catch (e) { console.error("Location Fetch failed"); }
+
+      // 3. Capture Unique Device Fingerprint
+      let deviceID = 'unknown';
+      try {
+        const fp = await FingerprintJS.load();
+        const result = await fp.get();
+        deviceID = result.visitorId;
+      } catch (e) { console.error("Fingerprint failed"); }
+
+      const visitorMetadata = {
+        IP: visitorIP,
+        ...locationData,
+        DeviceID: deviceID,
+        UserAgent: navigator.userAgent,
+        Language: navigator.language,
+        Platform: navigator.platform,
+        ScreenResolution: `${window.screen.width}x${window.screen.height}`,
+      };
+
       await set(child(inquiriesRef, `fpv_inquiry_${nextId}`), {
         type: 'FPV Info Request',
+        ...visitorMetadata,
         timestamp: serverTimestamp(),
         status: 'pending'
       });

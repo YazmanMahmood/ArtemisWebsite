@@ -1,293 +1,377 @@
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 import { FaChargingStation, FaCloudSunRain, FaWifi, FaBolt, FaPlaneArrival } from 'react-icons/fa';
+import RoboticReveal from './common/RoboticReveal';
 
-// SECTION
-const TheBoxSection = styled.section`
-  padding: 2rem 2rem 2rem 2rem; /* Reduced top padding to move closer to header */
-  background-color: #ffffff;
-  color: #1e293b;
-  font-family: var(--font-primary);
+// ─── Styled Components ───────────────────────────────────────────────────────
+
+const SectionWrapper = styled.section`
+  background-color: #fff;
+  color: #111;
+  padding: 8rem 2rem;
+  font-family: 'Share Tech Mono', monospace;
+  position: relative;
   overflow: hidden;
-  position: relative;
 `;
 
-// HEADER
-const SectionHeader = styled.div`
-  max-width: 1300px;
-  margin: 0 auto 0 auto; /* Removed bottom margin */
-  text-align: center;
-  position: relative;
-  z-index: 2;
-`;
-
-const Title = styled(motion.h2)`
-  font-size: 5rem; /* Reduced size as requested (was 8rem) */
-  font-weight: 800;
-  margin-bottom: 0rem;
-  line-height: 1;
-  color: #0f172a;
-  letter-spacing: -3px;
-  
-  span {
-    color: #ff4d4d;
-  }
-
-  @media (max-width: 900px) {
-    font-size: 4rem;
-  }
-`;
-
-const Subtitle = styled(motion.p)`
-  font-size: 1.5rem;
-  color: #64748b;
-  margin: 0 auto;
-  max-width: 800px;
-  line-height: 1.6;
-  font-weight: 300;
-  margin-bottom: 0rem; /* Minimal gap */
-`;
-
-const Container = styled.div`
-  max-width: 1300px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 0.8fr 1.2fr;
-  align-items: start; /* Changed from center to start to pull content up */
-  position: relative;
-  z-index: 1;
-  gap: 0rem;
-
-  @media (max-width: 900px) {
-    grid-template-columns: 1fr;
-    gap: 3rem;
-  }
-`;
-
-// LEFT SIDE: CIRCULAR FEATURE LIST
-const ContentSide = styled(motion.div)`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start; /* Ensure top alignment */
-  align-items: flex-end; 
-  padding-right: 2rem;
-  padding-top: 2rem; /* Minor spacing from header */
-  
-  background: transparent;
-  border: none;
-  
-  @media (max-width: 900px) {
-    align-items: center;
-    padding: 0;
-  }
-`;
-
-const FeaturesArc = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  perspective: 1000px;
-  padding-left: 1rem;
-  /* Ensure it doesn't get too wide */
-  width: fit-content;
-`;
-
-// Circular list item
-const FeatureItem = styled(motion.div)`
-  font-size: 1.8rem;
-  font-weight: 300; /* Minimalistic / Light */
-  color: #475569; 
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  width: fit-content;
-  background: transparent; 
-  padding: 0.5rem 1rem;
-  border-radius: 12px;
-
-  /* Align icon and text properly */
-  
-  &:hover {
-    color: #0f172a;
-    font-weight: 400; /* Subtle bold on hover */
-    transform: translateX(15px) !important; 
-    text-shadow: 0 0 30px rgba(255, 77, 77, 0.2);
-  }
-
-  @media (max-width: 900px) {
-    font-size: 1.25rem;
-    margin: 0 !important; /* Force linear alignment */
-    justify-content: flex-start;
-    padding: 0.8rem 1rem;
-    border-radius: 12px;
-    background: rgba(0, 0, 0, 0.03); /* Subtle bg for mobile list items */
-    width: 100%;
-  }
-`;
-
-const IconWrapper = styled.span`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ff4d4d;
-  font-size: 1.4rem;
-  background: rgba(255, 77, 77, 0.1);
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
-  min-height: 44px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 77, 77, 0.1);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-`;
-
-// RIGHT SIDE: IMAGE
-const ImageSide = styled(motion.div)`
-  position: relative;
-  height: 600px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start; /* Align image closer to text */
-  margin-left: -2rem; /* Pull image slightly left to reduce gap */
-  perspective: 1000px;
-
-  @media (max-width: 900px) {
-    height: 400px;
-    width: 100%;
-    justify-content: center;
-    margin-left: 0;
-  }
-`;
-
-// Stable image - No float animation
-const BoxImage = styled(motion.img)`
-  width: 100%;
-  max-width: 800px; /* Large image */
-  object-fit: contain;
-  filter: drop-shadow(0 30px 60px rgba(0,0,0,0.1));
-  z-index: 2;
-`;
-
-const CircleGlow = styled.div`
+const GridOverlay = styled.div`
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 600px; /* Bigger glow */
-  height: 600px;
-  background: radial-gradient(circle, rgba(255, 77, 77, 0.05) 0%, transparent 60%);
-  border-radius: 50%;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
   pointer-events: none;
-  z-index: 1;
 `;
 
-// ANIMATION VARIANTS
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 }
+const Inner = styled.div`
+  max-width: 1440px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+`;
+
+const SectionTitle = styled.div`
+  text-align: center;
+  margin-bottom: 5rem;
+`;
+
+/* 3-col grid: left features | image | right features */
+const Layout = styled.div`
+  display: grid;
+  grid-template-columns: 500px 1fr;
+  align-items: center;
+  gap: 0;
+
+  @media (max-width: 1100px) {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 3.5rem;
   }
+`;
+
+const FeatureCol = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2.2rem;
+
+  @media (max-width: 900px) {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    order: 2;
+  }
+`;
+
+// ─── Styled Components ───────────────────────────────────────────────────────
+
+const FeatureDot = styled.div`
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ff4d4d;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px #ff4d4d;
+  @media (max-width: 900px) {
+    display: none;
+  }
+`;
+
+const FeatureLine = styled.div`
+  height: 3px;
+  width: 144px;
+  background: linear-gradient(
+    to left,
+    #ff4d4d 0%,
+    rgba(255, 77, 77, 0.1) 100%
+  );
+  flex-shrink: 0;
+  transition: all 0.4s ease;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background: #ff4d4d;
+    border-radius: 50%;
+    box-shadow: 0 0 12px #ff4d4d;
+  }
+
+  @media (max-width: 900px) {
+    display: none;
+  }
+`;
+
+const FeatureLabel = styled.div`
+  background: #111;
+  border: 1px solid rgba(255, 77, 77, 0.4);
+  padding: 0.85rem 1.7rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1rem;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  @media (max-width: 900px) {
+    width: 300px;
+    justify-content: center;
+  }
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 77, 77, 0.1),
+      transparent
+    );
+    transition: 0.5s;
+  }
+
+  svg {
+    color: #ff4d4d;
+    font-size: 1rem;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+`;
+
+/* We need to redefine FeatureItem after FeatureLabel/Dot/Line to use them in nesting */
+const EnhancedFeatureItem = styled(motion.div)`
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  ${props => props.reverse ? 'flex-direction: row-reverse;' : ''}
+  cursor: pointer;
+
+  &:hover {
+    ${FeatureLabel} {
+      transform: scale(1.1) translateX(${props => props.reverse ? '-10px' : '10px'});
+      border-color: #ff4d4d;
+      box-shadow: 0 10px 40px rgba(255, 77, 77, 0.2);
+      background: #1a1a1a;
+
+      &::before {
+        left: 100%;
+      }
+
+      svg {
+        transform: scale(1.2) rotate(10deg);
+      }
+    }
+
+    ${FeatureDot} {
+      box-shadow: 0 0 15px 4px #ff4d4d;
+      transform: scale(1.4);
+    }
+
+    ${FeatureLine} {
+      width: 160px;
+      opacity: 1;
+      height: 3px;
+      background: linear-gradient(
+        to left,
+        #ff4d4d 40%,
+        rgba(255, 77, 77, 0.4) 100%
+      );
+    }
+  }
+
+  @media (max-width: 900px) {
+    flex-direction: row !important;
+    &:hover ${FeatureLabel} {
+        transform: scale(1.05);
+    }
+  }
+`;
+
+const BoxImageCol = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @media (max-width: 900px) {
+    order: 1;
+  }
+`;
+
+const BoxImg = styled(motion.img)`
+  width: 936px;
+  max-width: 130vw;
+  height: auto;
+  filter: drop-shadow(0 20px 60px rgba(0,0,0,0.25));
+  display: block;
+  z-index: 1;
+  
+  @media (max-width: 1200px) {
+    width: 650px;
+  }
+  
+  @media (max-width: 900px) {
+    width: 90%;
+    margin-bottom: 2rem;
+  }
+`;
+
+const Caption = styled(motion.p)`
+  text-align: center;
+  margin-top: 4rem;
+  color: rgba(0, 0, 0, 0.35);
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+`;
+
+// ─── Data ────────────────────────────────────────────────────────────────────
+
+const features = [
+  { text: 'Autonomous Landing', icon: <FaPlaneArrival /> },
+  { text: 'Auto-Charging System', icon: <FaChargingStation /> },
+  { text: 'Grid Independent', icon: <FaBolt /> },
+  { text: 'Weather Proof Design', icon: <FaCloudSunRain /> },
+  { text: 'Global Connectivity', icon: <FaWifi /> },
+];
+
+// ─── Variants ────────────────────────────────────────────────────────────────
+
+const containerVariants = {
+  hidden: {},
+  visible: { 
+    transition: { 
+      staggerChildren: 0.12,
+      delayChildren: 0.1
+    } 
+  },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, x: -30 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.6, ease: "easeOut" }
-  }
+  hidden: { opacity: 0, x: -80, filter: 'blur(15px)' },
+  visible: { 
+    opacity: 1, 
+    x: 0, 
+    filter: 'blur(0px)',
+    transition: { 
+      duration: 0.6, 
+      ease: [0.22, 1, 0.36, 1] 
+    } 
+  },
 };
 
-const imageVariants = {
-  hidden: { opacity: 0, scale: 0.9, y: 0 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    y: -50,
-    transition: { duration: 0.8, ease: "easeOut" }
-  }
-};
 
-function TheBoxSectionComponent() {
-  const features = [
-    { text: "Autonomous Landing", icon: <FaPlaneArrival /> },
-    { text: "Weather Proof Design", icon: <FaCloudSunRain /> },
-    { text: "Auto-Charging System", icon: <FaChargingStation /> },
-    { text: "Grid Independent", icon: <FaBolt /> },
-    { text: "Global Connectivity", icon: <FaWifi /> }
-  ];
+// ─── Component ───────────────────────────────────────────────────────────────
 
+export default function TheBoxSectionComponent() {
   return (
-    <TheBoxSection>
-      <SectionHeader>
-        <Title
-          initial={{ opacity: 0, y: -30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-        >
-          The <span>Box</span>
-        </Title>
-        <Subtitle
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2, duration: 0.7 }}
-        >
-          The ultimate drone nesting station. Automated, resilient, and always ready to launch.
-        </Subtitle>
-      </SectionHeader>
+    <SectionWrapper>
+      <GridOverlay />
+      <Inner>
+        {/* Title */}
+        <SectionTitle>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            style={{
+              fontSize: 'clamp(1.8rem, 8vw, 4.8rem)',
+              margin: 0,
+              letterSpacing: 'clamp(4px, 2vw, 12px)',
+              color: '#111',
+              textTransform: 'uppercase',
+              fontWeight: 700,
+              whiteSpace: 'nowrap'
+            }}
+          >
+            <RoboticReveal text="DRONE-IN-A-BOX" />
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            style={{
+              color: '#ff4d4d',
+              fontSize: '1.2rem',
+              letterSpacing: '5px',
+              marginTop: '1.2rem',
+              textTransform: 'uppercase',
+              fontWeight: 700,
+            }}
+          >
+            Persistent Surveillance. Zero Crew.
+          </motion.p>
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.5 }}
+            style={{
+              color: 'rgba(0,0,0,0.65)',
+              fontSize: '1.1rem',
+              letterSpacing: '0.5px',
+              marginTop: '1.2rem',
+              maxWidth: '800px',
+              margin: '1.2rem auto 0',
+              lineHeight: 1.6,
+            }}
+          >
+            Autonomous takeoff, mission execution, landing, and recharge — from a single weatherproof ground station. Always on. Always ready.
+          </motion.p>
+        </SectionTitle>
 
-      <Container>
-        <ContentSide
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          <FeaturesArc>
-            {features.map((item, index) => {
-              // Concave Arc Logic (Curving inward to left)
-              // Mid item (index 2) is furthest LEFT (smallest margin).
-              // Outer items (0, 4) are furthest RIGHT (largest margin).
-              const mid = 2;
-              // Reduce offset slightly to make it tighter
-              const offset = Math.abs(index - mid) * 30;
-
-              return (
-                <FeatureItem
-                  key={index}
+        {/* Layout */}
+        <Layout>
+          {/* Features Column — all on the left */}
+            <FeatureCol>
+              {features.map((f, i) => (
+                <EnhancedFeatureItem 
+                  key={i} 
                   variants={itemVariants}
-                  style={{ marginLeft: `${offset}px` }}
-                  whileHover={{ scale: 1.05, originX: 0 }}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.2 }}
                 >
-                  <IconWrapper>{item.icon}</IconWrapper>
-                  {item.text}
-                </FeatureItem>
-              );
-            })}
-          </FeaturesArc>
-        </ContentSide>
+                  <FeatureLabel>
+                    {f.icon}
+                    {f.text}
+                  </FeatureLabel>
+                  <FeatureLine />
+                  <FeatureDot />
+                </EnhancedFeatureItem>
+              ))}
+            </FeatureCol>
 
-        <ImageSide
-          variants={imageVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          <CircleGlow />
-          {/* Confirmed using thebox.png */}
-          <BoxImage
-            src="/images/thebox.png"
-            alt="The Box - Autonomous Drone Nest"
-          />
-        </ImageSide>
-      </Container>
-    </TheBoxSection>
+          {/* Box image — on the right */}
+          <BoxImageCol>
+            <BoxImg
+              src="/images/thebox.png"
+              alt="The Box — Artemis Drone Station"
+              initial={{ opacity: 0, scale: 0.9, x: 50 }}
+              whileInView={{ opacity: 1, scale: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.8, ease: 'easeOut' }}
+            />
+          </BoxImageCol>
+        </Layout>
+
+        {/* Caption removed */}
+      </Inner>
+    </SectionWrapper>
   );
 }
-
-export default TheBoxSectionComponent;

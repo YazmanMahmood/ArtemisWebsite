@@ -14,41 +14,50 @@ const FilterGroup = styled.div`
 `;
 
 const FilterButton = styled(motion.button)`
-  padding: 0.75rem 1.5rem;
-  background: ${props => props.active ? 'linear-gradient(135deg, var(--primary), var(--secondary))' : 'var(--medium-dark)'};
-  color: ${props => props.active ? 'white' : 'var(--text-light)'};
-  border: 1px solid ${props => props.active ? 'transparent' : 'rgba(255, 255, 255, 0.1)'};
-  border-radius: 4px;
+  padding: 0.6rem 1.2rem;
+  background: ${props => props.active ? '#ff4d4d' : 'transparent'};
+  color: ${props => props.active ? 'white' : 'rgba(255, 255, 255, 0.6)'};
+  border: 1px solid ${props => props.active ? '#ff4d4d' : 'rgba(255, 255, 255, 0.2)'};
+  border-radius: 2px;
   cursor: pointer;
   font-weight: 500;
+  font-family: 'Share Tech Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.75rem;
   transition: all 0.3s ease;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border-color: #ff4d4d;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(255, 77, 77, 0.3);
   }
 `;
 
 const SearchInput = styled.input`
   width: 100%;
   max-width: 400px;
-  padding: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  font-size: 1rem;
+  padding: 0.9rem 1.2rem;
+  border: 1px solid rgba(255, 77, 77, 0.2);
+  border-radius: 2px;
+  font-size: 0.9rem;
+  font-family: 'Share Tech Mono', monospace;
   margin: 0 auto;
   display: block;
-  background: var(--medium-dark);
-  color: var(--text-light);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 
   &:focus {
     outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 2px rgba(255, 59, 48, 0.2);
+    border-color: #ff4d4d;
+    background: rgba(255, 77, 77, 0.08);
+    box-shadow: 0 0 20px rgba(255, 77, 77, 0.1);
   }
 
   &::placeholder {
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.3);
   }
 `;
 

@@ -10,34 +10,84 @@ import { app } from '../firebase/config';
 import { getDatabase, ref, set, get, child, serverTimestamp } from 'firebase/database';
 import { outdoorResponseDrones, publicSafetyDrones, allProductsData } from '../data/products';
 
-const categories = ['Outdoor Response', 'Public Safety', 'All Products'];
+import { HiSparkles } from 'react-icons/hi';
+import { FaFileDownload } from 'react-icons/fa';
+import RoboticReveal from '../components/common/RoboticReveal';
+import FingerprintJS from '@fingerprintjs/fingerprintjs';
+
+// Filter categories removed as requested by user
+const categories = [];
 
 // ====== STYLED COMPONENTS ======
 const ProductsContainer = styled.div`
   padding: 80px 2rem;
   min-height: 100vh;
-  background: var(--light);
+  background: #000;
+  position: relative;
+  overflow: hidden;
 
   @media (max-width: 768px) {
     padding: 60px 1rem;
   }
 `;
 
+const GridOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 77, 77, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 77, 77, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 1;
+`;
+
+const Scanlines = styled.div`
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.1) 50%
+  );
+  background-size: 100% 4px;
+  z-index: 2;
+  pointer-events: none;
+`;
+
 const ProductsHeader = styled.div`
   text-align: center;
   max-width: 800px;
-  margin: 0 auto 4rem;  
+  margin: 0 auto 5rem;
+  position: relative;
+  z-index: 3;
 
   h1 {
-    color: var(--dark);
+    color: #fff;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(2rem, 5vw, 4rem);
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
   }
 
   p {
-    color: var(--text-light);
+    color: rgba(255, 255, 255, 0.5);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .accent-bar {
+    width: 80px;
+    height: 3px;
+    background: #ff4d4d;
+    margin: 2rem auto 0;
+    box-shadow: 0 0 15px #ff4d4d;
   }
 
   @media (max-width: 768px) {
-    margin: 0 auto 2rem;
+    margin: 0 auto 3rem;
   }
 `;
 
@@ -94,44 +144,54 @@ const CustomizeWrapper = styled.div`
 const CustomizeButton = styled(motion.button)`
   width: 100%;
   margin-top: auto;
-  padding: 0.8rem 1rem;
-  background: #ff3b30;
+  padding: 1rem;
+  background: var(--dark-accent);
   color: white;
-  border: none;
-  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   font-family: inherit;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 
   &:hover {
-    background: #0070e0;
+    background: var(--primary);
+    border-color: var(--primary);
     transform: translateY(-2px);
   }
 `;
 
 const CatalogueButton = styled(motion.button)`
-  padding: 1rem 2rem;
-  background: var(--primary);
+  padding: 1rem 2.5rem;
+  background: rgba(255, 255, 255, 0.05);
   color: white;
-  border: none;
-  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
-  box-shadow: 0 4px 15px rgba(255, 59, 48, 0.3);
+  backdrop-filter: blur(10px);
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 
   &:hover {
-    background: var(--secondary);
-    box-shadow: 0 6px 20px rgba(255, 59, 48, 0.4);
+    background: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 0 30px rgba(255, 59, 48, 0.3);
     transform: translateY(-2px);
+  }
+
+  svg {
+    font-size: 1.2rem;
   }
 `;
 
@@ -290,70 +350,82 @@ const ModalOverlay = styled(motion.div)`
 `;
 
 const ModalContent = styled(motion.div)`
-  background: white; /* ✅ Changed from var(--dark) to WHITE for contrast */
-  color: #000000; /* ✅ BLACK TEXT */
-  border-radius: 16px;
+  background: white;
+  color: #000000;
+  border-radius: 24px;
   width: 100%;
   max-width: 500px;
   max-height: 90vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.25);
   position: relative;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  overflow: hidden;
 `;
 
 const CloseButton = styled.button`
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: #f5f5f5;
   border: none;
   color: #777;
-  font-size: 1.5rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
   cursor: pointer;
-  font-family: inherit;
-  &:hover { color: #000; }
+  transition: all 0.2s ease;
+  z-index: 20;
+
+  &:hover {
+    background: #eeeeee;
+    color: #000;
+    transform: rotate(90deg);
+  }
 `;
 
 const ModalHeader = styled.div`
-  padding: 1.5rem 2rem 1rem;
-  text-align: center;
-  position: sticky;
-  top: 0;
+  padding: 2rem 2.5rem 1.5rem;
+  text-align: left;
   background: white;
   z-index: 10;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   color: #000000;
 
   h2 {
     margin: 0;
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
   }
 `;
 
 const ModalBody = styled.div`
-  padding: 1.5rem 2rem;
+  padding: 2rem 2.5rem;
   overflow-y: auto;
   flex: 1;
-  max-height: 60vh;
 
   &::-webkit-scrollbar {
     width: 6px;
   }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
   &::-webkit-scrollbar-thumb {
-    background: #ddd;
-    border-radius: 3px;
+    background: #e5e5e5;
+    border-radius: 10px;
   }
 `;
 
 const ModalFooter = styled.div`
-  padding: 0 2rem 1.5rem;
-  text-align: center;
-  position: sticky;
-  bottom: 0;
+  padding: 1.5rem 2.5rem 2.5rem;
   background: white;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
 `;
 
 // ✅ Modal-specific form components — all black text
@@ -367,16 +439,24 @@ const ModalLabel = styled.label`
 
 const ModalInput = styled.input`
   width: 100%;
-  padding: 0.85rem;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  background: white;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1.5px solid #eee;
+  background: #f9f9f9;
   color: #000000;
   font-size: 1rem;
   box-sizing: border-box;
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #ff3b30;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(255, 59, 48, 0.1);
+  }
 
   &::placeholder {
-    color: #999;
+    color: #bbb;
   }
 `;
 
@@ -397,35 +477,56 @@ const ModalSelect = styled.select`
 
 const ModalTextarea = styled.textarea`
   width: 100%;
-  padding: 0.85rem;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  background: white;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1.5px solid #eee;
+  background: #f9f9f9;
   color: #000000;
   font-size: 1rem;
   min-height: 100px;
   resize: vertical;
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #ff3b30;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(255, 59, 48, 0.1);
+  }
 
   &::placeholder {
-    color: #999;
+    color: #bbb;
   }
 `;
 
 const SubmitButton = styled.button`
   width: 100%;
-  padding: 1rem;
+  padding: 1.2rem;
   background: #ff3b30;
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 500;
+  border-radius: 14px;
+  font-size: 1.1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(255, 59, 48, 0.2);
 
   &:hover {
     background: #e02e23;
     transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 59, 48, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
   }
 `;
 
@@ -436,6 +537,148 @@ const ModalSuccessMessage = styled(motion.div)`
   border-radius: 8px;
   text-align: center;
 `;
+
+// ====== CATALOGUE MODAL ======
+const CatalogueModal = ({ onClose }) => {
+  const [catalogueData, setCatalogueData] = useState({ name: '', email: '', phone: '' });
+  const [isCatalogueSubmitting, setIsCatalogueSubmitting] = useState(false);
+  const [catalogueSuccess, setCatalogueSuccess] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setCatalogueData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsCatalogueSubmitting(true);
+    try {
+      const db = getDatabase(app);
+      const downloadsRef = ref(db, 'catalogue_downloads');
+      const snapshot = await get(downloadsRef);
+      let nextId = 1;
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        const keys = Object.keys(data);
+        const ids = keys.map(key => parseInt(key.replace('download', '')) || 0).filter(id => id > 0);
+        if (ids.length > 0) {
+          nextId = Math.max(...ids) + 1;
+        }
+      }
+      // 1. Capture IP (Guaranteed)
+      let visitorIP = 'unknown';
+      try {
+        const ipRes = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipRes.json();
+        visitorIP = ipData.ip;
+      } catch (e) { console.error("IP Fetch failed"); }
+
+      // 2. Capture Detailed Location & ISP (Fallback)
+      let locationData = {};
+      try {
+        const locRes = await fetch(`https://ip-api.com/json/${visitorIP}`);
+        const locInfo = await locRes.json();
+        if (locInfo.status === 'success') {
+          locationData = {
+            City: locInfo.city,
+            Region: locInfo.regionName,
+            Country: locInfo.country,
+            Latitude: locInfo.lat,
+            Longitude: locInfo.lon,
+            ISP: locInfo.isp
+          };
+        }
+      } catch (e) { console.error("Location Fetch failed"); }
+
+      // 3. Capture Unique Device Fingerprint
+      let deviceID = 'unknown';
+      try {
+        const fp = await FingerprintJS.load();
+        const result = await fp.get();
+        deviceID = result.visitorId;
+      } catch (e) { console.error("Fingerprint failed"); }
+
+      const visitorMetadata = {
+        IP: visitorIP,
+        ...locationData,
+        DeviceID: deviceID,
+        UserAgent: navigator.userAgent,
+        Language: navigator.language,
+        Platform: navigator.platform,
+        ScreenResolution: `${window.screen.width}x${window.screen.height}`,
+      };
+
+      await set(child(downloadsRef, `download${nextId}`), {
+        name: catalogueData.name,
+        email: catalogueData.email,
+        phone: catalogueData.phone || 'Not Provided',
+        ...visitorMetadata,
+        timestamp: serverTimestamp()
+      });
+
+      // Trigger download
+      const link = document.createElement('a');
+      link.href = '/images/ArtemisUAV_Catalogue.pdf';
+      link.download = 'ArtemisUAV_Catalogue.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      setCatalogueSuccess(true);
+      setTimeout(() => {
+        setCatalogueSuccess(false);
+        onClose();
+        setCatalogueData({ name: '', email: '', phone: '' });
+      }, 3000);
+    } catch (err) {
+      console.error('Firebase save error:', err);
+      alert('Failed to submit. Please try again.');
+    } finally {
+      setIsCatalogueSubmitting(false);
+    }
+  };
+
+  return (
+    <ModalOverlay initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
+      <ModalContent initial={{ scale: 0.95, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.95, opacity: 0, y: 20 }} onClick={e => e.stopPropagation()}>
+        <CloseButton onClick={onClose}>&times;</CloseButton>
+        <ModalHeader>
+          <h2>Download Catalogue</h2>
+        </ModalHeader>
+
+        {catalogueSuccess ? (
+          <ModalBody>
+            <ModalSuccessMessage initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+              ✅ Success! Your download will begin shortly.
+            </ModalSuccessMessage>
+          </ModalBody>
+        ) : (
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
+            <ModalBody>
+              <FormGroup>
+                <ModalLabel>Full Name *</ModalLabel>
+                <ModalInput type="text" name="name" value={catalogueData.name} onChange={handleChange} required placeholder="e.g. Alex Johnson" />
+              </FormGroup>
+              <FormGroup>
+                <ModalLabel>Email *</ModalLabel>
+                <ModalInput type="email" name="email" value={catalogueData.email} onChange={handleChange} required placeholder="e.g. you@example.com" />
+              </FormGroup>
+              <FormGroup style={{ marginBottom: 0 }}>
+                <ModalLabel>Phone Number (Optional)</ModalLabel>
+                <ModalInput type="tel" name="phone" value={catalogueData.phone} onChange={handleChange} placeholder="e.g. +1 234 567 8900" />
+              </FormGroup>
+            </ModalBody>
+            <ModalFooter>
+              <SubmitButton type="submit" disabled={isCatalogueSubmitting}>
+                {isCatalogueSubmitting ? 'Processing...' : 'Download Now'}
+              </SubmitButton>
+            </ModalFooter>
+          </form>
+        )}
+      </ModalContent>
+    </ModalOverlay>
+  );
+};
 
 // ====== MAIN COMPONENT ======
 function ProductsPage() {
@@ -457,6 +700,9 @@ function ProductsPage() {
   const [description, setDescription] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Catalogue Modal State
+  const [isCatalogueModalOpen, setIsCatalogueModalOpen] = useState(false);
 
   useEffect(() => {
     setProducts(allProductsData);
@@ -504,6 +750,49 @@ function ProductsPage() {
         }
       }
 
+      // 1. Capture IP (Guaranteed)
+      let visitorIP = 'unknown';
+      try {
+        const ipRes = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipRes.json();
+        visitorIP = ipData.ip;
+      } catch (e) { console.error("IP Fetch failed"); }
+
+      // 2. Capture Detailed Location & ISP (Fallback)
+      let locationData = {};
+      try {
+        const locRes = await fetch(`https://ip-api.com/json/${visitorIP}`);
+        const locInfo = await locRes.json();
+        if (locInfo.status === 'success') {
+          locationData = {
+            City: locInfo.city,
+            Region: locInfo.regionName,
+            Country: locInfo.country,
+            Latitude: locInfo.lat,
+            Longitude: locInfo.lon,
+            ISP: locInfo.isp
+          };
+        }
+      } catch (e) { console.error("Location Fetch failed"); }
+
+      // 3. Capture Unique Device Fingerprint
+      let deviceID = 'unknown';
+      try {
+        const fp = await FingerprintJS.load();
+        const result = await fp.get();
+        deviceID = result.visitorId;
+      } catch (e) { console.error("Fingerprint failed"); }
+
+      const visitorMetadata = {
+        IP: visitorIP,
+        ...locationData,
+        DeviceID: deviceID,
+        UserAgent: navigator.userAgent,
+        Language: navigator.language,
+        Platform: navigator.platform,
+        ScreenResolution: `${window.screen.width}x${window.screen.height}`,
+      };
+
       const customizationData = {
         industry,
         height: heightRequirement,
@@ -511,6 +800,7 @@ function ProductsPage() {
         range,
         payload: needsPayload ? payloadWeight : "None",
         description,
+        ...visitorMetadata,
         timestamp: serverTimestamp()
       };
 
@@ -579,6 +869,49 @@ function ProductsPage() {
           }
         }
 
+        // 1. Capture IP (Guaranteed)
+        let visitorIP = 'unknown';
+        try {
+          const ipRes = await fetch('https://api.ipify.org?format=json');
+          const ipData = await ipRes.json();
+          visitorIP = ipData.ip;
+        } catch (e) { console.error("IP Fetch failed"); }
+
+        // 2. Capture Detailed Location & ISP (Fallback)
+        let locationData = {};
+        try {
+          const locRes = await fetch(`https://ip-api.com/json/${visitorIP}`);
+          const locInfo = await locRes.json();
+          if (locInfo.status === 'success') {
+            locationData = {
+              City: locInfo.city,
+              Region: locInfo.regionName,
+              Country: locInfo.country,
+              Latitude: locInfo.lat,
+              Longitude: locInfo.lon,
+              ISP: locInfo.isp
+            };
+          }
+        } catch (e) { console.error("Location Fetch failed"); }
+
+        // 3. Capture Unique Device Fingerprint
+        let deviceID = 'unknown';
+        try {
+          const fp = await FingerprintJS.load();
+          const result = await fp.get();
+          deviceID = result.visitorId;
+        } catch (e) { console.error("Fingerprint failed"); }
+
+        const visitorMetadata = {
+          IP: visitorIP,
+          ...locationData,
+          DeviceID: deviceID,
+          UserAgent: navigator.userAgent,
+          Language: navigator.language,
+          Platform: navigator.platform,
+          ScreenResolution: `${window.screen.width}x${window.screen.height}`,
+        };
+
         const orderKey = `fpvorder${nextId}`;
         await set(child(fpvOrdersRef, orderKey), {
           droneId: drone.id,
@@ -588,6 +921,7 @@ function ProductsPage() {
           address: formData.address,
           preferredContact: formData.preferredContact,
           message: formData.message || '',
+          ...visitorMetadata,
           timestamp: serverTimestamp(),
           status: 'pending-contact'
         });
@@ -626,16 +960,18 @@ function ProductsPage() {
             </h2>
           </ModalHeader>
 
-          <ModalBody>
-            {submitSuccess ? (
+          {submitSuccess ? (
+            <ModalBody>
               <ModalSuccessMessage
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
               >
                 ✅ Thank you! Our representative will contact you shortly.
               </ModalSuccessMessage>
-            ) : (
-              <form onSubmit={handleSubmit}>
+            </ModalBody>
+          ) : (
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
+              <ModalBody>
                 <FormGroup>
                   <ModalLabel htmlFor="name">Full Name *</ModalLabel>
                   <ModalInput
@@ -687,7 +1023,7 @@ function ProductsPage() {
                   </ModalSelect>
                 </FormGroup>
 
-                <FormGroup>
+                <FormGroup style={{ marginBottom: 0 }}>
                   <ModalLabel htmlFor="message">Special Instructions (Optional)</ModalLabel>
                   <ModalTextarea
                     id="message"
@@ -697,19 +1033,20 @@ function ProductsPage() {
                     placeholder="Any specific delivery instructions or customizations..."
                   />
                 </FormGroup>
-
-                <ModalFooter>
-                  <SubmitButton type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? 'Processing...' : 'Confirm Order'}
-                  </SubmitButton>
-                </ModalFooter>
-              </form>
-            )}
-          </ModalBody>
+              </ModalBody>
+              <ModalFooter>
+                <SubmitButton type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? 'Processing...' : 'Confirm Order'}
+                </SubmitButton>
+              </ModalFooter>
+            </form>
+          )}
         </ModalContent>
       </ModalOverlay>
     );
   };
+
+
 
   const renderDronesSection = () => (
     <>
@@ -757,7 +1094,7 @@ function ProductsPage() {
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setActiveCategory('Customize')}
               >
-                Customize Your Drone
+                <HiSparkles /> Get Custom Quote
               </CustomizeButton>
             </CustomizeWrapper>
           </motion.div>
@@ -899,34 +1236,41 @@ function ProductsPage() {
 
   return (
     <ProductsContainer>
+      <GridOverlay />
+      <Scanlines />
       <ProductsHeader>
         <motion.h1
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          Explore Our Cutting-Edge Solutions
+          <RoboticReveal text="ARSENAL" />
         </motion.h1>
 
         <motion.p
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          Discover Artemis' advanced drones — from professional surveillance to immersive FPV systems — and tailored automation solutions.
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          style={{ marginTop: '2rem' }}
         >
-          <a href="/images/ArtemisUAV_Catalogue.pdf" download="ArtemisUAV_Catalogue.pdf" style={{ textDecoration: 'none' }}>
-            <CatalogueButton whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              📥 Download Catalogue
-            </CatalogueButton>
-          </a>
+          Explore our tactical drone fleet and mission-critical systems.
+        </motion.p>
+        
+        <motion.div 
+           className="accent-bar"
+           initial={{ width: 0 }}
+           animate={{ width: 80 }}
+           transition={{ duration: 0.8, delay: 0.6 }}
+        />
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.8 }}
+          style={{ marginTop: '3rem' }}
+        >
+          <CatalogueButton whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setIsCatalogueModalOpen(true)}>
+            <FaFileDownload /> DOWNLOAD SPECS CATALOGUE
+          </CatalogueButton>
         </motion.div>
       </ProductsHeader>
 
@@ -940,6 +1284,10 @@ function ProductsPage() {
             setSelectedDrone(null);
           }}
         />
+      )}
+
+      {isCatalogueModalOpen && (
+        <CatalogueModal onClose={() => setIsCatalogueModalOpen(false)} />
       )}
     </ProductsContainer>
   );

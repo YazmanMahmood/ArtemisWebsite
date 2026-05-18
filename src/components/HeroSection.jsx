@@ -1,39 +1,12 @@
 import styled from '@emotion/styled';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import VimeoEmbed from './common/VimeoEmbed';
 
-const premiumFont = "'Montserrat', sans-serif";
+const monoFont = "'Share Tech Mono', monospace";
+const displayFont = "'Montserrat', sans-serif";
 
-const carouselSlides = [
-  {
-    id: 1,
-    image: '/images/DFR.webp',
-  },
-  {
-    id: 2,
-    image: '/images/military.webp',
-  },
-  {
-    id: 3,
-    image: '/images/longrange.webp',
-  },
-];
-
-const rotatingWords = ['Security', 'Military', 'Surveillance', 'First Responder', 'Independent', 'Long-range'];
-
-const HeroOverlay = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-  background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.5));
-  
-  @media (max-width: 768px) {
-    background: rgba(0,0,0,0.4);
-  }
-`;
+// ─── Styled Components ───────────────────────────────────────────────────────
 
 const HeroSection = styled.section`
   height: 100vh;
@@ -42,226 +15,243 @@ const HeroSection = styled.section`
   overflow: hidden;
   width: 100%;
   background-color: #000;
-  color: #ffffff;
-  font-family: ${premiumFont};
-  align-items: flex-start;
-  justify-content: flex-start;
+  color: #fff;
 `;
 
-const CarouselContainer = styled.div`
+const HeroOverlay = styled.div`
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    to right,
+    rgba(0,0,0,0.75) 0%,
+    rgba(0,0,0,0.45) 55%,
+    rgba(0,0,0,0.15) 100%
+  );
+
+  @media (max-width: 768px) {
+    background: rgba(0,0,0,0.6);
+  }
+`;
+
+const VideoContainer = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100vw;
+  height: 100vh;
+  transform: translate(-50%, -50%);
+  z-index: 1;
   overflow: hidden;
-  z-index: 1;
 `;
 
-const CarouselSlide = styled(motion.div)`
-  position: absolute;
-  top: 0;
-  left: 0;
+
+
+const HeroInner = styled.div`
+  max-width: 1200px;
   width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: left;
   height: 100%;
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  z-index: 1;
+  padding-top: 0;
+
+  @media (max-width: 1400px) {
+    justify-content: flex-start;
+    padding-top: 4rem;
+  }
+
+  @media (max-width: 768px) {
+    padding-top: 8rem;
+  }
 `;
 
 const HeroContent = styled(motion.div)`
-  position: relative;
-  z-index: 10;
-  text-align: left;
-  max-width: 1000px;
-  margin: 0;
-  padding: 6rem 0 0 6rem;
-  padding-top: calc(6rem - 5px);
-  height: 100%;
+  max-width: 850px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  color: #ffffff;
-  font-family: ${premiumFont};
   align-items: flex-start;
-  
-  @media (max-width: 768px) {
-    position: absolute;
-    top: 65px;
-    left: 0;
-    right: 0;
-    width: 100vw;
-    padding: 2rem 1.5rem 0 1.5rem;
-    box-sizing: border-box;
-  }
+  margin-top: 20px;
 `;
 
-const IntroText = styled(motion.h2)`
-  font-size: 2.8rem;
-  margin-bottom: 0.5rem;
-  color: #ffffff;
-  font-weight: 300;
-  line-height: 1.2;
-  font-family: ${premiumFont};
-  text-align: left;
-  letter-spacing: -1px;
-  
-  @media (max-width: 768px) {
-    font-size: 1.8rem;
-  }
-`;
-
-const RotatingTextContainer = styled.span`
-  display: inline-block;
-  position: relative;
-  vertical-align: bottom;
-  height: 1.25em; /* Slightly increased for better fitting */
-`;
-
-const RotatingWord = styled(motion.span)`
-  display: inline-block;
-  white-space: nowrap;
-  color: #ff4d4d;
-  font-weight: 600;
-`;
-
-const PublicSafetyTagline = styled(motion.p)`
-  font-size: 1.2rem; /* Slighting reduced for better hierarchy */
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.7);
-  letter-spacing: 3px;
+const PreLabel = styled(motion.p)`
+  font-family: ${monoFont};
+  font-size: clamp(0.65rem, 1vw, 0.8rem);
+  letter-spacing: 5px;
   text-transform: uppercase;
-  margin-top: 2rem;
-  margin-bottom: 1.5rem;
-  
+  color: #ff4d4d;
+  margin: 0 0 1.5rem 0;
+`;
+
+const MainTitle = styled(motion.h1)`
+  font-family: ${displayFont};
+  font-size: clamp(2.2rem, 5.5vw, 5rem);
+  font-weight: 900;
+  line-height: 1.1;
+  margin: 0;
+  text-transform: uppercase;
+  color: #fff;
+  letter-spacing: -1px;
+
+  @media (max-width: 1400px) {
+    font-size: clamp(1.8rem, 4.5vw, 3.2rem);
+    letter-spacing: -0.5px;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 2.5rem;
+    line-height: 1.2;
+  }
+
+  span {
+    display: block;
+  }
+
+  .highlight {
+    color: #ff4d4d;
+  }
+`;
+
+const AccentBar = styled(motion.div)`
+  width: 60px;
+  height: 2px;
+  background: #ff4d4d;
+  margin: 2rem 0;
+  box-shadow: 0 0 12px #ff4d4d;
+`;
+
+const Subheading = styled(motion.p)`
+  font-family: ${monoFont};
+  font-size: clamp(0.85rem, 1.1vw, 1.1rem);
+  color: rgba(255, 255, 255, 0.65);
+  letter-spacing: 1.2px;
+  line-height: 1.6;
+  margin: 0 0 2.5rem 0;
+  max-width: 650px;
+
+  @media (max-width: 1400px) {
+    font-size: 0.9rem;
+    max-width: 420px;
+    line-height: 1.5;
+  }
+
   @media (max-width: 768px) {
     font-size: 0.9rem;
-    letter-spacing: 2px;
+    max-width: 100%;
   }
 `;
 
-const HeroDescription = styled(motion.p)`
-  font-size: 1.1rem;
-  line-height: 1.8;
-  margin-bottom: 0;
-  color: rgba(255, 255, 255, 0.8);
-  max-width: 600px;
-  font-weight: 300;
+const CTARow = styled(motion.div)`
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+`;
+
+const CTAPrimary = styled(Link)`
+  display: inline-block;
+  padding: 1rem 2.5rem;
+  background: #ff4d4d;
+  color: #000;
+  font-family: ${monoFont};
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-decoration: none;
+  transition: all 0.3s ease;
   
-  @media (max-width: 768px) {
-    font-size: 1rem;
-    line-height: 1.6;
+  &:hover {
+    background: #fff;
+    color: #000;
+    box-shadow: 0 0 30px rgba(255, 77, 77, 0.5);
   }
 `;
 
-function HeroSectionComponent() {
-  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-  const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const slideIntervalRef = useRef(null);
+const CTASecondary = styled(Link)`
+  display: inline-block;
+  padding: 1rem 2.5rem;
+  background: transparent;
+  color: #fff;
+  font-family: ${monoFont};
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-color: #ff4d4d;
+    color: #ff4d4d;
+  }
+`;
 
-  const currentSlide = carouselSlides[currentSlideIndex];
-  const backgroundImage = currentSlide.image;
-  const currentWord = rotatingWords[currentWordIndex];
+// ─── Component ───────────────────────────────────────────────────────────────
 
-  // Auto-advance slides every 6 seconds for a slower, more minimalistic pace
-  useEffect(() => {
-    slideIntervalRef.current = setInterval(() => {
-      setCurrentSlideIndex(prevIndex => (prevIndex + 1) % carouselSlides.length);
-    }, 6000);
-
-    return () => {
-      if (slideIntervalRef.current) {
-        clearInterval(slideIntervalRef.current);
-      }
-    };
-  }, []);
-
-  // Rotate words every 3 seconds
-  useEffect(() => {
-    const wordInterval = setInterval(() => {
-      setCurrentWordIndex(prevIndex => (prevIndex + 1) % rotatingWords.length);
-    }, 3000);
-
-    return () => clearInterval(wordInterval);
-  }, []);
+export default function HeroSectionComponent() {
 
   return (
     <HeroSection>
       <HeroOverlay />
 
-      <CarouselContainer>
-        <AnimatePresence mode="wait">
-          <CarouselSlide
-            key={currentSlide.id}
-            initial={{ opacity: 0, scale: 1.05 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1.5, ease: "easeInOut" }}
-            style={{ backgroundImage: `url(${backgroundImage})` }}
+      <VideoContainer>
+        <VimeoEmbed
+          src="https://player.vimeo.com/video/1191621737?background=1&autoplay=1&loop=1&muted=1&byline=0&title=0&autopause=0&dnt=1"
+          title="Hero Background Video"
+          style={{ position: 'absolute', top: '50%', left: '50%', width: '100vw', height: '56.25vw', minHeight: '100vh', minWidth: '177.77vh', transform: 'translate(-50%, -50%)', border: 'none', pointerEvents: 'none' }}
+        />
+      </VideoContainer>
+
+      <HeroInner>
+        <HeroContent
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+
+          <MainTitle
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.5 }}
+          >
+            <span>Unmanned.</span>
+            <span>Unmatched.</span>
+            <span className="highlight">Uncompromising.</span>
+          </MainTitle>
+
+          <AccentBar
+            initial={{ width: 0 }}
+            animate={{ width: 60 }}
+            transition={{ duration: 0.8, delay: 1.2 }}
           />
-        </AnimatePresence>
-      </CarouselContainer>
 
-      <HeroContent
-        initial="hidden"
-        animate="visible"
-        variants={{
-          hidden: { opacity: 0 },
-          visible: {
-            opacity: 1,
-            transition: {
-              staggerChildren: 0.2,
-              delayChildren: 0.5
-            }
-          }
-        }}
-      >
-        <IntroText
-          variants={{
-            hidden: { opacity: 0, y: 20 },
-            visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
-          }}
-        >
-          <motion.div style={{ display: 'inline-block' }} layout transition={{ duration: 0.6, ease: "easeInOut" }}>
-            Welcome to the era of<br />
-            AI-powered{' '}
-            <AnimatePresence mode="wait">
-              <RotatingWord
-                key={currentWord}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.4 }}
-                layout
-              >
-                {currentWord}
-              </RotatingWord>
-            </AnimatePresence>
-            {' '}drones
-          </motion.div>
-        </IntroText>
+          <Subheading
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.4 }}
+          >
+            Aerial systems built for contested environments <br />
+            no operator, no limits.
+          </Subheading>
 
-        <PublicSafetyTagline
-          variants={{
-            hidden: { opacity: 0, x: -10 },
-            visible: { opacity: 1, x: 0, transition: { duration: 1, delay: 0.8 } }
-          }}
-        >
-          technology in the service of public safety
-        </PublicSafetyTagline>
-
-        <HeroDescription
-          variants={{
-            hidden: { opacity: 0, y: 20 },
-            visible: { opacity: 1, y: 0, transition: { duration: 1 } }
-          }}
-        >
-          Zero human intervention. Revolutionizing surveillance and monitoring with fully autonomous AI-powered drones. Experience unparalleled security and efficiency.
-        </HeroDescription>
-      </HeroContent>
+          <CTARow
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.8 }}
+          >
+            <CTAPrimary to="/contact">Contact Us</CTAPrimary>
+            <CTASecondary to="/about">Learn More</CTASecondary>
+          </CTARow>
+        </HeroContent>
+      </HeroInner>
     </HeroSection>
   );
 }
-
-export default HeroSectionComponent;

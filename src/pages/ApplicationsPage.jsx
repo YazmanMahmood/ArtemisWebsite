@@ -4,135 +4,201 @@ import { useInView } from 'react-intersection-observer';
 import { useScrollToTop } from '../hooks/useScrollToTop';
 import { useState } from 'react';
 
-// Main container with dark background for premium feel
-const ApplicationsContainer = styled.div`
-  min-height: 100vh;
-  background: var(--light);
-  color: var(--dark);
-  position: relative;
-  overflow-x: hidden;
+// ─── Keyframes ───────────────────────────────────────────────────────────────
+
+const scan = styled.div`
+  @keyframes scanline {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+  }
 `;
 
-// Hero section
+// ─── Styled Components ───────────────────────────────────────────────────────
+
+const ApplicationsContainer = styled.div`
+  min-height: 100vh;
+  background-color: #000;
+  color: #fff;
+  position: relative;
+  overflow-x: hidden;
+  font-family: 'Share Tech Mono', monospace;
+`;
+
+const DataGrid = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 2px 2px, rgba(255, 77, 77, 0.05) 1px, transparent 0);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 1;
+`;
+
 const HeroSection = styled.section`
-  padding: 140px 2rem 60px;
+  padding: 160px 2rem 80px;
   text-align: center;
   position: relative;
   z-index: 2;
+  background: linear-gradient(to bottom, rgba(255, 77, 77, 0.05) 0%, transparent 100%);
 
   @media (max-width: 768px) {
     padding: 120px 1.5rem 40px;
   }
 `;
 
+const MissionLabel = styled(motion.div)`
+  color: #ff4d4d;
+  font-size: 0.9rem;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+`;
+
 const HeroTitle = styled(motion.h1)`
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  font-weight: 400;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 700;
   margin-bottom: 1.5rem;
   color: #fff;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  line-height: 1;
+  letter-spacing: 4px;
+  text-transform: uppercase;
 
   span {
-    background: linear-gradient(90deg, #ff4d4d, #ff8c42);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #ff4d4d;
+    text-shadow: 0 0 20px rgba(255, 77, 77, 0.5);
   }
 `;
 
 const HeroSubtitle = styled(motion.p)`
-  font-size: clamp(1rem, 1.5vw, 1.25rem);
-  color: var(--text-muted);
-  max-width: 700px;
+  font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+  color: rgba(255, 255, 255, 0.5);
+  max-width: 800px;
   margin: 0 auto 3rem;
-  line-height: 1.6;
+  line-height: 1.8;
+  letter-spacing: 1px;
 `;
 
-// Applications grid
 const ApplicationsSection = styled.section`
   padding: 40px 2rem 100px;
   position: relative;
   z-index: 2;
-
-  @media (max-width: 768px) {
-    padding: 20px 1rem 60px;
-  }
+  max-width: 1400px;
+  margin: 0 auto;
 `;
 
 const ApplicationsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.5rem;
-  max-width: 1400px;
-  margin: 0 auto;
+  gap: 2.5rem;
 
   @media (max-width: 480px) {
     grid-template-columns: 1fr;
   }
 `;
 
+const CornerBracket = styled.div`
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  border: 1px solid rgba(255, 77, 77, 0.3);
+  z-index: 5;
+  transition: all 0.3s ease;
+
+  ${props => props.top && 'top: 0;'}
+  ${props => props.bottom && 'bottom: 0;'}
+  ${props => props.left && 'left: 0; border-right: 0; border-bottom: 0;'}
+  ${props => props.right && 'right: 0; border-left: 0; border-bottom: 0;'}
+  ${props => props.bottom && props.left && 'border-top: 0; border-right: 0;'}
+  ${props => props.bottom && props.right && 'border-top: 0; border-left: 0;'}
+`;
+
 const ApplicationCard = styled(motion.div)`
-  background: rgba(26, 26, 26, 0.5);
+  background: rgba(15, 15, 15, 0.6);
   backdrop-filter: blur(10px);
-  border-radius: 20px;
-  overflow: hidden;
+  position: relative;
   border: 1px solid rgba(255, 255, 255, 0.05);
   transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-  position: relative;
+  overflow: hidden;
   
   &:hover {
-    border-color: var(--primary);
-    background: rgba(26, 26, 26, 0.8);
-    transform: translateY(-8px);
+    border-color: rgba(255, 77, 77, 0.4);
+    background: rgba(20, 20, 20, 0.8);
+    transform: translateY(-5px);
+
+    ${CornerBracket} {
+      border-color: #ff4d4d;
+      width: 25px;
+      height: 25px;
+    }
+
+    .scan-bar {
+      animation: scanline 2s linear infinite;
+      opacity: 1;
+    }
   }
 `;
 
+const ScanBar = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 77, 77, 0.5);
+  box-shadow: 0 0 15px #ff4d4d;
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+`;
+
 const CardImageContainer = styled.div`
-  height: 200px;
+  height: 220px;
   position: relative;
   overflow: hidden;
+  border-bottom: 1px solid rgba(255, 77, 77, 0.1);
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+    filter: grayscale(0.3);
   }
 
   &::after {
     content: '';
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 50%;
-    background: linear-gradient(to top, rgba(12, 12, 12, 1), transparent);
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
   }
 
   ${ApplicationCard}:hover & img {
     transform: scale(1.1);
+    filter: grayscale(0);
   }
 `;
 
 const CardContent = styled.div`
-  padding: 1.5rem;
+  padding: 1.8rem;
 
   h3 {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     font-weight: 700;
-    margin-bottom: 0.75rem;
+    margin-bottom: 1rem;
     color: #fff;
-    letter-spacing: -0.01em;
+    letter-spacing: 2px;
+    text-transform: uppercase;
   }
 
   .description {
-    color: var(--text-muted);
-    font-size: 0.95rem;
-    line-height: 1.5;
-    margin-bottom: 1.25rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    height: 4.8em;
     overflow: hidden;
   }
 `;
@@ -140,38 +206,20 @@ const CardContent = styled.div`
 const FeatureTag = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.6rem;
 `;
 
 const Tag = styled.span`
-  font-size: 0.75rem;
-  padding: 0.25rem 0.75rem;
-  background: rgba(255, 59, 48, 0.1);
-  color: var(--primary);
-  border-radius: 100px;
-  border: 1px solid rgba(255, 59, 48, 0.2);
-  font-weight: 600;
+  font-size: 0.65rem;
+  padding: 0.3rem 0.8rem;
+  background: rgba(255, 77, 77, 0.05);
+  color: #ff4d4d;
+  border: 1px solid rgba(255, 77, 77, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 `;
 
-// Animation variants
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.05
-    }
-  }
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.23, 1, 0.32, 1] }
-  }
-};
+// ─── Data ───────────────────────────────────────────────────────────────────
 
 const applications = [
   {
@@ -232,6 +280,8 @@ const applications = [
   }
 ];
 
+// ─── Component ───────────────────────────────────────────────────────────────
+
 function ApplicationsPage() {
   useScrollToTop();
   const shouldReduceMotion = useReducedMotion();
@@ -241,7 +291,10 @@ function ApplicationsPage() {
 
   return (
     <ApplicationsContainer>
+      <DataGrid />
+
       <HeroSection ref={heroRef}>
+
         <HeroTitle
           initial={{ opacity: 0, y: 30 }}
           animate={heroInView ? { opacity: 1, y: 0 } : {}}
@@ -255,22 +308,25 @@ function ApplicationsPage() {
           animate={heroInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          From urban surveillance to deep-forest stealth operations, our autonomous systems are engineered for the most demanding missions.
+          From urban surveillance to deep-forest stealth operations, our autonomous systems are engineered for the most demanding technical requirements.
         </HeroSubtitle>
       </HeroSection>
 
       <ApplicationsSection ref={appsRef}>
-        <ApplicationsGrid
-          as={motion.div}
-          variants={shouldReduceMotion ? undefined : containerVariants}
-          initial="hidden"
-          animate={appsInView ? "visible" : "hidden"}
-        >
-          {applications.map((app) => (
+        <ApplicationsGrid>
+          {applications.map((app, index) => (
             <ApplicationCard
               key={app.id}
-              variants={cardVariants}
+              initial={{ opacity: 0, y: 30 }}
+              animate={appsInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
             >
+              <CornerBracket top left />
+              <CornerBracket top right />
+              <CornerBracket bottom left />
+              <CornerBracket bottom right />
+              <ScanBar className="scan-bar" />
+
               <CardImageContainer>
                 <img src={app.image} alt={app.title} loading="lazy" />
               </CardImageContainer>
