@@ -120,7 +120,6 @@ import TheBoxSectionComponent from '../components/TheBoxSection';
 import DroneControlSectionComponent from '../components/DroneControlSection';
 import TransformingIndustriesSectionComponent from '../components/TransformingIndustriesSection';
 import WhyChooseUsSectionComponent from '../components/WhyChooseUsSection';
-import FooterComponent from '../components/Footer';
 import PartnersSection from '../components/PartnersSection';
 
 
@@ -137,6 +136,9 @@ function HomePage() {
         <MainContainer>
           {/* Hero Section */}
           <HeroSectionComponent />
+
+          {/* Interceptor Section */}
+          <InterceptorSection />
 
           {/* Artemis Scout in Action Video */}
           <VideoSection>
@@ -177,9 +179,6 @@ function HomePage() {
           {/* Scout Features */}
           <ScoutFeaturesSectionComponent />
 
-          {/* Interceptor Section */}
-          <InterceptorSection />
-
           {/* The Box Section */}
           <TheBoxSectionComponent />
 
@@ -194,8 +193,6 @@ function HomePage() {
 
           {/* Strategic Partners */}
           <PartnersSection />
-
-          <FooterComponent />
         </MainContainer>
       </GlobalStyles>
     </>

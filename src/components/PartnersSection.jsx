@@ -77,18 +77,18 @@ const PartnerCard = styled(motion.div)`
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
-  background: rgba(15, 15, 15, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   position: relative;
   transition: all 0.3s ease;
 
   &:hover {
     border-color: rgba(255, 77, 77, 0.3);
-    background: rgba(255, 77, 77, 0.02);
+    background: rgba(255, 77, 77, 0.04);
     box-shadow: 0 0 20px rgba(255, 77, 77, 0.1);
-    
+
     img {
-      filter: grayscale(0%) brightness(1.2);
+      filter: none;
       opacity: 1;
     }
   }
@@ -97,8 +97,8 @@ const PartnerCard = styled(motion.div)`
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-    filter: grayscale(100%) brightness(0.8);
-    opacity: 0.6;
+    filter: none;
+    opacity: 0.9;
     transition: all 0.4s ease;
   }
 

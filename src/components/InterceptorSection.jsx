@@ -89,13 +89,13 @@ const cursorBlink = keyframes`
 const SectionWrapper = styled.section`
   background-color: #000;
   position: relative;
-  height: 160vh;
+  height: calc(160vh - 190px);
   font-family: 'Share Tech Mono', monospace;
   color: #fff;
   overflow: hidden;
 
   @media (max-width: 1400px) {
-    height: 150vh;
+    height: calc(150vh - 190px);
   }
 
   @media (max-width: 900px) {
@@ -415,15 +415,15 @@ const HUDContainer = styled.div`
   animation: ${hudPulse} 4s ease-in-out infinite;
 
   @media (max-width: 1400px) {
-    min-height: clamp(410px, 52vh, 550px);
+    min-height: clamp(610px, 52vh, 750px);
   }
 
   @media (max-height: 700px) {
-    min-height: clamp(320px, 48vh, 420px);
+    min-height: clamp(520px, 48vh, 620px);
   }
 
   @media (max-height: 600px) {
-    min-height: clamp(260px, 42vh, 340px);
+    min-height: clamp(460px, 42vh, 540px);
   }
 
   @media (max-width: 900px) {
@@ -515,24 +515,24 @@ const Tagline = styled(motion.p)`
   line-height: 1.6;
   position: relative;
   z-index: 10;
-  transform: translateY(40px);
+  transform: translateY(190px);
 
   @media (max-width: 1400px) {
     margin-top: 0.75rem;
     margin-bottom: 0.25rem;
-    transform: translateY(40px);
+    transform: translateY(190px);
   }
 
   @media (max-height: 700px) {
     margin-top: 0.5rem;
     margin-bottom: 0.2rem;
-    transform: translateY(30px);
+    transform: translateY(180px);
   }
 
   @media (max-height: 600px) {
     margin-top: 0.25rem;
     margin-bottom: 0.1rem;
-    transform: translateY(20px);
+    transform: translateY(170px);
     font-size: 0.85rem;
   }
 

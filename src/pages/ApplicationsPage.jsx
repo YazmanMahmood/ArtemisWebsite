@@ -274,7 +274,7 @@ const applications = [
   {
     id: 8,
     title: 'Emergency Response',
-    image: '/images/firefighting.jpeg',
+    image: '/images/DFR.png',
     description: 'Thermal imaging and search assistance for firefighters and rescue teams in high-risk disaster scenarios.',
     tags: ['Thermal', 'Rescue', 'Smoke Pen']
   }

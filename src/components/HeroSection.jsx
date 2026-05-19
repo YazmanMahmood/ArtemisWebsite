@@ -223,8 +223,7 @@ export default function HeroSectionComponent() {
             transition={{ duration: 0.9, delay: 0.5 }}
           >
             <span>Unmanned.</span>
-            <span>Unmatched.</span>
-            <span className="highlight">Uncompromising.</span>
+            <span className="highlight">Unmatched.</span>
           </MainTitle>
 
           <AccentBar
@@ -238,8 +237,7 @@ export default function HeroSectionComponent() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.4 }}
           >
-            Aerial systems built for contested environments <br />
-            no operator, no limits.
+            Aerial systems engineered for environments where failure isn't an option — autonomous, GPS-denied ready, zero operator dependency.
           </Subheading>
 
           <CTARow
