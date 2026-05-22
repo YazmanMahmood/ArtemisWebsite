@@ -177,6 +177,11 @@ const GlitchWrapper = styled.div`
     text-transform: uppercase;
     white-space: nowrap;
     pointer-events: none;
+
+    @media (max-width: 768px) {
+      font-size: clamp(1.3rem, 5vw, 2.2rem);
+      letter-spacing: 3px;
+    }
   }
 
   &::before {
@@ -208,6 +213,11 @@ const LetterSlot = styled.span`
   min-width: 0.65em;
   text-align: center;
   vertical-align: bottom;
+
+  @media (max-width: 768px) {
+    font-size: clamp(1.3rem, 5vw, 2.2rem);
+    letter-spacing: 3px;
+  }
 
   /* Redacted state */
   background: ${props => props.$revealed ? 'transparent' : 'rgba(255,77,77,0.85)'};
@@ -719,7 +729,7 @@ export default function InterceptorSection() {
               src="https://player.vimeo.com/video/1192991312?background=1&autoplay=1&loop=1&muted=1&byline=0&title=0&autopause=0&dnt=1"
               title="Interceptor Action Video"
               lazy
-              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none', pointerEvents: 'none', zIndex: 1 }}
+              style={{ pointerEvents: 'none', zIndex: 1 }}
             />
           </HUDContainer>
 

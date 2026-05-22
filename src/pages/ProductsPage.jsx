@@ -13,7 +13,7 @@ import { outdoorResponseDrones, publicSafetyDrones, allProductsData } from '../d
 import { HiSparkles } from 'react-icons/hi';
 import { FaFileDownload } from 'react-icons/fa';
 import RoboticReveal from '../components/common/RoboticReveal';
-import FingerprintJS from '@fingerprintjs/fingerprintjs';
+import { getVisitorMetadata } from '../utils/visitorMetadata';
 
 // Filter categories removed as requested by user
 const categories = [];
@@ -88,6 +88,10 @@ const ProductsHeader = styled.div`
 
   @media (max-width: 768px) {
     margin: 0 auto 3rem;
+    h1 {
+      letter-spacing: 3px;
+      margin-bottom: 1rem;
+    }
   }
 `;
 
@@ -203,6 +207,10 @@ const CustomizationContainer = styled.div`
   border-radius: 16px;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+
+  @media (max-width: 768px) {
+    padding: 1.5rem 1rem;
+  }
 `;
 
 const FormTitle = styled.h2`
@@ -322,6 +330,16 @@ const FreeQuoteHeader = styled.div`
   p {
     margin: 0.5rem 0 0;
     opacity: 0.9;
+  }
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+    h2 {
+      font-size: 1.4rem;
+    }
+    p {
+      font-size: 0.85rem;
+    }
   }
 `;
 
@@ -565,48 +583,7 @@ const CatalogueModal = ({ onClose }) => {
           nextId = Math.max(...ids) + 1;
         }
       }
-      // 1. Capture IP (Guaranteed)
-      let visitorIP = 'unknown';
-      try {
-        const ipRes = await fetch('https://api.ipify.org?format=json');
-        const ipData = await ipRes.json();
-        visitorIP = ipData.ip;
-      } catch (e) { console.error("IP Fetch failed"); }
-
-      // 2. Capture Detailed Location & ISP (Fallback)
-      let locationData = {};
-      try {
-        const locRes = await fetch(`https://ip-api.com/json/${visitorIP}`);
-        const locInfo = await locRes.json();
-        if (locInfo.status === 'success') {
-          locationData = {
-            City: locInfo.city,
-            Region: locInfo.regionName,
-            Country: locInfo.country,
-            Latitude: locInfo.lat,
-            Longitude: locInfo.lon,
-            ISP: locInfo.isp
-          };
-        }
-      } catch (e) { console.error("Location Fetch failed"); }
-
-      // 3. Capture Unique Device Fingerprint
-      let deviceID = 'unknown';
-      try {
-        const fp = await FingerprintJS.load();
-        const result = await fp.get();
-        deviceID = result.visitorId;
-      } catch (e) { console.error("Fingerprint failed"); }
-
-      const visitorMetadata = {
-        IP: visitorIP,
-        ...locationData,
-        DeviceID: deviceID,
-        UserAgent: navigator.userAgent,
-        Language: navigator.language,
-        Platform: navigator.platform,
-        ScreenResolution: `${window.screen.width}x${window.screen.height}`,
-      };
+      const visitorMetadata = await getVisitorMetadata();
 
       await set(child(downloadsRef, `download${nextId}`), {
         name: catalogueData.name,
@@ -750,48 +727,7 @@ function ProductsPage() {
         }
       }
 
-      // 1. Capture IP (Guaranteed)
-      let visitorIP = 'unknown';
-      try {
-        const ipRes = await fetch('https://api.ipify.org?format=json');
-        const ipData = await ipRes.json();
-        visitorIP = ipData.ip;
-      } catch (e) { console.error("IP Fetch failed"); }
-
-      // 2. Capture Detailed Location & ISP (Fallback)
-      let locationData = {};
-      try {
-        const locRes = await fetch(`https://ip-api.com/json/${visitorIP}`);
-        const locInfo = await locRes.json();
-        if (locInfo.status === 'success') {
-          locationData = {
-            City: locInfo.city,
-            Region: locInfo.regionName,
-            Country: locInfo.country,
-            Latitude: locInfo.lat,
-            Longitude: locInfo.lon,
-            ISP: locInfo.isp
-          };
-        }
-      } catch (e) { console.error("Location Fetch failed"); }
-
-      // 3. Capture Unique Device Fingerprint
-      let deviceID = 'unknown';
-      try {
-        const fp = await FingerprintJS.load();
-        const result = await fp.get();
-        deviceID = result.visitorId;
-      } catch (e) { console.error("Fingerprint failed"); }
-
-      const visitorMetadata = {
-        IP: visitorIP,
-        ...locationData,
-        DeviceID: deviceID,
-        UserAgent: navigator.userAgent,
-        Language: navigator.language,
-        Platform: navigator.platform,
-        ScreenResolution: `${window.screen.width}x${window.screen.height}`,
-      };
+      const visitorMetadata = await getVisitorMetadata();
 
       const customizationData = {
         industry,
@@ -869,48 +805,7 @@ function ProductsPage() {
           }
         }
 
-        // 1. Capture IP (Guaranteed)
-        let visitorIP = 'unknown';
-        try {
-          const ipRes = await fetch('https://api.ipify.org?format=json');
-          const ipData = await ipRes.json();
-          visitorIP = ipData.ip;
-        } catch (e) { console.error("IP Fetch failed"); }
-
-        // 2. Capture Detailed Location & ISP (Fallback)
-        let locationData = {};
-        try {
-          const locRes = await fetch(`https://ip-api.com/json/${visitorIP}`);
-          const locInfo = await locRes.json();
-          if (locInfo.status === 'success') {
-            locationData = {
-              City: locInfo.city,
-              Region: locInfo.regionName,
-              Country: locInfo.country,
-              Latitude: locInfo.lat,
-              Longitude: locInfo.lon,
-              ISP: locInfo.isp
-            };
-          }
-        } catch (e) { console.error("Location Fetch failed"); }
-
-        // 3. Capture Unique Device Fingerprint
-        let deviceID = 'unknown';
-        try {
-          const fp = await FingerprintJS.load();
-          const result = await fp.get();
-          deviceID = result.visitorId;
-        } catch (e) { console.error("Fingerprint failed"); }
-
-        const visitorMetadata = {
-          IP: visitorIP,
-          ...locationData,
-          DeviceID: deviceID,
-          UserAgent: navigator.userAgent,
-          Language: navigator.language,
-          Platform: navigator.platform,
-          ScreenResolution: `${window.screen.width}x${window.screen.height}`,
-        };
+        const visitorMetadata = await getVisitorMetadata();
 
         const orderKey = `fpvorder${nextId}`;
         await set(child(fpvOrdersRef, orderKey), {

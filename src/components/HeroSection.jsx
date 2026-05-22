@@ -69,6 +69,8 @@ const HeroInner = styled.div`
 
   @media (max-width: 768px) {
     padding-top: 8rem;
+    align-items: center;
+    text-align: center;
   }
 `;
 
@@ -78,6 +80,10 @@ const HeroContent = styled(motion.div)`
   flex-direction: column;
   align-items: flex-start;
   margin-top: 20px;
+
+  @media (max-width: 768px) {
+    align-items: center;
+  }
 `;
 
 const PreLabel = styled(motion.p)`
@@ -124,6 +130,10 @@ const AccentBar = styled(motion.div)`
   background: #ff4d4d;
   margin: 2rem 0;
   box-shadow: 0 0 12px #ff4d4d;
+
+  @media (max-width: 768px) {
+    margin: 2rem auto;
+  }
 `;
 
 const Subheading = styled(motion.p)`
@@ -152,6 +162,10 @@ const CTARow = styled(motion.div)`
   gap: 1.2rem;
   flex-wrap: wrap;
   justify-content: flex-start;
+
+  @media (max-width: 768px) {
+    justify-content: center;
+  }
 `;
 
 const CTAPrimary = styled(Link)`
@@ -206,7 +220,7 @@ export default function HeroSectionComponent() {
         <VimeoEmbed
           src="https://player.vimeo.com/video/1191621737?background=1&autoplay=1&loop=1&muted=1&byline=0&title=0&autopause=0&dnt=1"
           title="Hero Background Video"
-          style={{ position: 'absolute', top: '50%', left: '50%', width: '100vw', height: '56.25vw', minHeight: '100vh', minWidth: '177.77vh', transform: 'translate(-50%, -50%)', border: 'none', pointerEvents: 'none' }}
+          style={{ position: 'absolute', top: '50%', left: '50%', width: '100vw', height: '56.25vw', minHeight: '100vh', minWidth: '177.77vh', transform: 'translate(-50%, -50%)', pointerEvents: 'none' }}
         />
       </VideoContainer>
 

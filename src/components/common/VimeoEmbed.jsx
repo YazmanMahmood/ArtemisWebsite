@@ -38,7 +38,7 @@ export default function VimeoEmbed({ src, title = 'Vimeo Video', style = {}, laz
           src={src}
           title={title}
           allow="autoplay; fullscreen; picture-in-picture"
-          style={{ border: 'none', display: 'block', ...style }}
+          style={{ border: 'none', display: 'block', width: '100%', height: '100%', ...style }}
         />
       )}
     </div>

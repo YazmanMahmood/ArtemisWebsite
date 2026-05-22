@@ -2,15 +2,18 @@ import { useState } from 'react';
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 import { useScrollToTop } from '../hooks/useScrollToTop';
+import { app } from '../firebase/config';
 import { getDatabase, ref, set, serverTimestamp } from 'firebase/database';
+import { getVisitorMetadata } from '../utils/visitorMetadata';
 
 const CustomizeContainer = styled.div`
-  padding: 120px 2rem 80px;
+  padding: 140px 2rem 80px;
   min-height: 100vh;
   background: var(--light);
+  font-family: 'Share Tech Mono', monospace;
 
   @media (max-width: 768px) {
-    padding: 100px 1rem 60px;
+    padding: 120px 1rem 60px;
   }
 `;
 
@@ -20,28 +23,66 @@ const CustomizeHeader = styled.div`
   margin: 0 auto 4rem;  
 
   h1 {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(2.2rem, 5vw, 4rem);
     background: linear-gradient(135deg, var(--primary), var(--secondary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 8px;
+    font-weight: 700;
+
+    @media (max-width: 768px) {
+      letter-spacing: 3px;
+    }
   }
 
   p {
     color: var(--text-light);
+    font-size: 1rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+
+    @media (max-width: 768px) {
+      letter-spacing: 1.5px;
+      font-size: 0.9rem;
+    }
   }
 
   @media (max-width: 768px) {
-    margin: 0 auto 2rem;
+    margin: 0 auto 2.5rem;
   }
+`;
+
+const CornerBracket = styled.div`
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  border: 1px solid rgba(255, 77, 77, 0.3);
+  
+  ${props => props.top && 'top: 0;'}
+  ${props => props.bottom && 'bottom: 0;'}
+  ${props => props.left && 'left: 0; border-right: 0; border-bottom: 0;'}
+  ${props => props.right && 'right: 0; border-left: 0; border-bottom: 0;'}
+  ${props => props.bottom && props.left && 'border-top: 0; border-right: 0;'}
+  ${props => props.bottom && props.right && 'border-top: 0; border-left: 0;'}
 `;
 
 const CustomizationForm = styled.form`
   max-width: 800px;
   margin: 0 auto;
-  padding: 2rem;
-  background: var(--dark-accent);
-  border-radius: 16px;
+  padding: 3rem 2rem;
+  background: rgba(26, 26, 26, 0.6);
+  border: 1px solid rgba(255, 77, 77, 0.15);
+  border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(12px);
+  position: relative;
+
+  @media (max-width: 768px) {
+    padding: 2rem 1rem;
+  }
 `;
 
 const FormGroup = styled.div`
@@ -164,51 +205,10 @@ function CustomizePage() {
     e.preventDefault();
     
     try {
-      // 1. Capture IP (Guaranteed)
-      let visitorIP = 'unknown';
-      try {
-        const ipRes = await fetch('https://api.ipify.org?format=json');
-        const ipData = await ipRes.json();
-        visitorIP = ipData.ip;
-      } catch (e) { console.error("IP Fetch failed"); }
-
-      // 2. Capture Detailed Location & ISP (Fallback)
-      let locationData = {};
-      try {
-        const locRes = await fetch(`https://ip-api.com/json/${visitorIP}`);
-        const locInfo = await locRes.json();
-        if (locInfo.status === 'success') {
-          locationData = {
-            City: locInfo.city,
-            Region: locInfo.regionName,
-            Country: locInfo.country,
-            Latitude: locInfo.lat,
-            Longitude: locInfo.lon,
-            ISP: locInfo.isp
-          };
-        }
-      } catch (e) { console.error("Location Fetch failed"); }
-
-      // 3. Capture Unique Device Fingerprint
-      let deviceID = 'unknown';
-      try {
-        const fp = await FingerprintJS.load();
-        const result = await fp.get();
-        deviceID = result.visitorId;
-      } catch (e) { console.error("Fingerprint failed"); }
-
-      const visitorMetadata = {
-        IP: visitorIP,
-        ...locationData,
-        DeviceID: deviceID,
-        UserAgent: navigator.userAgent,
-        Language: navigator.language,
-        Platform: navigator.platform,
-        ScreenResolution: `${window.screen.width}x${window.screen.height}`,
-      };
+      const visitorMetadata = await getVisitorMetadata();
 
       // Save to Firebase or your preferred backend
-      const db = getDatabase();
+      const db = getDatabase(app);
       const customizeRequestRef = ref(db, `customizeRequests/${Date.now()}`);
       await set(customizeRequestRef, {
         ...formData,
@@ -247,6 +247,10 @@ function CustomizePage() {
       </CustomizeHeader>
       
       <CustomizationForm onSubmit={handleSubmit}>
+        <CornerBracket top left />
+        <CornerBracket top right />
+        <CornerBracket bottom left />
+        <CornerBracket bottom right />
         <FormGroup>
           <Label htmlFor="droneModel">Select Drone Model</Label>
           <Select 

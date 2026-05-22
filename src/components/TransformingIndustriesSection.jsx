@@ -149,35 +149,53 @@ function IndustryCardItem({ data }) {
   );
 }
 
+const DomainsTitleHeader = styled(motion.h2)`
+  font-size: clamp(2rem, 5vw, 4rem);
+  color: #fff;
+  letter-spacing: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin: 0;
+
+  @media (max-width: 768px) {
+    letter-spacing: 3px;
+    font-size: 1.6rem;
+  }
+`;
+
+const DomainsSubheading = styled(motion.p)`
+  color: rgba(255,255,255,0.45);
+  margin-top: 0.8rem;
+  font-size: 0.8rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+
+  @media (max-width: 768px) {
+    letter-spacing: 2px;
+    font-size: 0.75rem;
+  }
+`;
+
 function TransformingIndustriesSectionComponent() {
   return (
     <TransformSection>
       <Container>
         <SectionHeader>
-          <motion.h2
+          <DomainsTitleHeader
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            style={{
-              fontSize: 'clamp(2rem, 5vw, 4rem)',
-              color: '#fff',
-              letterSpacing: '8px',
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              margin: 0,
-            }}
           >
             <RoboticReveal text="OPERATIONAL DOMAINS" />
-          </motion.h2>
-          <motion.p
+          </DomainsTitleHeader>
+          <DomainsSubheading
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.4 }}
-            style={{ color: 'rgba(255,255,255,0.45)', marginTop: '0.8rem', fontSize: '0.8rem', letterSpacing: '4px', textTransform: 'uppercase' }}
           >
             Autonomous capability across the full operational spectrum.
-          </motion.p>
+          </DomainsSubheading>
         </SectionHeader>
 
         <IndustryGrid>

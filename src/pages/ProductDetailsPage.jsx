@@ -33,6 +33,13 @@ const BackButton = styled.button`
   font-weight: 500;
   transition: all 0.3s ease;
 
+  @media (max-width: 768px) {
+    width: 100%;
+    display: block;
+    margin: 0 auto 2rem;
+    text-align: center;
+  }
+
   &:hover {
     background: var(--dark);
     color: white;
@@ -66,16 +73,8 @@ const ImageWrapper = styled(motion.div)`
 `;
 
 const InfoSection = styled.div`
-  h1 {
-    font-size: 3.5rem;
-    margin-bottom: 1.5rem;
-    color: #111;
-    font-weight: 700;
-
-    @media (max-width: 768px) {
-      font-size: 2.2rem;
-      margin-bottom: 1rem;
-    }
+  @media (max-width: 768px) {
+    text-align: center;
   }
 
   .type {

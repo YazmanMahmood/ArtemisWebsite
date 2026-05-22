@@ -11,6 +11,10 @@ const ContactContainer = styled.div`
   padding: 140px 2rem 80px;
   position: relative;
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    padding: 120px 1rem 40px;
+  }
 `;
 
 const DataGrid = styled.div`
@@ -40,6 +44,10 @@ const Header = styled.div`
     letter-spacing: 12px;
     font-weight: 700;
     
+    @media (max-width: 768px) {
+      letter-spacing: 3px;
+    }
+    
     span {
       color: #ff4d4d;
       text-shadow: 0 0 20px rgba(255, 77, 77, 0.5);
@@ -51,6 +59,10 @@ const Header = styled.div`
     font-size: 1rem;
     letter-spacing: 4px;
     text-transform: uppercase;
+
+    @media (max-width: 768px) {
+      letter-spacing: 1.5px;
+    }
   }
 `;
 
@@ -179,6 +191,11 @@ const CalendlySection = styled(motion.div)`
   height: 800px;
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 768px) {
+    height: 600px;
+    padding: 1rem;
+  }
 
   &:hover {
     border-color: rgba(255, 77, 77, 0.4);

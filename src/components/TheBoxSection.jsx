@@ -226,7 +226,23 @@ const BoxImg = styled(motion.img)`
   
   @media (max-width: 900px) {
     width: 90%;
+    max-width: 100%;
     margin-bottom: 2rem;
+  }
+`;
+
+const BoxTitleHeader = styled(motion.h2)`
+  font-size: clamp(1.8rem, 8vw, 4.8rem);
+  margin: 0;
+  letter-spacing: clamp(4px, 2vw, 12px);
+  color: #111;
+  text-transform: uppercase;
+  font-weight: 700;
+  white-space: nowrap;
+
+  @media (max-width: 768px) {
+    white-space: normal;
+    letter-spacing: 3px;
   }
 `;
 
@@ -284,22 +300,13 @@ export default function TheBoxSectionComponent() {
       <Inner>
         {/* Title */}
         <SectionTitle>
-          <motion.h2
+          <BoxTitleHeader
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            style={{
-              fontSize: 'clamp(1.8rem, 8vw, 4.8rem)',
-              margin: 0,
-              letterSpacing: 'clamp(4px, 2vw, 12px)',
-              color: '#111',
-              textTransform: 'uppercase',
-              fontWeight: 700,
-              whiteSpace: 'nowrap'
-            }}
           >
             <RoboticReveal text="DRONE-IN-A-BOX" />
-          </motion.h2>
+          </BoxTitleHeader>
           <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}

@@ -107,43 +107,75 @@ const features = [
   { text: "Modular Architecture", icon: <FaCogs /> }
 ];
 
+const CommandTitleHeader = styled(motion.h2)`
+  font-size: clamp(2rem, 5vw, 4rem);
+  margin-bottom: 1rem;
+  letter-spacing: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #fff;
+
+  @media (max-width: 768px) {
+    letter-spacing: 3px;
+    font-size: 1.6rem;
+  }
+`;
+
+const CommandSubheading = styled(motion.p)`
+  color: #ff4d4d;
+  font-size: 0.9rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-top: 0.6rem;
+  font-weight: 700;
+
+  @media (max-width: 768px) {
+    letter-spacing: 1.5px;
+    font-size: 0.8rem;
+  }
+`;
+
+const CommandDescription = styled(motion.p)`
+  color: rgba(255,255,255,0.55);
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+  max-width: 500px;
+  margin: 1rem auto 0;
+  line-height: 1.7;
+
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+    padding: 0 1rem;
+  }
+`;
+
 export default function DroneControlSectionComponent() {
   return (
     <SectionWrapper>
       <SectionHeader>
-        <motion.h2
+        <CommandTitleHeader
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          style={{
-            fontSize: 'clamp(2rem, 5vw, 4rem)',
-            marginBottom: '1rem',
-            letterSpacing: '8px',
-            fontWeight: 700,
-            textTransform: 'uppercase',
-            color: '#fff',
-          }}
         >
-        <RoboticReveal text="COMMAND INTERFACE" />
-        </motion.h2>
-        <motion.p
+          <RoboticReveal text="COMMAND INTERFACE" />
+        </CommandTitleHeader>
+        <CommandSubheading
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.3 }}
-          style={{ color: '#ff4d4d', fontSize: '0.9rem', letterSpacing: '3px', textTransform: 'uppercase', marginTop: '0.6rem', fontWeight: 700 }}
         >
           Unified Fleet Control. Real-Time Intelligence.
-        </motion.p>
-        <motion.p
+        </CommandSubheading>
+        <CommandDescription
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.5 }}
-          style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.9rem', letterSpacing: '0.5px', maxWidth: '500px', margin: '1rem auto 0', lineHeight: 1.7 }}
         >
           Manage multiple platforms from a single interface. Full situational awareness, encrypted feeds, and manual override when needed.
-        </motion.p>
+        </CommandDescription>
       </SectionHeader>
 
       <DashboardContainer>

@@ -42,6 +42,10 @@ const Header = styled.div`
     letter-spacing: 8px;
     margin-bottom: 1rem;
     
+    @media (max-width: 768px) {
+      letter-spacing: 3px;
+    }
+    
     span {
       color: #ff4d4d;
     }

@@ -282,6 +282,50 @@ const SuccessMessage = styled(motion.div)`
   margin-top: 1rem;
 `;
 
+const ModalOverlay = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+`;
+
+const ModalContent = styled(motion.div)`
+  background: linear-gradient(145deg, rgba(18, 18, 18, 0.95), rgba(10, 10, 10, 0.98));
+  border: 1px solid rgba(255, 77, 77, 0.3);
+  border-radius: 16px;
+  padding: 2.5rem;
+  max-width: 560px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(255, 77, 77, 0.08);
+
+  /* Scrollbar styling */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 77, 77, 0.3);
+    border-radius: 3px;
+  }
+
+  @media (max-width: 576px) {
+    padding: 1.5rem;
+  }
+`;
+
 const automationsData = [
   {
     id: 1,
@@ -329,6 +373,16 @@ function AutomationsPage() {
     setSelectedAutomation(automation);
     setFormData(prev => ({ ...prev, automationType: automation.title }));
     setShowQuoteForm(true);
+    setFormSubmitted(false);
+  };
+
+  const handleCloseModal = () => {
+    setShowQuoteForm(false);
+    setSelectedAutomation(null);
+    if (formSubmitted) {
+      setFormData({ name: '', email: '', phone: '', company: '', automationType: '', requirements: '' });
+      setFormSubmitted(false);
+    }
   };
 
   const handleInputChange = (e) => {
@@ -405,14 +459,127 @@ function AutomationsPage() {
                 ))}
               </FeaturesList>
 
-
+              <RequestQuoteButton onClick={() => handleRequestQuote(automation)}>
+                Request a Quote
+              </RequestQuoteButton>
             </AutomationCard>
           ))}
         </AutomationsGrid>
       </AutomationsContainer>
 
+      {/* Quote Request Modal */}
+      {showQuoteForm && (
+        <ModalOverlay
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={handleCloseModal}
+        >
+          <ModalContent
+            initial={{ opacity: 0, scale: 0.92, y: 30 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <CloseButton onClick={handleCloseModal} style={{ color: 'rgba(255,255,255,0.5)' }}>✕</CloseButton>
 
+            {!formSubmitted ? (
+              <form onSubmit={handleSubmit}>
+                <FormTitle style={{ color: '#fff', fontFamily: "'Share Tech Mono', monospace" }}>
+                  {selectedAutomation ? selectedAutomation.title : 'Request a Quote'}
+                </FormTitle>
 
+                <FormGroup>
+                  <Label style={{ color: 'rgba(255,255,255,0.7)' }}>Full Name *</Label>
+                  <Input
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="Enter your full name"
+                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,77,77,0.2)', color: '#fff' }}
+                  />
+                </FormGroup>
+
+                <FormGroup>
+                  <Label style={{ color: 'rgba(255,255,255,0.7)' }}>Email Address *</Label>
+                  <Input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="your@email.com"
+                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,77,77,0.2)', color: '#fff' }}
+                  />
+                </FormGroup>
+
+                <FormGroup>
+                  <Label style={{ color: 'rgba(255,255,255,0.7)' }}>Phone Number</Label>
+                  <Input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    placeholder="+1 (555) 000-0000"
+                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,77,77,0.2)', color: '#fff' }}
+                  />
+                </FormGroup>
+
+                <FormGroup>
+                  <Label style={{ color: 'rgba(255,255,255,0.7)' }}>Company / Organization</Label>
+                  <Input
+                    name="company"
+                    value={formData.company}
+                    onChange={handleInputChange}
+                    placeholder="Your company name"
+                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,77,77,0.2)', color: '#fff' }}
+                  />
+                </FormGroup>
+
+                <FormGroup>
+                  <Label style={{ color: 'rgba(255,255,255,0.7)' }}>Automation Type</Label>
+                  <Select
+                    name="automationType"
+                    value={formData.automationType}
+                    onChange={handleInputChange}
+                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,77,77,0.2)', color: '#fff' }}
+                  >
+                    {automationsData.map(a => (
+                      <option key={a.id} value={a.title} style={{ background: '#121212' }}>{a.title}</option>
+                    ))}
+                  </Select>
+                </FormGroup>
+
+                <FormGroup>
+                  <Label style={{ color: 'rgba(255,255,255,0.7)' }}>Specific Requirements</Label>
+                  <Textarea
+                    name="requirements"
+                    value={formData.requirements}
+                    onChange={handleInputChange}
+                    placeholder="Describe your specific needs, scale of operations, timeline, or any customization requirements..."
+                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,77,77,0.2)', color: '#fff' }}
+                  />
+                </FormGroup>
+
+                <SubmitButton type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? 'Submitting...' : 'Submit Quote Request'}
+                </SubmitButton>
+              </form>
+            ) : (
+              <SuccessMessage
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4 }}
+              >
+                <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>✓</div>
+                <h3 style={{ margin: '0 0 0.5rem' }}>Quote Request Submitted</h3>
+                <p style={{ margin: 0, opacity: 0.9 }}>Our team will review your requirements and get back to you shortly.</p>
+              </SuccessMessage>
+            )}
+          </ModalContent>
+        </ModalOverlay>
+      )}
     </>
   );
 }

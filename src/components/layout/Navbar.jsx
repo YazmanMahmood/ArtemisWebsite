@@ -272,7 +272,7 @@ function Navbar() {
           >
             <Hamburger 
               onClick={toggleMenu} 
-              style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 2001 }}
+              style={{ position: 'absolute', top: '20px', right: '24px', zIndex: 2001 }}
             >
               <FaTimes />
             </Hamburger>

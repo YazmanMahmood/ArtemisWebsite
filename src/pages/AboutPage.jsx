@@ -46,6 +46,10 @@ const Header = styled.div`
     letter-spacing: 10px;
     font-weight: 700;
     
+    @media (max-width: 768px) {
+      letter-spacing: 3px;
+    }
+    
     span {
       color: #ff4d4d;
     }
@@ -56,6 +60,10 @@ const Header = styled.div`
     font-size: 1rem;
     letter-spacing: 4px;
     text-transform: uppercase;
+
+    @media (max-width: 768px) {
+      letter-spacing: 1.5px;
+    }
   }
 `;
 
@@ -123,6 +131,14 @@ const TextContent = styled(motion.div)`
     span {
       color: #ff4d4d;
     }
+
+    @media (max-width: 900px) {
+      text-align: center;
+    }
+    @media (max-width: 768px) {
+      letter-spacing: 2px;
+      font-size: 1.8rem;
+    }
   }
 
   p {
@@ -130,6 +146,10 @@ const TextContent = styled(motion.div)`
     line-height: 1.8;
     margin-bottom: 1.5rem;
     font-size: 1rem;
+
+    @media (max-width: 900px) {
+      text-align: center;
+    }
   }
 `;
 
@@ -140,6 +160,11 @@ const Stats = styled.div`
   margin-top: 4rem;
   border-top: 1px solid rgba(255, 77, 77, 0.2);
   padding-top: 2rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
 
   div {
     h3 {
@@ -154,6 +179,22 @@ const Stats = styled.div`
       text-transform: uppercase;
       letter-spacing: 2px;
     }
+  }
+`;
+
+const GlobeWrapper = styled(motion.div)`
+  position: relative;
+  height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+
+  @media (max-width: 900px) {
+    height: 350px;
+  }
+  @media (max-width: 600px) {
+    height: 250px;
   }
 `;
 
@@ -279,6 +320,11 @@ const CTASection = styled.section`
     margin-bottom: 1.5rem;
     text-transform: uppercase;
     letter-spacing: 6px;
+
+    @media (max-width: 768px) {
+      letter-spacing: 2px;
+      font-size: 1.8rem;
+    }
   }
 
   p {
@@ -386,14 +432,13 @@ const AboutPage = () => {
       </Header>
 
       <ContentSection ref={aboutRef}>
-        <motion.div
+        <GlobeWrapper
           initial={{ opacity: 0, x: -50 }}
           animate={aboutInView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.8 }}
-          style={{ position: 'relative', height: '600px', display: 'flex', alignItems: 'center' }}
         >
           <GlobeAnimation />
-        </motion.div>
+        </GlobeWrapper>
 
         <TextContent
           initial={{ opacity: 0, x: 50 }}

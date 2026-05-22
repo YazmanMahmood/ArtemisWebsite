@@ -58,7 +58,9 @@ const ReasonRow = styled(motion.div)`
   }
 
   @media (max-width: 768px) {
-    grid-template-columns: 44px 1fr;
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding: 1.5rem 1rem;
   }
 `;
 
@@ -71,6 +73,12 @@ const IndexCell = styled.div`
   font-size: 0.65rem;
   color: rgba(255, 77, 77, 0.4);
   letter-spacing: 1px;
+
+  @media (max-width: 768px) {
+    border-right: none;
+    padding: 0;
+    margin-bottom: 0.25rem;
+  }
 `;
 
 const IconCell = styled.div`
@@ -96,6 +104,8 @@ const IconCell = styled.div`
 
   @media (max-width: 768px) {
     border-right: none;
+    padding: 0.5rem 0;
+    justify-content: center;
   }
 `;
 
@@ -109,7 +119,9 @@ const DescCell = styled.div`
   letter-spacing: 0.5px;
 
   @media (max-width: 768px) {
-    display: none;
+    display: block;
+    padding: 0.5rem 0;
+    text-align: center;
   }
 `;
 
@@ -141,36 +153,54 @@ const reasons = [
   },
 ];
 
+const WhyTitleHeader = styled(motion.h2)`
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: #fff;
+  letter-spacing: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin: 0;
+
+  @media (max-width: 768px) {
+    letter-spacing: 3px;
+    font-size: 1.6rem;
+  }
+`;
+
+const WhySubheading = styled(motion.p)`
+  color: rgba(255,255,255,0.4);
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+
+  @media (max-width: 768px) {
+    letter-spacing: 2px;
+    font-size: 0.75rem;
+  }
+`;
+
 export default function WhyChooseUsSectionComponent() {
   return (
     <SectionWrapper>
       <GridOverlay />
       <Container>
         <SectionHeader>
-          <motion.h2
+          <WhyTitleHeader
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            style={{
-              fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-              color: '#fff',
-              letterSpacing: '8px',
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              margin: 0,
-            }}
           >
             <RoboticReveal text="WHY CHOOSE ARTEMIS" />
-          </motion.h2>
-          <motion.p
+          </WhyTitleHeader>
+          <WhySubheading
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.4 }}
-            style={{ color: 'rgba(255,255,255,0.4)', marginTop: '1rem', fontSize: '0.8rem', letterSpacing: '4px', textTransform: 'uppercase' }}
           >
             Full-spectrum capability from a single platform ecosystem.
-          </motion.p>
+          </WhySubheading>
         </SectionHeader>
 
         <ReasonsList>

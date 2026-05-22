@@ -5,7 +5,7 @@ import { useScrollToTop } from '../hooks/useScrollToTop';
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, push, get, set, child } from 'firebase/database';
 import { firebaseConfig } from '../firebase/config';
-import FingerprintJS from '@fingerprintjs/fingerprintjs';
+import { getVisitorMetadata } from '../utils/visitorMetadata';
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -21,6 +21,10 @@ const SupportContainer = styled.div`
   padding: 140px 2rem 80px;
   position: relative;
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    padding: 100px 1rem 40px;
+  }
 `;
 
 const DataGrid = styled.div`
@@ -61,6 +65,16 @@ const Header = styled.div`
     letter-spacing: 2px;
     text-transform: uppercase;
   }
+
+  @media (max-width: 768px) {
+    margin: 0 auto 3rem;
+    h1 {
+      letter-spacing: 3px;
+    }
+    p {
+      font-size: 0.9rem;
+    }
+  }
 `;
 
 const SupportContent = styled.div`
@@ -72,6 +86,10 @@ const SupportContent = styled.div`
   position: relative;
   z-index: 2;
   backdrop-filter: blur(10px);
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+  }
 
   &::before {
     content: '';
@@ -224,48 +242,7 @@ function SupportPage() {
         hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
       });
 
-      // 1. Capture IP (Guaranteed)
-      let visitorIP = 'unknown';
-      try {
-        const ipRes = await fetch('https://api.ipify.org?format=json');
-        const ipData = await ipRes.json();
-        visitorIP = ipData.ip;
-      } catch (e) { console.error("IP Fetch failed"); }
-
-      // 2. Capture Detailed Location & ISP (Fallback)
-      let locationData = {};
-      try {
-        const locRes = await fetch(`https://ip-api.com/json/${visitorIP}`);
-        const locInfo = await locRes.json();
-        if (locInfo.status === 'success') {
-          locationData = {
-            City: locInfo.city,
-            Region: locInfo.regionName,
-            Country: locInfo.country,
-            Latitude: locInfo.lat,
-            Longitude: locInfo.lon,
-            ISP: locInfo.isp
-          };
-        }
-      } catch (e) { console.error("Location Fetch failed"); }
-
-      // 3. Capture Unique Device Fingerprint
-      let deviceID = 'unknown';
-      try {
-        const fp = await FingerprintJS.load();
-        const result = await fp.get();
-        deviceID = result.visitorId;
-      } catch (e) { console.error("Fingerprint failed"); }
-
-      const visitorMetadata = {
-        IP: visitorIP,
-        ...locationData,
-        DeviceID: deviceID,
-        UserAgent: navigator.userAgent,
-        Language: navigator.language,
-        Platform: navigator.platform,
-        ScreenResolution: `${window.screen.width}x${window.screen.height}`,
-      };
+      const visitorMetadata = await getVisitorMetadata();
 
       const submissionData = {
         Name: formData.name,

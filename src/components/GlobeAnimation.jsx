@@ -6,7 +6,7 @@ import styled from '@emotion/styled';
 
 const GlobeWrapper = styled.div`
   width: 100%;
-  height: 800px;
+  height: 100%;
   position: relative;
   background: transparent;
   margin: 0;

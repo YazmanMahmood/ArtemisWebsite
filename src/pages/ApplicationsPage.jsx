@@ -66,6 +66,10 @@ const HeroTitle = styled(motion.h1)`
   letter-spacing: 4px;
   text-transform: uppercase;
 
+  @media (max-width: 768px) {
+    letter-spacing: 2px;
+  }
+
   span {
     color: #ff4d4d;
     text-shadow: 0 0 20px rgba(255, 77, 77, 0.5);

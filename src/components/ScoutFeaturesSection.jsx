@@ -138,6 +138,19 @@ const SectionTitleHeader = styled(motion.h2)`
   }
 `;
 
+const SectionSubheading = styled(motion.p)`
+  color: rgba(255, 255, 255, 0.45);
+  margin-top: 0.8rem;
+  font-size: 0.8rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+
+  @media (max-width: 768px) {
+    letter-spacing: 2px;
+    font-size: 0.75rem;
+  }
+`;
+
 function ScoutFeaturesSectionComponent() {
   const shouldReduceMotion = useReducedMotion();
 
@@ -152,15 +165,14 @@ function ScoutFeaturesSectionComponent() {
           >
             <RoboticReveal text="MISSION CAPABILITIES" />
           </SectionTitleHeader>
-          <motion.p
+          <SectionSubheading
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.5 }}
-            style={{ color: 'rgba(255, 255, 255, 0.45)', marginTop: '0.8rem', fontSize: '0.8rem', letterSpacing: '4px', textTransform: 'uppercase' }}
           >
             Engineered for reliability in extreme conditions.
-          </motion.p>
+          </SectionSubheading>
         </div>
 
         <ScoutFeaturesGrid>
