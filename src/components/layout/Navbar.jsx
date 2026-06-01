@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaBars, FaTimes } from 'react-icons/fa';
 
-const whiteLogoImg = '/images/whitelogo.png';
+const whiteLogoImg = '/images/whitelogonew.png';
 
 const Nav = styled.nav`
   position: fixed;
@@ -36,16 +36,15 @@ const StyledLogo = styled(Link)`
   align-items: center;
   height: 100%;
   z-index: 1001;
+  background: transparent;
+  border: none;
 `;
 
 const LogoImage = styled.img`
-  height: 35px;
+  height: 45px;
   width: auto;
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: scale(1.05);
-  }
+  object-fit: contain;
+  display: block;
 `;
 
 const Hamburger = styled.div`
@@ -242,9 +241,7 @@ function Navbar() {
     <>
       <Nav scrolled={scrolled.toString()} data-ismainpage={isMainPage.toString()}>
         <StyledLogo to="/">
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
-            <LogoImage src={whiteLogoImg} alt="Logo" />
-          </motion.div>
+          <LogoImage src={whiteLogoImg} alt="Logo" />
         </StyledLogo>
 
         <NavLinks>
