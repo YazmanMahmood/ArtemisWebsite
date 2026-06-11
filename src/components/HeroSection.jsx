@@ -218,7 +218,7 @@ export default function HeroSectionComponent() {
 
       <VideoContainer>
         <VimeoEmbed
-          src="https://player.cloudinary.com/embed/?cloud_name=dgvegfxhh&public_id=Video_Project_7_1_zstsvz"
+          src="https://player.cloudinary.com/embed/?cloud_name=dgvegfxhh&public_id=Video_Project_7_1_zstsvz&autoplay=true&loop=true&muted=true&controls=false&fluid=true"
           title="Hero Background Video"
           style={{ position: 'absolute', top: '50%', left: '50%', width: '100vw', height: '56.25vw', minHeight: '100vh', minWidth: '177.77vh', transform: 'translate(-50%, -50%)', pointerEvents: 'none' }}
         />
