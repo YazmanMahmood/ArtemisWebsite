@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import VimeoEmbed from './common/VimeoEmbed';
 
 const monoFont = "'Share Tech Mono', monospace";
 const displayFont = "'Montserrat', sans-serif";
@@ -36,16 +35,17 @@ const HeroOverlay = styled.div`
 
 const VideoContainer = styled.div`
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 100vw;
-  height: 100vh;
-  transform: translate(-50%, -50%);
+  inset: 0;
   z-index: 1;
   overflow: hidden;
+
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
 `;
-
-
 
 const HeroInner = styled.div`
   max-width: 1200px;
@@ -180,7 +180,7 @@ const CTAPrimary = styled(Link)`
   letter-spacing: 3px;
   text-decoration: none;
   transition: all 0.3s ease;
-  
+
   &:hover {
     background: #fff;
     color: #000;
@@ -201,7 +201,7 @@ const CTASecondary = styled(Link)`
   text-decoration: none;
   border: 1px solid rgba(255, 255, 255, 0.4);
   transition: all 0.3s ease;
-  
+
   &:hover {
     border-color: #ff4d4d;
     color: #ff4d4d;
@@ -217,11 +217,23 @@ export default function HeroSectionComponent() {
       <HeroOverlay />
 
       <VideoContainer>
-        <VimeoEmbed
-          src="https://player.cloudinary.com/embed/?cloud_name=dgvegfxhh&public_id=Video_Project_7_1_zstsvz&autoplay=true&loop=true&muted=true&controls=false&fluid=true"
-          title="Hero Background Video"
-          style={{ position: 'absolute', top: '50%', left: '50%', width: '100vw', height: '56.25vw', minHeight: '100vh', minWidth: '177.77vh', transform: 'translate(-50%, -50%)', pointerEvents: 'none' }}
-        />
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          poster="https://res.cloudinary.com/dgvegfxhh/video/upload/so_0,q_auto,f_auto/Video_Project_7_1_zstsvz.jpg"
+        >
+          <source
+            src="https://res.cloudinary.com/dgvegfxhh/video/upload/q_auto,f_auto/Video_Project_7_1_zstsvz.webm"
+            type="video/webm"
+          />
+          <source
+            src="https://res.cloudinary.com/dgvegfxhh/video/upload/q_auto,f_auto/Video_Project_7_1_zstsvz.mp4"
+            type="video/mp4"
+          />
+        </video>
       </VideoContainer>
 
       <HeroInner>
