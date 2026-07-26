@@ -103,7 +103,7 @@ function FooterComponent() {
       <FooterContent>
         <ContactInfo>
           <h4>Contact Us</h4>
-          <p>Support: <a href="mailto:umair@artemisuav.com">umair@artemisuav.com</a></p>
+          <p>Support: umair@artemisuav.com </p>
           <p>Phone: <a href="tel:+923104768835">+92 310-4768835</a></p>
           <p>Address: 15 MM Alam road, Vogue Towers, Gulberg, Lahore, Pakistan</p>
         </ContactInfo>
